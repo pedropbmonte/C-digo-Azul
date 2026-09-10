@@ -24,193 +24,48 @@ const playPromotionSound = () => {
   try {
     const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3");
     audio.volume = 0.6;
-    audio.play().catch(e => console.log("Áudio bloqueado pelas políticas do navegador", e));
+    audio.play().catch(e => console.log("Áudio bloqueado", e));
   } catch (err) {}
 };
 
 // --- CURVA DE CARREIRA E FEEDBACK DE PERFORMANCE ---
 const levels = [
-  { 
-    title: "Estagiário / Trainee", 
-    minXp: 0, 
-    hasTimer: false,
-    feedback: null
-  },
-  { 
-    title: "Assistente Financeiro", 
-    minXp: 150, 
-    hasTimer: false,
-    feedback: {
-      forca: "Compreensão da mecânica básica de entradas e saídas e disciplina operacional.",
-      vulnerabilidade: "Você ainda enxerga números isolados. Precisa entender o impacto das operações na DRE e no fluxo de caixa futuro."
-    }
-  },
-  { 
-    title: "Analista Financeiro Jr.", 
-    minXp: 400, 
-    hasTimer: false,
-    feedback: {
-      forca: "Domínio das rotinas diárias e identificação de anomalias no caixa.",
-      vulnerabilidade: "Falta visão de ciclo de capital de giro (Prazos Médios). Seu foco agora é entender como o estoque e os fornecedores financiam o negócio."
-    }
-  },
-  { 
-    title: "Analista Financeiro Pleno", 
-    minXp: 750, 
-    hasTimer: true,
-    feedback: {
-      forca: "Capacidade analítica e resolução de problemas estruturais sem supervisão constante.",
-      vulnerabilidade: "Visão estratégica de custos. Para subir, você precisará dominar Custeio ABC, formação de preço e margem de contribuição real."
-    }
-  },
-  { 
-    title: "Analista Sênior / Business Partner", 
-    minXp: 1200, 
-    hasTimer: true,
-    feedback: {
-      forca: "Atuação como parceiro de negócios, conectando as finanças às decisões comerciais.",
-      vulnerabilidade: "Gestão de risco e planejamento de longo prazo. O próximo nível exige domínio em Orçamento Base Zero (OBZ) e Modelagem de Cenários."
-    }
-  },
-  { 
-    title: "Controller", 
-    minXp: 1700, 
-    hasTimer: true,
-    feedback: {
-      forca: "Controle absoluto de compliance, controladoria, PDD e mitigação de riscos fiscais.",
-      vulnerabilidade: "Engenharia de capital. Um Controller protege o caixa; o próximo passo (CFO) exige saber como captar dinheiro barato e otimizar alavancagem."
-    }
-  },
-  { 
-    title: "CFO (Diretor Financeiro)", 
-    minXp: 2300, 
-    hasTimer: true,
-    feedback: {
-      forca: "Otimização da Estrutura de Capital, uso de escudo fiscal e redução do WACC.",
-      vulnerabilidade: "Crescimento inorgânico. Para dominar a mesa do conselho, você precisa dominar Valuation por Múltiplos e Estruturação de Fusões (LBO)."
-    }
-  },
-  { 
-    title: "CEO / Conselheiro de Administração", 
-    minXp: 3000, 
-    hasTimer: true,
-    feedback: {
-      forca: "Visão corporativa total, alocação master de capital e governança estratégica.",
-      vulnerabilidade: "Você atingiu o ápice técnico. O desafio agora não é mais financeiro, é humano: sucessão, cultura organizacional e expansão de mercado."
-    }
-  }
+  { title: "Estagiário / Trainee", minXp: 0, hasTimer: false, feedback: null },
+  { title: "Assistente Financeiro", minXp: 150, hasTimer: false, feedback: { forca: "Compreensão da mecânica básica de entradas e saídas e disciplina operacional.", vulnerabilidade: "Você ainda enxerga números isolados. Precisa entender o impacto das operações na DRE e no fluxo de caixa futuro." } },
+  { title: "Analista Financeiro Jr.", minXp: 400, hasTimer: false, feedback: { forca: "Domínio das rotinas diárias e identificação de anomalias no caixa.", vulnerabilidade: "Falta visão de ciclo de capital de giro (Prazos Médios). Seu foco agora é entender como o estoque e os fornecedores financiam o negócio." } },
+  { title: "Analista Financeiro Pleno", minXp: 750, hasTimer: true, feedback: { forca: "Capacidade analítica e resolução de problemas estruturais sem supervisão constante.", vulnerabilidade: "Visão estratégica de custos. Para subir, você precisará dominar Custeio ABC, formação de preço e margem de contribuição real." } },
+  { title: "Analista Sênior / Business Partner", minXp: 1200, hasTimer: true, feedback: { forca: "Atuação como parceiro de negócios, conectando as finanças às decisões comerciais.", vulnerabilidade: "Gestão de risco e planejamento de longo prazo. O próximo nível exige domínio em Orçamento Base Zero (OBZ) e Modelagem de Cenários." } },
+  { title: "Controller", minXp: 1700, hasTimer: true, feedback: { forca: "Controle absoluto de compliance, controladoria, PDD e mitigação de riscos fiscais.", vulnerabilidade: "Engenharia de capital. Um Controller protege o caixa; o próximo passo (CFO) exige saber como captar dinheiro barato e otimizar alavancagem." } },
+  { title: "CFO (Diretor Financeiro)", minXp: 2300, hasTimer: true, feedback: { forca: "Otimização da Estrutura de Capital, uso de escudo fiscal e redução do WACC.", vulnerabilidade: "Crescimento inorgânico. Para dominar a mesa do conselho, você precisa dominar Valuation por Múltiplos e Estruturação de Fusões (LBO)." } },
+  { title: "CEO / Conselheiro de Administração", minXp: 3000, hasTimer: true, feedback: { forca: "Visão corporativa total, alocação master de capital e governança estratégica.", vulnerabilidade: "Você atingiu o ápice técnico. O desafio agora não é mais financeiro, é humano: sucessão, cultura organizacional e expansão de mercado." } }
 ];
 
-// --- BANCO DE DADOS GLOBAL DE CENÁRIOS (TODAS AS ÁREAS) ---
+// --- BANCO DE DADOS GLOBAL DE CENÁRIOS ---
 const allScenarios = [
-  {
-    id: 1,
-    sector: "Tesouraria / CMN",
-    title: "O Efeito Tesoura e a Liquidez",
-    theory: "O Ciclo Financeiro dita a solvência. Normativas de crédito do Banco Central alertam que financiar clientes sem lastro de caixa leva ao Overtrading (Efeito Tesoura). Lucro não paga boleto, caixa sim.",
-    context: "Vendas subiram 40%, com lucro contábil de 15%. Porém, a conta bancária amanheceu no vermelho e a folha vence amanhã. PMP (fornecedores) é de 15 dias, PMR (clientes) é de 60 dias.",
-    character: "🏦 Diretor de Tesouraria",
-    options: [
-      { text: "A) Captar empréstimo para capital de giro e manter o crescimento de 40%.", xp: -200, feedback: "REPROVADO. Usar dívida cara para financiar ineficiência de ciclo financeiro quebra a empresa por asfixia de juros." },
-      { text: "B) Antecipar recebíveis (travar hemorragia), renegociar passivo para 45 dias e alinhar prazos comerciais.", xp: 200, feedback: "DECISÃO CIRÚRGICA. Estancou a sangria e corrigiu o descompasso de prazos, alinhando a operação à gestão de risco de liquidez." }
-    ]
-  },
-  {
-    id: 2,
-    sector: "Controladoria / CPC 16",
-    title: "Custeio ABC e o Parasita Invisível",
-    theory: "O rateio por absorção mascara perdas. O Custeio Baseado em Atividades (ABC) rastreia o consumo real de recursos. Precificar sem ABC gera subsídio cruzado, onde o produto bom paga a conta do ruim.",
-    context: "Peça A (padrão) e Peça B (sob medida) dão 'lucro' de 20% no relatório antigo, mas o caixa secou. A Controladoria prova que a Peça B consome 5x mais tempo de máquina e inspeção.",
-    character: "👩‍💻 Controller de Fábrica",
-    options: [
-      { text: "A) Aplicar aumento linear de 15% na tabela de preços geral.", xp: -100, feedback: "ALERTA DE RISCO. Aumento linear pune o produto rentável (A) e mantém o parasita (B) drenando o OPEX." },
-      { text: "B) Implantar Custeio ABC, reprecificar a Peça B para cima e focar comissões na Peça A.", xp: 200, feedback: "APROVADO COM LOUVOR. O relatório agora reflete o consumo real, destravando a margem de contribuição da fábrica." }
-    ]
-  },
-  {
-    id: 3,
-    sector: "FP&A / Orçamento",
-    title: "A Faca na Carne: Orçamento Base Zero (OBZ)",
-    theory: "O orçamento tradicional perpetua o desperdício histórico. O OBZ destrói essa lógica: cada centro de custo começa em R$ 0,00 e cada despesa precisa provar seu valor para as metas do novo ano.",
-    context: "O faturamento cresce, mas a margem cai. A diretoria propõe um aumento linear de 8% nos custos gerais baseado no ano anterior, justificando como 'reajuste inflacionário seguro'.",
-    character: "📈 Gerente de FP&A",
-    options: [
-      { text: "A) Rejeitar a proposta e impor um corte linear de 15% em todos os departamentos.", xp: -200, feedback: "ERRO DE GESTÃO. Cortes lineares são cegos. Você corre o risco de cortar marketing (receita) e manter assinaturas inúteis (desperdício)." },
-      { text: "B) Vetar o orçamento histórico e aplicar o OBZ. Exigir que os gerentes construam e justifiquem as planilhas do zero.", xp: 300, feedback: "DECISÃO ESTRATÉGICA. Você arrancou os custos zumbis pela raiz e realocou capital apenas naquilo que gera tração." }
-    ]
-  },
-  {
-    id: 4,
-    sector: "Contas a Receber / Risco",
-    title: "A Bomba da Inadimplência (PDD)",
-    theory: "Venda só é venda quando o dinheiro entra. Políticas de crédito frouxas inflam o faturamento, mas explodem a Provisão para Devedores Duvidosos (PDD), destruindo o Ebitda e o fluxo de caixa.",
-    context: "A equipe comercial bateu a meta em 150% oferecendo vendas no boleto em 12x sem análise rigorosa de crédito. A inadimplência na carteira saltou de 3% para 12%. O bônus dos vendedores já foi pago.",
-    character: "🛡️ Analista de Crédito e Cobrança",
-    options: [
-      { text: "A) Contratar uma assessoria de cobrança terceirizada agressiva e manter a política de vendas para não desmotivar o comercial.", xp: -200, feedback: "ERRO DE ORIGINAÇÃO. Cobrança não resolve crédito mal concedido. Você continuará originando recebíveis podres." },
-      { text: "B) Travar vendas a prazo para novos clientes, atrelar o bônus comercial ao recebimento (e não ao faturamento) e implementar Credit Score rigoroso.", xp: 300, feedback: "GOVERNANÇA ATIVADA. Você alinhou os incentivos. O vendedor agora é co-responsável pela saúde da carteira e a origem do risco foi blindada." }
-    ]
-  },
-  {
-    id: 5,
-    sector: "Auditoria Interna / Compliance",
-    title: "Segregação de Funções (SoD)",
-    theory: "Princípio basilar de Auditoria Interna (IIA): quem aprova a despesa não pode ser o mesmo que realiza o pagamento e concilia o banco. Falhas no SoD (Segregation of Duties) são a principal causa de fraudes corporativas.",
-    context: "Você descobre que o Coordenador Financeiro cadastra novos fornecedores no ERP, aprova os boletos e ele mesmo libera o token de pagamento no banco, pois a empresa 'precisa de agilidade'.",
-    character: "🕵️ Auditor Chefe (CFC)",
-    options: [
-      { text: "A) Manter o processo por agilidade, mas exigir que ele envie um relatório mensal em Excel com todos os pagamentos para a diretoria revisar.", xp: -300, feedback: "RISCO DE FRAUDE GRAVE. Revisar Excel não tem validade de auditoria, pois planilhas são adulteráveis. A empresa está totalmente vulnerável a desvios." },
-      { text: "B) Bloquear o sistema imediatamente. Suprimentos cadastra, Gestor aprova a despesa, e a Tesouraria apenas opera o pagamento. Conciliação fica com a Contabilidade.", xp: 400, feedback: "BLINDAGEM CORPORATIVA. Você implementou a Matriz de Segregação de Funções (SoD). Fechou a porta para fraudes e preparou a empresa para auditorias externas." }
-    ]
-  },
-  {
-    id: 6,
-    sector: "Contas a Pagar / Planejamento",
-    title: "O Custo de Oportunidade e o Fornecedor",
-    theory: "O gestor de Contas a Pagar não é um 'pagador de boletos', é um alocador de capital. O desconto financeiro por antecipação de pagamento só vale a pena se for superior ao custo de capital (taxa de aplicação) da empresa no mesmo período.",
-    context: "Seu maior fornecedor oferece 3% de desconto para pagamento à vista (hoje), ao invés do prazo padrão de 30 dias. Sua empresa tem caixa aplicado rendendo 1% ao mês.",
-    character: "💼 Especialista em Contas a Pagar",
-    options: [
-      { text: "A) Recusar o desconto. É melhor manter o dinheiro aplicado no banco rendendo 1% e pagar só daqui a 30 dias para não perder a liquidez.", xp: -150, feedback: "ERRO MATEMÁTICO. Ao deixar de ganhar 3% de desconto para ganhar 1% no banco, você destruiu 2% de rentabilidade livre de risco no mês (quase 27% ao ano)." },
-      { text: "B) Resgatar a aplicação e pagar à vista. O desconto de 3% ao mês representa um ganho financeiro muito superior à taxa de rendimento do caixa.", xp: 250, feedback: "INTELIGÊNCIA FINANCEIRA. Você usou a matemática a seu favor. O setor de AP gerou lucro para a empresa através do spread positivo." }
-    ]
-  },
-  {
-    id: 7,
-    sector: "Tributário / Fiscal",
-    title: "A Armadilha do Regime Tributário",
-    theory: "No Brasil, o enquadramento fiscal dita a sobrevivência. Lucro Presumido tributa a receita; Lucro Real tributa a margem. Empresas com margens apertadas ou prejuízo no Presumido pagam impostos sobre um dinheiro que não existe.",
-    context: "Indústria no Lucro Presumido faturou R$ 10 Milhões, mas devido à alta dos insumos, fechou o ano no zero a zero (sem lucro real). Mesmo assim, gerou uma guia milionária de IRPJ/CSLL para pagar.",
-    character: "🏛️ Consultor Tributário",
-    options: [
-      { text: "A) Fazer um parcelamento na Receita Federal em 60 meses para não descapitalizar, mas manter a empresa no Lucro Presumido por ser mais 'fácil' de apurar.", xp: -250, feedback: "SUICÍDIO FISCAL. Você vai pagar imposto sobre um lucro inexistente e ainda adicionar juros de parcelamento. A facilidade contábil está quebrando o negócio." },
-      { text: "B) Migrar imediatamente para o Lucro Real. Como a margem está comprimida, a empresa pagará IRPJ/CSLL apenas sobre o lucro efetivo (que é zero), gerando economia drástica.", xp: 350, feedback: "ELISÃO FISCAL CIRÚRGICA. Você usou a inteligência tributária (dentro da lei) para salvar o caixa. O regime tributário deve ser modelado ano a ano." }
-    ]
-  },
-  {
-    id: 8,
-    sector: "M&A / CVM",
-    title: "Leveraged Buyout (LBO) e WACC",
-    theory: "O LBO (Leveraged Buyout) permite adquirir empresas usando dívida. Capital próprio custa caro; capital de terceiros gera escudo fiscal e derruba o Custo Médio Ponderado de Capital (WACC).",
-    context: "Você vai comprar um concorrente por R$ 1,5 milhão. A matriz tem o dinheiro em caixa. O banco oferece financiamento a 10% a.a. Os sócios exigem retorno (Ke) de 20%.",
-    character: "👔 Diretor de M&A",
-    options: [
-      { text: "A) Pagar à vista com o capital da matriz para não ter dívidas e reter todo o lucro futuro.", xp: -300, feedback: "ERRO DE ALOCAÇÃO. Ao torrar o caixa da matriz com o dinheiro mais caro (dos sócios a 20%), você aumentou o WACC e não aproveitou o escudo fiscal." },
-      { text: "B) Estruturar LBO: 20% de entrada e 80% financiado pelo banco a 10%, usando o fluxo da empresa comprada para pagar a própria dívida.", xp: 400, feedback: "JOGADA MASTER. Reduziu o WACC, maximizou o ROE dos sócios, criou escudo fiscal e manteve a liquidez da matriz. CFO de elite." }
-    ]
-  }
+  { id: 1, sector: "Tesouraria / CMN", title: "O Efeito Tesoura e a Liquidez", theory: "O Ciclo Financeiro dita a solvência. Normativas de crédito do Banco Central alertam que financiar clientes sem lastro de caixa leva ao Overtrading (Efeito Tesoura). Lucro não paga boleto, caixa sim.", context: "Vendas subiram 40%, com lucro contábil de 15%. Porém, a conta bancária amanheceu no vermelho e a folha vence amanhã. PMP (fornecedores) é de 15 dias, PMR (clientes) é de 60 dias.", character: "🏦 Diretor de Tesouraria", options: [ { text: "A) Captar empréstimo para capital de giro e manter o crescimento de 40%.", xp: -200, feedback: "REPROVADO. Usar dívida cara para financiar ineficiência de ciclo financeiro quebra a empresa por asfixia de juros." }, { text: "B) Antecipar recebíveis (travar hemorragia), renegociar passivo para 45 dias e alinhar prazos comerciais.", xp: 200, feedback: "DECISÃO CIRÚRGICA. Estancou a sangria e corrigiu o descompasso de prazos, alinhando a operação à gestão de risco de liquidez." } ] },
+  { id: 2, sector: "Controladoria / CPC 16", title: "Custeio ABC e o Parasita Invisível", theory: "O rateio por absorção mascara perdas. O Custeio Baseado em Atividades (ABC) rastreia o consumo real de recursos. Precificar sem ABC gera subsídio cruzado, onde o produto bom paga a conta do ruim.", context: "Peça A (padrão) e Peça B (sob medida) dão 'lucro' de 20% no relatório antigo, mas o caixa secou. A Controladoria prova que a Peça B consome 5x mais tempo de máquina e inspeção.", character: "👩‍💻 Controller de Fábrica", options: [ { text: "A) Aplicar aumento linear de 15% na tabela de preços geral.", xp: -100, feedback: "ALERTA DE RISCO. Aumento linear pune o produto rentável (A) e mantém o parasita (B) drenando o OPEX." }, { text: "B) Implantar Custeio ABC, reprecificar a Peça B para cima e focar comissões na Peça A.", xp: 200, feedback: "APROVADO COM LOUVOR. O relatório agora reflete o consumo real, destravando a margem de contribuição da fábrica." } ] },
+  { id: 3, sector: "FP&A / Orçamento", title: "A Faca na Carne: Orçamento Base Zero (OBZ)", theory: "O orçamento tradicional perpetua o desperdício histórico. O OBZ destrói essa lógica: cada centro de custo começa em R$ 0,00 e cada despesa precisa provar seu valor para as metas do novo ano.", context: "O faturamento cresce, mas a margem cai. A diretoria propõe um aumento linear de 8% nos custos gerais baseado no ano anterior, justificando como 'reajuste inflacionário seguro'.", character: "📈 Gerente de FP&A", options: [ { text: "A) Rejeitar a proposta e impor um corte linear de 15% em todos os departamentos.", xp: -200, feedback: "ERRO DE GESTÃO. Cortes lineares são cegos. Você corre o risco de cortar marketing (receita) e manter assinaturas inúteis (desperdício)." }, { text: "B) Vetar o orçamento histórico e aplicar o OBZ. Exigir que os gerentes construam e justifiquem as planilhas do zero.", xp: 300, feedback: "DECISÃO ESTRATÉGICA. Você arrancou os custos zumbis pela raiz e realocou capital apenas naquilo que gera tração." } ] },
+  { id: 4, sector: "Contas a Receber / Risco", title: "A Bomba da Inadimplência (PDD)", theory: "Venda só é venda quando o dinheiro entra. Políticas de crédito frouxas inflam o faturamento, mas explodem a Provisão para Devedores Duvidosos (PDD), destruindo o Ebitda e o fluxo de caixa.", context: "A equipe comercial bateu a meta em 150% oferecendo vendas no boleto em 12x sem análise rigorosa de crédito. A inadimplência na carteira saltou de 3% para 12%. O bônus dos vendedores já foi pago.", character: "🛡️ Analista de Crédito e Cobrança", options: [ { text: "A) Contratar uma assessoria de cobrança terceirizada agressiva e manter a política de vendas para não desmotivar o comercial.", xp: -200, feedback: "ERRO DE ORIGINAÇÃO. Cobrança não resolve crédito mal concedido. Você continuará originando recebíveis podres." }, { text: "B) Travar vendas a prazo para novos clientes, atrelar o bônus comercial ao recebimento (e não ao faturamento) e implementar Credit Score rigoroso.", xp: 300, feedback: "GOVERNANÇA ATIVADA. Você alinhou os incentivos. O vendedor agora é co-responsável pela saúde da carteira e a origem do risco foi blindada." } ] },
+  { id: 5, sector: "Auditoria Interna / Compliance", title: "Segregação de Funções (SoD)", theory: "Princípio basilar de Auditoria Interna (IIA): quem aprova a despesa não pode ser o mesmo que realiza o pagamento e concilia o banco. Falhas no SoD (Segregation of Duties) são a principal causa de fraudes corporativas.", context: "Você descobre que o Coordenador Financeiro cadastra novos fornecedores no ERP, aprova os boletos e ele mesmo libera o token de pagamento no banco, pois a empresa 'precisa de agilidade'.", character: "🕵️ Auditor Chefe (CFC)", options: [ { text: "A) Manter o processo por agilidade, mas exigir que ele envie um relatório mensal em Excel com todos os pagamentos para a diretoria revisar.", xp: -300, feedback: "RISCO DE FRAUDE GRAVE. Revisar Excel não tem validade de auditoria, pois planilhas são adulteráveis. A empresa está totalmente vulnerável a desvios." }, { text: "B) Bloquear o sistema imediatamente. Suprimentos cadastra, Gestor aprova a despesa, e a Tesouraria apenas opera o pagamento. Conciliação fica com a Contabilidade.", xp: 400, feedback: "BLINDAGEM CORPORATIVA. Você implementou a Matriz de Segregação de Funções (SoD). Fechou a porta para fraudes e preparou a empresa para auditorias externas." } ] },
+  { id: 6, sector: "Contas a Pagar / Planejamento", title: "O Custo de Oportunidade e o Fornecedor", theory: "O gestor de Contas a Pagar não é um 'pagador de boletos', é um alocador de capital. O desconto financeiro por antecipação de pagamento só vale a pena se for superior ao custo de capital (taxa de aplicação) da empresa no mesmo período.", context: "Seu maior fornecedor oferece 3% de desconto para pagamento à vista (hoje), ao invés do prazo padrão de 30 dias. Sua empresa tem caixa aplicado rendendo 1% ao mês.", character: "💼 Especialista em Contas a Pagar", options: [ { text: "A) Recusar o desconto. É melhor manter o dinheiro aplicado no banco rendendo 1% e pagar só daqui a 30 dias para não perder a liquidez.", xp: -150, feedback: "ERRO MATEMÁTICO. Ao deixar de ganhar 3% de desconto para ganhar 1% no banco, você destruiu 2% de rentabilidade livre de risco no mês (quase 27% ao ano)." }, { text: "B) Resgatar a aplicação e pagar à vista. O desconto de 3% ao mês representa um ganho financeiro muito superior à taxa de rendimento do caixa.", xp: 250, feedback: "INTELIGÊNCIA FINANCEIRA. Você usou a matemática a seu favor. O setor de AP gerou lucro para a empresa através do spread positivo." } ] },
+  { id: 7, sector: "Tributário / Fiscal", title: "A Armadilha do Regime Tributário", theory: "No Brasil, o enquadramento fiscal dita a sobrevivência. Lucro Presumido tributa a receita; Lucro Real tributa a margem. Empresas com margens apertadas ou prejuízo no Presumido pagam impostos sobre um dinheiro que não existe.", context: "Indústria no Lucro Presumido faturou R$ 10 Milhões, mas devido à alta dos insumos, fechou o ano no zero a zero (sem lucro real). Mesmo assim, gerou uma guia milionária de IRPJ/CSLL para pagar.", character: "🏛️ Consultor Tributário", options: [ { text: "A) Fazer um parcelamento na Receita Federal em 60 meses para não descapitalizar, mas manter a empresa no Lucro Presumido por ser mais 'fácil' de apurar.", xp: -250, feedback: "SUICÍDIO FISCAL. Você vai pagar imposto sobre um lucro inexistente e ainda adicionar juros de parcelamento. A facilidade contábil está quebrando o negócio." }, { text: "B) Migrar imediatamente para o Lucro Real. Como a margem está comprimida, a empresa pagará IRPJ/CSLL apenas sobre o lucro efetivo (que é zero), gerando economia drástica.", xp: 350, feedback: "ELISÃO FISCAL CIRÚRGICA. Você usou a inteligência tributária (dentro da lei) para salvar o caixa. O regime tributário deve ser modelado ano a ano." } ] },
+  { id: 8, sector: "M&A / CVM", title: "Leveraged Buyout (LBO) e WACC", theory: "O LBO (Leveraged Buyout) permite adquirir empresas usando dívida. Capital próprio custa caro; capital de terceiros gera escudo fiscal e derruba o Custo Médio Ponderado de Capital (WACC).", context: "Você vai comprar um concorrente por R$ 1,5 milhão. A matriz tem o dinheiro em caixa. O banco oferece financiamento a 10% a.a. Os sócios exigem retorno (Ke) de 20%.", character: "👔 Diretor de M&A", options: [ { text: "A) Pagar à vista com o capital da matriz para não ter dívidas e reter todo o lucro futuro.", xp: -300, feedback: "ERRO DE ALOCAÇÃO. Ao torrar o caixa da matriz com o dinheiro mais caro (dos sócios a 20%), você aumentou o WACC e não aproveitou o escudo fiscal." }, { text: "B) Estruturar LBO: 20% de entrada e 80% financiado pelo banco a 10%, usando o fluxo da empresa comprada para pagar a própria dívida.", xp: 400, feedback: "JOGADA MASTER. Reduziu o WACC, maximizou o ROE dos sócios, criou escudo fiscal e manteve a liquidez da matriz. CFO de elite." } ] }
 ];
 
 export default function CodigoAzulGame() {
+  // Login States
+  const [nickname, setNickname] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  // Game States
   const [playerName, setPlayerName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
   const [xp, setXp] = useState(0);
   const [currentStage, setCurrentStage] = useState(0);
-  
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [sessionScenarios, setSessionScenarios] = useState<any[]>([]);
   
   // Timer State
@@ -224,38 +79,124 @@ export default function CodigoAzulGame() {
   // Manual Save State
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  // Sistema de Auto-Save
-  useEffect(() => {
-    const savedData = localStorage.getItem('codigoAzulSave_v6');
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      setPlayerName(parsedData.playerName);
-      setCompanyName(parsedData.companyName);
-      setXp(parsedData.xp);
-      setCurrentStage(parsedData.currentStage);
-      setSessionScenarios(parsedData.sessionScenarios);
-      setGameStarted(true);
-    }
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (gameStarted && sessionScenarios.length > 0) {
-      localStorage.setItem('codigoAzulSave_v6', JSON.stringify({
+  // --- SISTEMA DE BANCO DE DADOS LOCAL (MULTIUSUÁRIO) ---
+  const saveToDB = () => {
+    if (!nickname) return;
+    const db = JSON.parse(localStorage.getItem('codigoAzul_DB_v7') || '{}');
+    
+    // Atualiza apenas os dados da sessão (mantém a senha intacta)
+    if(db[nickname]) {
+      db[nickname].data = {
         playerName,
         companyName,
         xp,
         currentStage,
         sessionScenarios
-      }));
+      };
+      localStorage.setItem('codigoAzul_DB_v7', JSON.stringify(db));
     }
-  }, [xp, currentStage, gameStarted, playerName, companyName, sessionScenarios]);
+  };
+
+  // Auto-Save a cada mudança de estado crítico
+  useEffect(() => {
+    if (gameStarted && sessionScenarios.length > 0) {
+      saveToDB();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xp, currentStage, gameStarted, sessionScenarios]);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanNickname = nickname.trim().toLowerCase();
+    const cleanPassword = password.trim();
+    
+    if (!cleanNickname || !cleanPassword) {
+      setLoginError("Preencha Identificação e Senha.");
+      return;
+    }
+
+    const db = JSON.parse(localStorage.getItem('codigoAzul_DB_v7') || '{}');
+
+    if (db[cleanNickname]) {
+      // Usuário Existe - Checar Senha
+      if (db[cleanNickname].password === cleanPassword) {
+        const savedData = db[cleanNickname].data;
+        setPlayerName(savedData.playerName);
+        setCompanyName(savedData.companyName);
+        setXp(savedData.xp);
+        setCurrentStage(savedData.currentStage);
+        setSessionScenarios(savedData.sessionScenarios);
+        setLoginError("");
+        setGameStarted(true);
+      } else {
+        setLoginError("Acesso Negado. Senha incorreta.");
+      }
+    } else {
+      // Novo Usuário - Criar Conta e Iniciar
+      const newCompany = generateCompanyName();
+      const randomizedJourney = shuffleArray(allScenarios).slice(0, 8);
+      
+      db[cleanNickname] = {
+        password: cleanPassword,
+        data: {
+          playerName: cleanNickname,
+          companyName: newCompany,
+          xp: 0,
+          currentStage: 0,
+          sessionScenarios: randomizedJourney
+        }
+      };
+      
+      localStorage.setItem('codigoAzul_DB_v7', JSON.stringify(db));
+      
+      setPlayerName(cleanNickname);
+      setCompanyName(newCompany);
+      setXp(0);
+      setCurrentStage(0);
+      setSessionScenarios(randomizedJourney);
+      setLoginError("");
+      setTimeLeft(60);
+      setGameStarted(true);
+    }
+  };
+
+  const handleManualSave = () => {
+    saveToDB();
+    setSaveStatus("💾 DADOS SINCRONIZADOS!");
+    setTimeout(() => setSaveStatus(null), 3000);
+  };
+
+  const handleLogout = () => {
+    saveToDB(); // Salva antes de sair
+    setGameStarted(false);
+    setNickname("");
+    setPassword("");
+    setLoginError("");
+    setFeedback(null);
+    setPromotionPending(false);
+  };
+
+  const handleResetCareer = () => {
+    if(confirm("ATENÇÃO: Isso vai zerar seu XP e gerar uma nova empresa. Deseja recomeçar sua carreira do zero?")) {
+      const newCompany = generateCompanyName();
+      const randomizedJourney = shuffleArray(allScenarios).slice(0, 8);
+      
+      setCompanyName(newCompany);
+      setXp(0);
+      setCurrentStage(0);
+      setSessionScenarios(randomizedJourney);
+      setFeedback(null);
+      setPromotionPending(false);
+      setTimeLeft(60);
+      // O useEffect do Auto-Save cuidará de gravar isso no banco
+    }
+  };
 
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
   const progressToNext = nextLevel ? ((xp - currentLevel.minXp) / (nextLevel.minXp - currentLevel.minXp)) * 100 : 100;
 
-  // Lógica do Cronômetro Atrelada à Patente
+  // Lógica do Cronômetro
   useEffect(() => {
     if (!gameStarted || feedback || promotionPending || !currentLevel.hasTimer || timeLeft <= 0) return;
     
@@ -266,50 +207,17 @@ export default function CodigoAzulGame() {
     return () => clearInterval(timer);
   }, [gameStarted, feedback, promotionPending, timeLeft, currentLevel.hasTimer]);
 
-  // Disparo automático quando o tempo zera
+  // Disparo automático do tempo
   useEffect(() => {
     if (timeLeft === 0 && !feedback && !promotionPending && gameStarted && currentLevel.hasTimer) {
       handleChoice(-100, "TEMPO ESGOTADO! A indecisão destruiu o caixa. Em níveis executivos, atrasar uma decisão é tão letal quanto tomar a decisão errada.", true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, feedback, promotionPending, gameStarted, currentLevel.hasTimer]);
-
-  const startGame = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (playerName.trim() === "") return;
-    setCompanyName(generateCompanyName());
-    const randomizedJourney = shuffleArray(allScenarios).slice(0, 8); 
-    setSessionScenarios(randomizedJourney);
-    setTimeLeft(60);
-    setGameStarted(true);
-  };
-
-  const handleManualSave = () => {
-    localStorage.setItem('codigoAzulSave_v6', JSON.stringify({
-      playerName, companyName, xp, currentStage, sessionScenarios
-    }));
-    setSaveStatus("💾 PROGRESSO SALVO COM SUCESSO!");
-    setTimeout(() => setSaveStatus(null), 3000); // Remove a mensagem após 3 segundos
-  };
-
-  const resetGame = () => {
-    if(confirm("Tem certeza que deseja apagar seu progresso e reiniciar sua jornada corporativa?")) {
-      localStorage.removeItem('codigoAzulSave_v6');
-      setGameStarted(false);
-      setXp(0);
-      setCurrentStage(0);
-      setPlayerName("");
-      setFeedback(null);
-      setPromotionPending(false);
-      setPromotedLevel(null);
-      setSessionScenarios([]);
-      setTimeLeft(60);
-    }
-  };
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false) => {
     let bonus = 0;
     
-    // Bônus de agilidade só aplica se o timer estiver ativo e houver acerto
     if (baseXpGained > 0 && !isTimeout && currentLevel.hasTimer) {
       if (timeLeft >= 45) bonus = 50; 
       else if (timeLeft >= 30) bonus = 20; 
@@ -318,7 +226,6 @@ export default function CodigoAzulGame() {
     const totalXpGained = baseXpGained + bonus;
     const newXp = Math.max(0, xp + totalXpGained);
     
-    // Verifica se houve quebra de barreira (Promoção)
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
     if (newCalculatedLevel.minXp > currentLevel.minXp) {
       setPromotionPending(true);
@@ -351,11 +258,9 @@ export default function CodigoAzulGame() {
     if (currentStage < sessionScenarios.length - 1) {
       setCurrentStage(prev => prev + 1);
     } else {
-      alert(`Avaliação de Diretoria Concluída! XP Final: ${xp}. Patente: ${currentLevel.title}. Zere o jogo para uma nova simulação.`);
+      alert(`Avaliação de Diretoria Concluída! XP Final: ${xp}. Patente: ${currentLevel.title}. Zere sua carreira para uma nova simulação.`);
     }
   };
-
-  if (isLoading) return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-blue-500 font-mono">Carregando Módulos da CVM...</div>;
 
   // --- TELA DE LOGIN (ONBOARDING) ---
   if (!gameStarted) {
@@ -368,29 +273,50 @@ export default function CodigoAzulGame() {
         <div className="z-10 bg-slate-900/80 backdrop-blur-xl p-8 rounded-2xl border border-slate-700/50 shadow-2xl max-w-md w-full animate-fade-in-up">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 uppercase tracking-tighter mb-2">
-              Projeto Código Azul
+              Código Azul ERP
             </h1>
-            <p className="text-slate-400 text-sm">Painel de Alta Gestão Corporativa</p>
+            <p className="text-slate-400 text-sm">Autenticação de Alta Gestão</p>
           </div>
 
-          <form onSubmit={startGame} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Credencial do Estrategista</label>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">ID do Estrategista (Nickname)</label>
               <input
                 type="text"
-                value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
-                placeholder="Seu nome..."
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="Ex: pedro.monte"
                 className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 required
               />
             </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Senha de Acesso</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+            
+            {loginError && (
+              <div className="text-red-400 text-sm text-center font-bold bg-red-950/50 p-2 rounded border border-red-900/50">
+                {loginError}
+              </div>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 mt-2"
             >
-              Iniciar Simulação
+              Acessar Painel / Criar Conta
             </button>
+            <p className="text-center text-xs text-slate-500 mt-4">
+              Se o ID não existir, uma nova conta será criada automaticamente.
+            </p>
           </form>
         </div>
       </div>
@@ -457,7 +383,7 @@ export default function CodigoAzulGame() {
             <h1 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 uppercase tracking-wider mb-1">
               {companyName}
             </h1>
-            <p className="text-slate-400 text-sm font-medium">Gestor(a): <span className="text-white">{playerName}</span></p>
+            <p className="text-slate-400 text-sm font-medium">Conta Logada: <span className="text-white uppercase">{playerName}</span></p>
           </div>
           
           <div className="z-10 w-full md:w-1/3 text-left md:text-right">
@@ -485,7 +411,7 @@ export default function CodigoAzulGame() {
         {!feedback ? (
           <main className="bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-800 shadow-2xl animate-fade-in-up">
             
-            {/* BARRA DE PRESSÃO (CRONÔMETRO) - Renderização Condicional */}
+            {/* BARRA DE PRESSÃO (CRONÔMETRO) */}
             {currentLevel.hasTimer ? (
               <div className="mb-6 bg-slate-950 rounded-full h-3 w-full border border-slate-800 overflow-hidden relative">
                 <div 
@@ -498,7 +424,7 @@ export default function CodigoAzulGame() {
               </div>
             ) : (
               <div className="mb-6 bg-slate-950 rounded-full h-8 w-full border border-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                Cronômetro Desativado (Fase de Treinamento e Base)
+                Cronômetro Desativado (Fase de Treinamento)
               </div>
             )}
 
@@ -596,16 +522,25 @@ export default function CodigoAzulGame() {
             onClick={handleManualSave} 
             className="text-xs font-bold text-emerald-500 hover:text-emerald-400 transition-colors uppercase tracking-widest flex items-center gap-2"
           >
-            {saveStatus ? saveStatus : "💾 Salvar Progresso"}
+            {saveStatus ? saveStatus : "💾 Forçar Backup"}
           </button>
           
           <span className="hidden md:inline text-slate-700">|</span>
           
           <button 
-            onClick={resetGame} 
+            onClick={handleLogout} 
+            className="text-xs font-bold text-slate-400 hover:text-white transition-colors uppercase tracking-widest"
+          >
+            🚪 Fazer Logout
+          </button>
+
+          <span className="hidden md:inline text-slate-700">|</span>
+
+          <button 
+            onClick={handleResetCareer} 
             className="text-xs font-bold text-slate-600 hover:text-red-400 transition-colors uppercase tracking-widest"
           >
-            ❌ Encerrar Sessão e Reiniciar
+            ❌ Resetar Minha Carreira
           </button>
         </div>
 
