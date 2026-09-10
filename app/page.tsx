@@ -9,7 +9,6 @@ const generateCompanyName = () => {
   return `${companyPrefixes[Math.floor(Math.random() * companyPrefixes.length)]} ${companySuffixes[Math.floor(Math.random() * companySuffixes.length)]}`;
 };
 
-// --- MOTOR DE RANDOMIZAÇÃO ---
 const shuffleArray = (array: any[]) => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -19,37 +18,40 @@ const shuffleArray = (array: any[]) => {
   return shuffled;
 };
 
-// --- EFEITOS SONOROS ---
 const playPromotionSound = () => {
   try {
     const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3");
-    audio.volume = 0.5;
-    audio.play().catch(e => console.log("Áudio bloqueado", e));
+    audio.volume = 0.4;
+    audio.play().catch(() => {});
   } catch (err) {}
 };
 
-// --- CURVA DE CARREIRA E FEEDBACK DE PERFORMANCE ---
+// --- CURVA DE CARREIRA E FEEDBACK (PROGRESSÃO LENTA E DENSA) ---
 const levels = [
-  { title: "Estagiário / Trainee", minXp: 0, hasTimer: false, feedback: null },
-  { title: "Assistente Financeiro", minXp: 150, hasTimer: false, feedback: { forca: "Compreensão da mecânica básica de entradas e saídas e disciplina operacional.", vulnerabilidade: "Você ainda enxerga números isolados. Precisa entender o impacto das operações na DRE e no fluxo de caixa futuro." } },
-  { title: "Analista Financeiro Jr.", minXp: 400, hasTimer: false, feedback: { forca: "Domínio das rotinas diárias e identificação de anomalias no caixa.", vulnerabilidade: "Falta visão de ciclo de capital de giro (Prazos Médios). Seu foco agora é entender como o estoque e os fornecedores financiam o negócio." } },
-  { title: "Analista Financeiro Pleno", minXp: 750, hasTimer: true, feedback: { forca: "Capacidade analítica e resolução de problemas estruturais sem supervisão constante.", vulnerabilidade: "Visão estratégica de custos. Para subir, você precisará dominar Custeio ABC, formação de preço e margem de contribuição real." } },
-  { title: "Analista Sênior / Business Partner", minXp: 1200, hasTimer: true, feedback: { forca: "Atuação como parceiro de negócios, conectando as finanças às decisões comerciais.", vulnerabilidade: "Gestão de risco e planejamento de longo prazo. O próximo nível exige domínio em Orçamento Base Zero (OBZ) e Modelagem de Cenários." } },
-  { title: "Controller", minXp: 1700, hasTimer: true, feedback: { forca: "Controle absoluto de compliance, controladoria, PDD e mitigação de riscos fiscais.", vulnerabilidade: "Engenharia de capital. Um Controller protege o caixa; o próximo passo (CFO) exige saber como captar dinheiro barato e otimizar alavancagem." } },
-  { title: "CFO (Diretor Financeiro)", minXp: 2300, hasTimer: true, feedback: { forca: "Otimização da Estrutura de Capital, uso de escudo fiscal e redução do WACC.", vulnerabilidade: "Crescimento inorgânico. Para dominar a mesa do conselho, você precisa dominar Valuation por Múltiplos e Estruturação de Fusões (LBO)." } },
-  { title: "CEO / Conselheiro de Administração", minXp: 3000, hasTimer: true, feedback: { forca: "Visão corporativa total, alocação master de capital e governança estratégica.", vulnerabilidade: "Você atingiu o ápice técnico. O desafio agora não é mais financeiro, é humano: sucessão, cultura organizacional e expansão de mercado." } }
+  { title: "Estagiário", minXp: 0, hasTimer: false, feedback: null },
+  { title: "Assistente Financeiro", minXp: 120, hasTimer: false, feedback: { forca: "Compreensão da mecânica básica de fluxo de caixa e organização de contas a pagar/receber.", vulnerabilidade: "Sua visão ainda é puramente de tesouraria de curto prazo. Você precisa aprender como a contabilidade reflete o futuro (Regime de Competência) e não apenas o presente (Regime de Caixa)." } },
+  { title: "Analista Financeiro Jr.", minXp: 300, hasTimer: false, feedback: { forca: "Consistência operacional e capacidade de identificar descasamentos no capital de giro.", vulnerabilidade: "Falta profundidade em custos e controle patrimonial. Estude o CPC 16 (Estoques) e entenda a diferença vital entre Despesa, Custo e Investimento." } },
+  { title: "Analista Financeiro Pleno", minXp: 550, hasTimer: true, feedback: { forca: "Autonomia na execução analítica e entendimento claro de Margem de Contribuição e Custeio ABC.", vulnerabilidade: "Visão orçamentária e modelagem preditiva. O próximo salto exige que você saiba construir um Orçamento Base Zero (OBZ) e realizar Testes de Sensibilidade." } },
+  { title: "Business Partner / Analista Sr.", minXp: 900, hasTimer: true, feedback: { forca: "Capacidade de sentar com os diretores de vendas e operações para atrelar as finanças às metas de negócio.", vulnerabilidade: "Falta domínio das normas complexas de reconhecimento (IFRS 15/CPC 47 e CPC 06). Um BP sênior precisa garantir que o negócio não inflija regras da CVM." } },
+  { title: "Controller", minXp: 1400, hasTimer: true, feedback: { forca: "Domínio absoluto do compliance, auditoria (SoD), provisões (CPC 25) e proteção implacável do Ebitda.", vulnerabilidade: "Engenharia e Estrutura de Capital. O Controller protege a empresa; o CFO (seu próximo alvo) levanta capital, estrutura dívidas e reduz o WACC." } },
+  { title: "CFO", minXp: 2100, hasTimer: true, feedback: { forca: "Otimização maestral do WACC, uso de Escudo Fiscal, gestão de Hedge e liderança em projetos de M&A (LBO).", vulnerabilidade: "Visão inorgânica, cultura e conselho. O próximo nível exige que você pense não apenas na saúde financeira da empresa atual, mas na tese de investimento global e relações com investidores (RI)." } },
+  { title: "CEO / Board Member", minXp: 3000, hasTimer: true, feedback: { forca: "Visão sistêmica absoluta. Capacidade de equilibrar regulação severa com crescimento de altíssima tração.", vulnerabilidade: "Neste nível técnico não há mais pontos cegos operacionais. O desafio torna-se puramente sucessório, político e focado na longevidade da instituição no mercado de capitais." } }
 ];
 
-// --- BANCO DE DADOS GLOBAL DE CENÁRIOS ---
+// --- BANCO DE DADOS GLOBAL DE ALTA DENSIDADE TÉCNICA ---
 const allScenarios = [
-  { id: 1, sector: "Tesouraria / CMN", title: "O Efeito Tesoura e a Liquidez", theory: "O Ciclo Financeiro dita a solvência. Normativas de crédito do Banco Central alertam que financiar clientes sem lastro de caixa leva ao Overtrading (Efeito Tesoura). Lucro não paga boleto, caixa sim.", context: "Vendas subiram 40%, com lucro contábil de 15%. Porém, a conta bancária amanheceu no vermelho e a folha vence amanhã. PMP (fornecedores) é de 15 dias, PMR (clientes) é de 60 dias.", character: "Diretoria de Tesouraria", options: [ { text: "Captar empréstimo para capital de giro e manter o crescimento de 40%.", xp: -200, feedback: "REPROVADO. Usar dívida cara para financiar ineficiência de ciclo financeiro quebra a empresa por asfixia de juros." }, { text: "Antecipar recebíveis (travar hemorragia), renegociar passivo para 45 dias e alinhar prazos comerciais.", xp: 200, feedback: "DECISÃO CIRÚRGICA. Estancou a sangria e corrigiu o descompasso de prazos, alinhando a operação à gestão de risco de liquidez." } ] },
-  { id: 2, sector: "Controladoria / CPC 16", title: "Custeio ABC e o Parasita Invisível", theory: "O rateio por absorção mascara perdas. O Custeio Baseado em Atividades (ABC) rastreia o consumo real de recursos. Precificar sem ABC gera subsídio cruzado, onde o produto bom paga a conta do ruim.", context: "Peça A (padrão) e Peça B (sob medida) dão 'lucro' de 20% no relatório antigo, mas o caixa secou. A Controladoria prova que a Peça B consome 5x mais tempo de máquina e inspeção.", character: "Controladoria de Fábrica", options: [ { text: "Aplicar aumento linear de 15% na tabela de preços geral.", xp: -100, feedback: "ALERTA DE RISCO. Aumento linear pune o produto rentável (A) e mantém o parasita (B) drenando o OPEX." }, { text: "Implantar Custeio ABC, reprecificar a Peça B para cima e focar comissões na Peça A.", xp: 200, feedback: "APROVADO COM LOUVOR. O relatório agora reflete o consumo real, destravando a margem de contribuição da fábrica." } ] },
-  { id: 3, sector: "FP&A / Orçamento", title: "A Faca na Carne: Orçamento Base Zero (OBZ)", theory: "O orçamento tradicional perpetua o desperdício histórico. O OBZ destrói essa lógica: cada centro de custo começa em R$ 0,00 e cada despesa precisa provar seu valor para as metas do novo ano.", context: "O faturamento cresce, mas a margem cai. A diretoria propõe um aumento linear de 8% nos custos gerais baseado no ano anterior, justificando como 'reajuste inflacionário seguro'.", character: "Gerência de FP&A", options: [ { text: "Rejeitar a proposta e impor um corte linear de 15% em todos os departamentos.", xp: -200, feedback: "ERRO DE GESTÃO. Cortes lineares são cegos. Você corre o risco de cortar marketing (receita) e manter assinaturas inúteis (desperdício)." }, { text: "Vetar o orçamento histórico e aplicar o OBZ. Exigir que os gerentes construam e justifiquem as planilhas do zero.", xp: 300, feedback: "DECISÃO ESTRATÉGICA. Você arrancou os custos zumbis pela raiz e realocou capital apenas naquilo que gera tração." } ] },
-  { id: 4, sector: "Contas a Receber / Risco", title: "A Bomba da Inadimplência (PDD)", theory: "Venda só é venda quando o dinheiro entra. Políticas de crédito frouxas inflam o faturamento, mas explodem a Provisão para Devedores Duvidosos (PDD), destruindo o Ebitda e o fluxo de caixa.", context: "A equipe comercial bateu a meta em 150% oferecendo vendas no boleto em 12x sem análise rigorosa de crédito. A inadimplência na carteira saltou de 3% para 12%. O bônus dos vendedores já foi pago.", character: "Comitê de Risco e Crédito", options: [ { text: "Contratar uma assessoria de cobrança terceirizada agressiva e manter a política de vendas para não desmotivar o comercial.", xp: -200, feedback: "ERRO DE ORIGINAÇÃO. Cobrança não resolve crédito mal concedido. Você continuará originando recebíveis podres." }, { text: "Travar vendas a prazo para novos clientes, atrelar o bônus comercial ao recebimento e implementar Credit Score.", xp: 300, feedback: "GOVERNANÇA ATIVADA. Você alinhou os incentivos. O vendedor agora é co-responsável pela saúde da carteira e a origem do risco foi blindada." } ] },
-  { id: 5, sector: "Auditoria / Compliance", title: "Segregação de Funções (SoD)", theory: "Princípio basilar de Auditoria Interna (IIA): quem aprova a despesa não pode ser o mesmo que realiza o pagamento e concilia o banco. Falhas no SoD (Segregation of Duties) são a principal causa de fraudes corporativas.", context: "Você descobre que o Coordenador Financeiro cadastra novos fornecedores no ERP, aprova os boletos e ele mesmo libera o token de pagamento no banco, pois a empresa 'precisa de agilidade'.", character: "Auditoria Independente", options: [ { text: "Manter o processo por agilidade, mas exigir que ele envie um relatório mensal em Excel com todos os pagamentos.", xp: -300, feedback: "RISCO DE FRAUDE GRAVE. Revisar Excel não tem validade de auditoria, pois planilhas são adulteráveis. A empresa está vulnerável." }, { text: "Bloquear o sistema. Suprimentos cadastra, Gestor aprova a despesa, e a Tesouraria apenas opera o pagamento.", xp: 400, feedback: "BLINDAGEM CORPORATIVA. Você implementou a Matriz de Segregação de Funções (SoD). Fechou a porta para fraudes e preparou a empresa para auditorias externas." } ] },
-  { id: 6, sector: "Contas a Pagar / CaPex", title: "O Custo de Oportunidade", theory: "O gestor de Contas a Pagar não é um 'pagador de boletos', é um alocador de capital. O desconto financeiro por antecipação de pagamento só vale a pena se for superior ao custo de capital (taxa de aplicação) da empresa no mesmo período.", context: "Seu maior fornecedor oferece 3% de desconto para pagamento à vista (hoje), ao invés do prazo padrão de 30 dias. Sua empresa tem caixa aplicado rendendo 1% ao mês.", character: "Mesa de Operações (AP)", options: [ { text: "Recusar o desconto. É melhor manter o dinheiro aplicado no banco rendendo 1% e pagar só daqui a 30 dias.", xp: -150, feedback: "ERRO MATEMÁTICO. Ao deixar de ganhar 3% de desconto para ganhar 1% no banco, você destruiu 2% de rentabilidade livre de risco no mês." }, { text: "Resgatar a aplicação e pagar à vista. O desconto de 3% ao mês representa um ganho financeiro muito superior.", xp: 250, feedback: "INTELIGÊNCIA FINANCEIRA. Você usou a matemática a seu favor. O setor de AP gerou lucro para a empresa através do spread positivo." } ] },
-  { id: 7, sector: "Tributário / Fiscal", title: "A Armadilha do Regime Tributário", theory: "No Brasil, o enquadramento fiscal dita a sobrevivência. Lucro Presumido tributa a receita; Lucro Real tributa a margem. Empresas com margens apertadas ou prejuízo no Presumido pagam impostos sobre um dinheiro que não existe.", context: "Indústria no Lucro Presumido faturou R$ 10 Milhões, mas devido à alta dos insumos, fechou o ano no zero a zero (sem lucro real). Mesmo assim, gerou uma guia milionária de IRPJ/CSLL para pagar.", character: "Consultoria Tributária", options: [ { text: "Fazer um parcelamento na Receita Federal em 60 meses para não descapitalizar, mas manter a empresa no Lucro Presumido.", xp: -250, feedback: "SUICÍDIO FISCAL. Você vai pagar imposto sobre um lucro inexistente e ainda adicionar juros de parcelamento. A facilidade contábil está quebrando o negócio." }, { text: "Migrar imediatamente para o Lucro Real. Como a margem está comprimida, a empresa pagará IRPJ/CSLL apenas sobre o lucro efetivo.", xp: 350, feedback: "ELISÃO FISCAL CIRÚRGICA. Você usou a inteligência tributária (dentro da lei) para salvar o caixa. O regime tributário deve ser modelado ano a ano." } ] },
-  { id: 8, sector: "M&A / CVM", title: "Leveraged Buyout (LBO) e WACC", theory: "O LBO (Leveraged Buyout) permite adquirir empresas usando dívida. Capital próprio custa caro; capital de terceiros gera escudo fiscal e derruba o Custo Médio Ponderado de Capital (WACC).", context: "Você vai comprar um concorrente por R$ 1,5 milhão. A matriz tem o dinheiro em caixa. O banco oferece financiamento a 10% a.a. Os sócios exigem retorno (Ke) de 20%.", character: "Banco de Investimento (IB)", options: [ { text: "Pagar à vista com o capital da matriz para não ter dívidas e reter todo o lucro futuro.", xp: -300, feedback: "ERRO DE ALOCAÇÃO. Ao torrar o caixa da matriz com o dinheiro mais caro (dos sócios a 20%), você aumentou o WACC e não aproveitou o escudo fiscal." }, { text: "Estruturar LBO: 20% de entrada e 80% financiado pelo banco a 10%, usando o fluxo da empresa comprada para pagar a própria dívida.", xp: 400, feedback: "JOGADA MASTER. Reduziu o WACC, maximizou o ROE dos sócios, criou escudo fiscal e manteve a liquidez da matriz. CFO de elite." } ] }
+  { id: 1, sector: "Tesouraria / Risco de Liquidez", title: "O Efeito Tesoura (Overtrading)", theory: "Segundo as diretrizes de solvência do BCB, lucros contábeis não garantem liquidez. O Ciclo de Conversão de Caixa (CCC) é vital. Crescer vendas financiando clientes em prazos longos enquanto se paga fornecedores à vista consome o capital de giro exponencialmente, gerando o Efeito Tesoura.", context: "O faturamento saltou 40% neste trimestre e a DRE mostra 15% de margem líquida. Contudo, o caixa amanheceu descoberto. Os fornecedores exigem pagamento em 15 dias, mas o setor comercial alongou os recebimentos dos clientes para 60 dias para bater a meta.", character: "Diretoria de Tesouraria", options: [ { text: "Emitir debêntures ou captar linha de crédito de curto prazo para bancar o crescimento sustentado do setor comercial.", xp: -30, feedback: "REPROVADO. Financiar um ciclo financeiro estruturalmente deficitário com dívida bancária gera asfixia por juros. Você mascarou o problema." }, { text: "Travar imediatamente as vendas a prazo para novos clientes, antecipar recebíveis vigentes e renegociar o passivo para 45 dias.", xp: 35, feedback: "CIRÚRGICO. Você estancou a hemorragia de caixa e realinhou o ciclo financeiro à realidade operacional da empresa." } ] },
+  { id: 2, sector: "Controladoria / CPC 16", title: "A Ilusão do Rateio por Absorção", theory: "O CPC 16 (Estoques) e a contabilidade gerencial moderna alertam contra o rateio arbitrário de custos fixos por volume. O Custeio Baseado em Atividades (ABC) rastreia o consumo real de recursos (cost drivers). Sem ele, ocorre o 'subsídio cruzado', onde produtos lucrativos pagam a conta de produtos ineficientes.", context: "Sua fábrica produz a Peça A (giro rápido) e a Peça B (sob medida). O rateio tradicional aponta margem de 20% em ambas. Porém, o caixa não reflete isso. Uma análise profunda revela que a Peça B consome 5 vezes mais reconfiguração de máquinas e controle de qualidade.", character: "Controller Industrial", options: [ { text: "Aplicar um aumento linear de 15% nos preços de todos os produtos para recompor a rentabilidade global exigida pelo conselho.", xp: -30, feedback: "ERRO CRÍTICO. O aumento linear encarece o produto que te sustenta (A), fazendo-o perder competitividade, enquanto o parasita (B) continua drenando a operação." }, { text: "Implantar imediatamente o Custeio ABC, reprecificar fortemente a Peça B para cima e focar as comissões da equipe na Peça A.", xp: 40, feedback: "VISÃO ESTRATÉGICA. Você extirpou a ilusão contábil. A reprecificação pelo consumo real de esforço destrava a rentabilidade oculta." } ] },
+  { id: 3, sector: "Contabilidade / IFRS 15 (CPC 47)", title: "Reconhecimento de Receita e Compliance", theory: "O CPC 47 (Receita de Contrato com Cliente) estabelece o modelo de 5 etapas. A regra de ouro é: a receita só pode ser reconhecida quando a 'obrigação de desempenho' é satisfeita e o controle do bem/serviço é transferido ao cliente. Reconhecer faturamento apenas pela emissão da nota fiscal antes da entrega é fraude contábil (Window Dressing).", context: "É dia 30 de dezembro. A equipe de vendas fechou um contrato de R$ 5 Milhões para entrega de equipamentos. O cliente já assinou, mas a fábrica só entregará em fevereiro. O Diretor Comercial exige que a nota seja emitida hoje para que o bônus anual da diretoria seja atingido.", character: "Auditoria Externa (CVM)", options: [ { text: "Emitir a nota fiscal e reconhecer a receita no DRE de dezembro, afinal, o contrato está assinado e o compromisso legal foi firmado.", xp: -40, feedback: "FRAUDE CONTÁBIL DETECTADA. A obrigação de desempenho (entrega) não ocorreu. Você inflou os resultados, enganou os acionistas e violou o CPC 47." }, { text: "Vetar o reconhecimento da receita no DRE deste ano. Registrar a assinatura apenas como 'Adiantamento de Clientes' (Passivo) caso haja pagamento prévio.", xp: 45, feedback: "COMPLIANCE MANTIDO. Você protegeu a integridade do balanço contra pressões por bônus baseados em resultados irreais." } ] },
+  { id: 4, sector: "Gestão de Risco / PDD", title: "Crescimento Inflado e o Risco de Crédito", theory: "Venda só se concretiza no recebimento. Políticas de crédito excessivamente flexíveis inflam o Ebitda temporariamente, mas geram uma bomba-relógio de Provisão para Devedores Duvidosos (PDD/PECLD), que destrói o resultado econômico nos semestres seguintes.", context: "O faturamento triplicou após o Comercial aprovar vendas parceladas em 24x sem consulta restritiva (SPC/Serasa). Seis meses depois, a inadimplência da carteira atingiu 18%. Os vendedores já receberam comissões gordas pelas 'vendas'.", character: "Comitê de Risco", options: [ { text: "Contratar uma assessoria jurídica agressiva para cobrança e manter a régua de crédito baixa para não travar o ritmo de expansão.", xp: -35, feedback: "FALHA ESTRATÉGICA. Cobrança não conserta crédito tóxico originado na base. Você continuará pagando comissão sobre faturamento que nunca vira caixa." }, { text: "Instituir Credit Score rigoroso, travar novas concessões e atrelar 50% das comissões da equipe comercial ao efetivo recebimento das parcelas.", xp: 40, feedback: "GOVERNANÇA DE ORIGINAÇÃO. O comercial deixou de ser apenas 'tirador de pedido' e tornou-se co-responsável pela saúde financeira da companhia." } ] },
+  { id: 5, sector: "Compliance / Auditoria", title: "Matriz SoD (Segregation of Duties)", theory: "No framework do COSO e nas normas do IIA (Institute of Internal Auditors), a Segregação de Funções é inegociável. A mesma pessoa não pode iniciar uma transação, autorizá-la, registrá-la e custodiar os ativos. A agilidade nunca pode se sobrepor à segurança contra fraudes.", context: "Em uma filial recém-inaugurada, o Gerente Financeiro Local está sobrecarregado. Para 'acelerar processos', ele mesmo cadastra os novos fornecedores no sistema ERP, insere as notas fiscais e tem o token master do banco para efetivar as TEDs.", character: "Inspetoria de Compliance", options: [ { text: "Aprovar o modelo por 6 meses para garantir a agilidade da expansão, exigindo apenas que ele assine um termo de responsabilidade.", xp: -45, feedback: "RISCO DE FRAUDE EXTREMO. Assinatura de papel não impede desvios. O cenário atual permite que o gestor crie uma 'empresa fantasma', pague a si mesmo e apague o rastro." }, { text: "Bloquear o processo imediatamente. Separar acessos do ERP: a área de Compras cadastra o fornecedor, o Gerente aprova, e o Backoffice da Matriz efetiva o pagamento.", xp: 50, feedback: "BLINDAGEM SOFISTICADA. Você eliminou a oportunidade de fraude através da matriz SoD. A empresa está pronta para uma due diligence de Série A." } ] },
+  { id: 6, sector: "Contabilidade / CPC 01", title: "Teste de Impairment (Recuperabilidade)", theory: "O CPC 01 exige que os ativos não estejam registrados contabilmente por um valor superior àquele passível de recuperação (seja por uso ou venda). Se uma máquina não gera mais caixa suficiente, a empresa é obrigada a reconhecer a perda por 'Impairment', baixando o valor do ativo e impactando o lucro.", context: "A empresa comprou um maquinário hiper-especializado por R$ 2 Milhões. Devido a uma mudança tecnológica no mercado, o produto feito por essa máquina perdeu demanda. O fluxo de caixa futuro projetado para a máquina é de apenas R$ 500 mil. A diretoria quer manter os R$ 2 Milhões no balanço para não 'estragar o lucro do ano'.", character: "Auditoria CVM / Big 4", options: [ { text: "Acatar a diretoria e manter o valor histórico. Afinal, a depreciação padrão continuará sendo feita anualmente até zerar a máquina.", xp: -45, feedback: "BALANÇO INFLADO (FRAUDE). O ativo está superavaliado. Manter 'lixo' no balanço fere o CPC 01 e cria distorções para investidores analisarem o ROA e ROIC." }, { text: "Executar o Teste de Recuperabilidade (Impairment), reconhecendo uma perda imediata de R$ 1,5 Milhão na DRE deste exercício para limpar o ativo.", xp: 50, feedback: "TRANSPARÊNCIA TOTAL. O choque no lucro é doloroso, mas demonstra maturidade de gestão. Você limpou o balanço de ativos irreais e manteve o compliance exigido." } ] },
+  { id: 7, sector: "Planejamento Tributário Avançado", title: "JCP vs Dividendos", theory: "A distribuição de Juros sobre Capital Próprio (JCP) é considerada uma despesa financeira dedutível na apuração do Lucro Real (IRPJ e CSLL), gerando benefício fiscal para a empresa (reduzindo a carga em cerca de 34%). Já os dividendos não são dedutíveis, sendo pagos após a tributação. O gestor tributário de alto nível modela a distribuição para maximizar a riqueza global da companhia.", context: "A companhia encerrou o ano com R$ 10 Milhões em Lucro Real antes do imposto. Os acionistas solicitam o pagamento de R$ 2 Milhões em dividendos isentos para eles. O planejamento tributário não rodou otimização de base de cálculo.", character: "Comitê Tributário", options: [ { text: "Distribuir os R$ 2 Milhões integralmente como dividendos, conforme solicitado, mantendo o recebimento isento de IR na pessoa física dos sócios.", xp: -40, feedback: "DESPERDÍCIO DE CAIXA. Ao focar apenas no sócio, você deixou a empresa pagar cerca de 34% de impostos sobre esses R$ 2 milhões. Destruição de valor corporativo." }, { text: "Remodelar a distribuição: pagar o máximo permitido por lei como JCP. A empresa economiza 34% de IRPJ/CSLL, e mesmo com os sócios pagando 15% de IRRF, o ganho global é altíssimo.", xp: 50, feedback: "ELISÃO FISCAL DE ALTO CALIBRE. A inteligência tributária gerou uma economia líquida massiva, aumentando o fluxo de caixa livre (FCF) da companhia dentro da estrita legalidade." } ] },
+  { id: 8, sector: "Contabilidade / CPC 25", title: "Provisões e Passivos Contingentes", theory: "O CPC 25 trata das incertezas jurídicas. Se uma perda em processo judicial é avaliada pelos advogados como de risco 'Provável', a empresa é obrigada a provisionar (impactando o lucro). Se for 'Possível', apenas divulga-se em notas explicativas. Se 'Remoto', não se faz nada. Misturar esses conceitos desfigura a realidade do passivo.", context: "A empresa sofreu uma grande ação trabalhista de um ex-diretor. O departamento jurídico emitiu parecer formal classificando o risco de perda (R$ 3 Milhões) como 'Possível'. A gerência, por medo, sugere contabilizar logo a despesa e tirar o dinheiro do resultado.", character: "Controladoria Jurídica", options: [ { text: "Contabilizar a despesa de R$ 3 Milhões imediatamente (Provisão), afinal, conservadorismo financeiro exige prever sempre o pior cenário no balanço.", xp: -35, feedback: "ERRO CONCEITUAL. O CPC 25 proíbe provisionar riscos 'Possíveis'. Ao fazer isso, você achatou artificialmente o lucro do ano e feriu as regras de reporte da CVM." }, { text: "Não contabilizar NENHUMA provisão na DRE. Apenas redigir uma Nota Explicativa detalhada nas demonstrações financeiras informando sobre o litígio.", xp: 40, feedback: "DOMÍNIO TÉCNICO. Você aplicou perfeitamente o critério do CPC 25. O lucro foi preservado enquanto a transparência aos investidores foi garantida via notas explicativas." } ] },
+  { id: 9, sector: "Tesouraria / Derivativos (CPC 38)", title: "Exposição Cambial e Hedge", theory: "Empresas com custos em dólar e receitas em reais estão estruturalmente 'vendidas' em câmbio. Não fazer proteção (Hedge) via instrumentos derivativos (como NDF ou Swap) não é ser neutro; é o equivalente a especular direcionalmente a favor do real. A gestão de tesouraria sofisticada protege o orçamento de choques exógenos.", context: "Você acabou de assinar a importação de componentes críticos para a produção dos próximos 12 meses. O valor total é de US$ 5 Milhões, pagáveis no fim do ano. Atualmente o dólar está a R$ 5,00. O CFO anterior proibia contratos de Hedge, dizendo que pagar prêmio ao banco era 'gastar dinheiro à toa'.", character: "Mesa de Operações B3", options: [ { text: "Manter a política antiga. Se o dólar cair, a empresa gastará menos reais. Fazer hedge trava a cotação e impede lucrar com a queda da moeda americana.", xp: -45, feedback: "POSTURA ESPECULADORA. Você deixou a sobrevivência operacional nas mãos de flutuações macroeconômicas. Se houver uma crise e o dólar bater R$ 6,50, o Ebitda será dizimado." }, { text: "Travar imediatamente a cotação via um contrato de Termo (NDF - Non-Deliverable Forward). A empresa sacrifica possíveis ganhos cambiais para garantir a previsibilidade da margem.", xp: 50, feedback: "PROTEÇÃO BLINDADA. A função de uma empresa operacional é lucrar com seu core-business, não operando Forex. Você garantiu a segurança orçamentária do ano inteiro." } ] },
+  { id: 10, sector: "M&A / CVM", title: "Estrutura de Capital (WACC) e LBO", theory: "Em finanças corporativas, fugir de dívidas a qualquer custo é ineficiência pura. O capital de terceiros gera escudo fiscal (dedutibilidade dos juros), tornando-o mais barato que o capital dos acionistas (Ke). O Leveraged Buyout (LBO) explora isso ao comprar empresas alavancadas pelas próprias aquisições, maximizando o ROE.", context: "O Conselho aprovou a aquisição de um forte concorrente por R$ 20 Milhões. A sua empresa tem liquidez folgada e poderia pagar à vista sem esforço. A taxa exigida pelos seus acionistas (Custo de Capital Próprio) é de 18% a.a. Um sindicato de bancos oferece financiar a operação a 11% a.a.", character: "Diretoria de Estratégia M&A", options: [ { text: "Liquidar a compra 100% à vista com o caixa próprio, celebrando na imprensa a força financeira da empresa por não precisar de dívidas.", xp: -40, feedback: "MIOPIA DE ALOCAÇÃO. O dinheiro do sócio (18%) é o mais caro. Ao não usar os 11% do banco, você destruiu valor (VPL) e aumentou o custo médio de capital (WACC) da transação." }, { text: "Estruturar o M&A usando dívida (LBO) para financiar 70% da aquisição, preservando o caixa da matriz e usando os juros para reduzir o IRPJ devido.", xp: 50, feedback: "ENGENHARIA ESTRATÉGICA DE CFO. Você reduziu severamente o WACC do projeto, garantiu escudo fiscal e alavancou o retorno sobre o patrimônio (ROE) dos acionistas." } ] },
+  { id: 11, sector: "Contabilidade / CPC 06 (IFRS 16)", title: "Arrendamento Mercantil (Leasing)", theory: "A norma IFRS 16 (CPC 06 R2) acabou com a ilusão do 'leasing operacional' que ficava escondido fora do balanço. Agora, se a empresa aluga um imóvel ou frota no longo prazo, precisa reconhecer um Ativo de Direito de Uso e um Passivo de Arrendamento. Isso muda drasticamente o Ebitda e os índices de endividamento da empresa.", context: "A empresa vai alugar a sede administrativa por 10 anos (R$ 500 mil/mês). O gestor da área imobiliária sugere que, por ser apenas um aluguel, o contrato seja lançado apenas mês a mês como despesa de aluguel no DRE, mantendo o balanço 'leve' e livre de dívidas.", character: "Contabilidade Corporativa", options: [ { text: "Acatar a sugestão. Como o imóvel não é de propriedade da empresa e não houve financiamento bancário, ele não deve poluir a linha de passivo (dívidas) no Balanço Patrimonial.", xp: -40, feedback: "DESCOMPLIANCE CVM. Essa regra mudou em 2019. Ao esconder obrigações de longo prazo, os índices de alavancagem ficam falsos e as demonstrações seriam reprovadas pelos auditores." }, { text: "Reconhecer imediatamente o valor presente dos aluguéis futuros como Passivo Financeiro e Ativo de Direito de Uso, alterando a linha do DRE para Depreciação e Juros.", xp: 50, feedback: "ATUALIZAÇÃO NORMATIVA PERFEITA. O IFRS 16 exige transparência das obrigações futuras. Você protegeu a empresa contra ressalvas em relatórios de auditoria." } ] },
+  { id: 12, sector: "Finanças Estruturadas", title: "Covenants Financeiros e Risco de Quebra", theory: "Dívidas corporativas sofisticadas possuem cláusulas de proteção (Covenants). A mais comum é a relação 'Dívida Líquida / Ebitda'. Se a empresa ultrapassa o teto estipulado em contrato, ocorre o 'Cross Default', dando ao banco o direito de exigir o pagamento integral da dívida antecipadamente, quebrando o caixa da empresa do dia para a noite.", context: "A empresa possui uma debênture de R$ 50 Milhões atrelada a um Covenant que exige (Dívida Líquida / Ebitda) menor que 2,5x. Hoje o índice está em 2,45x. A área comercial propõe uma grande campanha publicitária imediata, que consumirá o caixa em R$ 3 Milhões, mas promete retornos enormes no longo prazo.", character: "Relações com Investidores (RI)", options: [ { text: "Aprovar a campanha. Retorno de longo prazo justifica investimentos agressivos. É melhor crescer do que ficar estagnado olhando métricas bancárias rígidas.", xp: -50, feedback: "SUICÍDIO INSTITUCIONAL. Ao torrar o caixa em 3 Milhões, a Dívida Líquida subiu, estourando o Covenant de 2,5x. O banco executará a dívida amanhã, falindo a empresa imediatamente." }, { text: "Bloquear a campanha publicitária. Emitir ordens de contenção de OPEX para blindar o Ebitda e reter caixa (aumentar liquidez) até que o índice volte a um nível seguro de 2,0x.", xp: 50, feedback: "DOMÍNIO DE FINANÇAS ESTRUTURADAS. Você tem total controle sobre os gargalos contratuais (Covenants). Proteger a sobrevivência do CNPJ sempre antecede apostas de crescimento." } ] }
 ];
 
 export default function CodigoAzulGame() {
@@ -68,26 +70,23 @@ export default function CodigoAzulGame() {
   
   const [timeLeft, setTimeLeft] = useState(60);
   const [timeBonus, setTimeBonus] = useState(0);
-
   const [promotionPending, setPromotionPending] = useState(false);
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
+
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Usa-se V3 para desvincular do save anterior caso ele conflite com novas pontuações
   const saveToDB = () => {
     if (!nickname) return;
-    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v1') || '{}');
+    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v3') || '{}');
     if(db[nickname]) {
       db[nickname].data = { playerName, companyName, xp, currentStage, sessionScenarios };
-      localStorage.setItem('codigoAzul_Corp_v1', JSON.stringify(db));
+      localStorage.setItem('codigoAzul_Corp_v3', JSON.stringify(db));
     }
   };
 
   useEffect(() => {
-    const savedData = localStorage.getItem('codigoAzul_Corp_v1');
-    if (savedData) {
-      // Logic for persistent login can be added here if needed
-    }
     setIsLoading(false);
   }, []);
 
@@ -106,76 +105,47 @@ export default function CodigoAzulGame() {
       return;
     }
 
-    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v1') || '{}');
+    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v3') || '{}');
 
     if (db[cleanNickname]) {
       if (db[cleanNickname].password === cleanPassword) {
-        const savedData = db[cleanNickname].data;
-        setPlayerName(savedData.playerName);
-        setCompanyName(savedData.companyName);
-        setXp(savedData.xp);
-        setCurrentStage(savedData.currentStage);
-        setSessionScenarios(savedData.sessionScenarios);
-        setLoginError("");
-        setGameStarted(true);
+        const d = db[cleanNickname].data;
+        setPlayerName(d.playerName); setCompanyName(d.companyName);
+        setXp(d.xp); setCurrentStage(d.currentStage); setSessionScenarios(d.sessionScenarios);
+        setLoginError(""); setGameStarted(true);
       } else {
-        setLoginError("Acesso Negado. Credenciais incorretas.");
+        setLoginError("Acesso negado. Senha incorreta.");
       }
     } else {
       const newCompany = generateCompanyName();
-      const randomizedJourney = shuffleArray(allScenarios).slice(0, 8);
+      const randomizedJourney = shuffleArray(allScenarios).slice(0, 12); // SESSÕES AGORA TÊM 12 FASES
+      db[cleanNickname] = { password: cleanPassword, data: { playerName: cleanNickname, companyName: newCompany, xp: 0, currentStage: 0, sessionScenarios: randomizedJourney } };
+      localStorage.setItem('codigoAzul_Corp_v3', JSON.stringify(db));
       
-      db[cleanNickname] = {
-        password: cleanPassword,
-        data: {
-          playerName: cleanNickname,
-          companyName: newCompany,
-          xp: 0,
-          currentStage: 0,
-          sessionScenarios: randomizedJourney
-        }
-      };
-      
-      localStorage.setItem('codigoAzul_Corp_v1', JSON.stringify(db));
-      
-      setPlayerName(cleanNickname);
-      setCompanyName(newCompany);
-      setXp(0);
-      setCurrentStage(0);
-      setSessionScenarios(randomizedJourney);
-      setLoginError("");
-      setTimeLeft(60);
-      setGameStarted(true);
+      setPlayerName(cleanNickname); setCompanyName(newCompany); setXp(0);
+      setCurrentStage(0); setSessionScenarios(randomizedJourney);
+      setLoginError(""); setTimeLeft(60); setGameStarted(true);
     }
+  };
+
+  const handleLogout = () => {
+    saveToDB(); setGameStarted(false); setNickname(""); setPassword("");
+    setLoginError(""); setFeedback(null); setPromotionPending(false);
   };
 
   const handleManualSave = () => {
     saveToDB();
-    setSaveStatus("DADOS SINCRONIZADOS");
+    setSaveStatus("DADOS HOMOLOGADOS NO SERVIDOR");
     setTimeout(() => setSaveStatus(null), 3000);
   };
 
-  const handleLogout = () => {
-    saveToDB();
-    setGameStarted(false);
-    setNickname("");
-    setPassword("");
-    setLoginError("");
-    setFeedback(null);
-    setPromotionPending(false);
-  };
-
   const handleResetCareer = () => {
-    if(confirm("ATENÇÃO: Operação irreversível. Deseja liquidar a empresa atual e reiniciar sua carreira?")) {
+    if(confirm("Operação irreversível. Liquidar empresa e resetar patentes?")) {
       const newCompany = generateCompanyName();
-      const randomizedJourney = shuffleArray(allScenarios).slice(0, 8);
-      setCompanyName(newCompany);
-      setXp(0);
-      setCurrentStage(0);
-      setSessionScenarios(randomizedJourney);
-      setFeedback(null);
-      setPromotionPending(false);
-      setTimeLeft(60);
+      const randomizedJourney = shuffleArray(allScenarios).slice(0, 12);
+      setCompanyName(newCompany); setXp(0); setCurrentStage(0);
+      setSessionScenarios(randomizedJourney); setFeedback(null);
+      setPromotionPending(false); setTimeLeft(60);
     }
   };
 
@@ -191,165 +161,127 @@ export default function CodigoAzulGame() {
 
   useEffect(() => {
     if (timeLeft === 0 && !feedback && !promotionPending && gameStarted && currentLevel.hasTimer) {
-      handleChoice(-100, "TEMPO ESGOTADO. O mercado precificou sua indecisão. Operação abortada por falta de agilidade diretiva.", true);
+      handleChoice(-40, "TEMPO ESGOTADO. O mercado puniu sua hesitação corporativa severamente.", true);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, feedback, promotionPending, gameStarted, currentLevel.hasTimer]);
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false) => {
     let bonus = 0;
+    // Bônus de tempo mais sutil (10 a 20 pts max)
     if (baseXpGained > 0 && !isTimeout && currentLevel.hasTimer) {
-      if (timeLeft >= 45) bonus = 50; 
-      else if (timeLeft >= 30) bonus = 20; 
+      if (timeLeft >= 45) bonus = 15; else if (timeLeft >= 30) bonus = 5; 
     }
-
     const totalXpGained = baseXpGained + bonus;
     const newXp = Math.max(0, xp + totalXpGained);
     
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
     if (newCalculatedLevel.minXp > currentLevel.minXp) {
-      setPromotionPending(true);
-      setPromotedLevel(newCalculatedLevel);
+      setPromotionPending(true); setPromotedLevel(newCalculatedLevel);
     }
 
-    setXp(newXp);
-    setLastXpChange(totalXpGained);
-    setTimeBonus(bonus);
-    setFeedback(feedbackText);
+    setXp(newXp); setLastXpChange(totalXpGained); setTimeBonus(bonus); setFeedback(feedbackText);
   };
 
   const handleNextStageOrPromotion = () => {
-    if (promotionPending) {
-      setFeedback(null);
-      playPromotionSound();
-      return; 
-    }
+    if (promotionPending) { setFeedback(null); playPromotionSound(); return; }
     proceedToNextQuestion();
   };
 
   const proceedToNextQuestion = () => {
-    setPromotionPending(false);
-    setPromotedLevel(null);
-    setFeedback(null);
-    setLastXpChange(null);
-    setTimeBonus(0);
-    setTimeLeft(60);
+    setPromotionPending(false); setPromotedLevel(null); setFeedback(null);
+    setLastXpChange(null); setTimeBonus(0); setTimeLeft(60);
     
     if (currentStage < sessionScenarios.length - 1) {
       setCurrentStage(prev => prev + 1);
     } else {
-      alert(`Auditoria Concluída! Performance Final: ${xp} XP. Cargo Retido: ${currentLevel.title}. O sistema será reiniciado.`);
-      handleResetCareer();
+      alert(`Sessão de Auditoria Concluída! Você chegou ao fim deste lote de análises.\n\nSua Patente Consolidada: ${currentLevel.title}\nXP Total Acumulado: ${xp} XP.\n\nO sistema sorteará novos cenários aleatórios para a continuação da sua carreira corporativa.`);
+      
+      // Reinicia uma NOVA SESSÃO sem perder o XP! (Sustenta a progressão lenta)
+      const randomizedJourney = shuffleArray(allScenarios).slice(0, 12);
+      setCurrentStage(0);
+      setSessionScenarios(randomizedJourney);
     }
   };
 
   if (isLoading) return <div className="min-h-screen bg-[#060c17] flex items-center justify-center text-cyan-500 font-mono tracking-widest text-sm">INICIALIZANDO TERMINAL CVM...</div>;
 
-  // --- TELA DE LOGIN (ESTÉTICA CORPORATIVA FINTECH) ---
+  // --- TELA DE LOGIN ---
   if (!gameStarted) {
     return (
-      <div className="min-h-screen bg-[#050A15] flex items-center justify-center p-4 relative overflow-hidden font-sans">
-        {/* Grid Corporativa */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        
-        {/* Reflexos e Luzes de Gráfico (Cyan e Gold/Amber) */}
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-0 -left-32 w-[600px] h-[400px] bg-amber-600/5 rounded-full blur-[150px] pointer-events-none"></div>
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-600/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <div className="z-10 bg-[#0B1221]/90 backdrop-blur-2xl p-10 rounded-xl border border-slate-700/50 shadow-[0_0_50px_rgba(6,182,212,0.05)] max-w-sm w-full">
+        <div className="z-10 bg-[#0f172a]/60 backdrop-blur-2xl p-10 rounded-2xl border border-white/5 shadow-2xl max-w-sm w-full relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50"></div>
+          
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-cyan-500/10 border border-cyan-500/20 mb-4">
-              <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#1e293b]/50 border border-white/10 mb-6 shadow-inner">
+              <svg className="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
             </div>
-            <h1 className="text-2xl font-light text-white tracking-wide">
-              CÓDIGO <span className="font-bold text-cyan-400">AZUL</span>
+            <h1 className="text-2xl font-light text-slate-200 tracking-[0.2em] uppercase">
+              Código <span className="font-semibold text-cyan-400">Azul</span>
             </h1>
-            <p className="text-slate-500 text-xs tracking-widest mt-2 uppercase">Terminal de Alta Gestão</p>
+            <p className="text-slate-500 text-[10px] tracking-[0.3em] mt-2 uppercase font-mono">Terminal de Alta Gestão</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">ID Operacional</label>
-              <input
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                placeholder="nome.sobrenome"
-                className="w-full bg-[#050A15] border border-slate-700/60 rounded-md px-4 py-3 text-sm text-slate-200 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
-                required
-              />
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">ID Operador</label>
+              <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="login.corp" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 font-mono transition-all" required />
             </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Chave de Acesso</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-[#050A15] border border-slate-700/60 rounded-md px-4 py-3 text-sm text-slate-200 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
-                required
-              />
+            <div className="space-y-2">
+              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Senha API</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 font-mono transition-all" required />
             </div>
             
-            {loginError && (
-              <div className="text-amber-400 text-xs text-center p-2 rounded bg-amber-500/10 border border-amber-500/20">
-                {loginError}
-              </div>
-            )}
+            {loginError && <div className="text-amber-400 text-[11px] font-mono text-center p-2 rounded bg-amber-500/10 border border-amber-500/20">{loginError}</div>}
 
-            <button
-              type="submit"
-              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold tracking-wide py-3 px-4 rounded-md shadow-[0_0_15px_rgba(6,182,212,0.2)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all mt-4"
-            >
-              AUTENTICAR SESSÃO
+            <button type="submit" className="w-full bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800 hover:border-cyan-500 text-cyan-400 text-xs font-mono tracking-widest py-4 px-4 rounded-lg transition-all mt-4 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+              CONECTAR AO SERVIDOR
             </button>
-            <p className="text-center text-[10px] text-slate-600 mt-6 uppercase tracking-wider">
-              Acesso restrito a diretoria registrada
-            </p>
           </form>
         </div>
       </div>
     );
   }
 
-  // --- TELA DE PROMOÇÃO (ESTÉTICA CORPORATIVA) ---
+  // --- TELA DE PROMOÇÃO ---
   if (promotionPending && !feedback) {
     return (
-      <div className="min-h-screen bg-[#050A15] flex items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[100px] animate-pulse"></div>
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] animate-pulse pointer-events-none"></div>
 
-        <div className="z-10 bg-[#0B1221]/95 backdrop-blur-2xl p-10 md:p-14 rounded-xl border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.1)] max-w-2xl w-full text-center">
-          <h2 className="text-xs font-bold text-cyan-500 uppercase tracking-[0.3em] mb-4">Comitê de Avaliação Corporativa</h2>
-          <h1 className="text-3xl md:text-4xl font-light text-white mb-10 tracking-wide">
-            PROMOÇÃO <span className="font-bold">HOMOLOGADA</span>
+        <div className="z-10 bg-[#0f172a]/80 backdrop-blur-3xl p-10 md:p-16 rounded-3xl border border-white/5 shadow-2xl max-w-2xl w-full text-center">
+          <h2 className="text-[10px] font-mono text-cyan-500 uppercase tracking-[0.4em] mb-6">Comitê de Avaliação</h2>
+          <h1 className="text-3xl md:text-5xl font-light text-slate-100 mb-12 tracking-wide uppercase">
+            Promoção <span className="font-semibold text-cyan-400">Homologada</span>
           </h1>
           
-          <div className="bg-[#050A15] p-8 rounded-lg border border-slate-800 mb-10 text-left relative overflow-hidden">
-            <div className="absolute left-0 top-0 w-1 h-full bg-cyan-500"></div>
-            <div className="flex flex-col md:flex-row justify-between items-end border-b border-slate-800/80 pb-5 mb-5">
-              <span className="text-slate-500 uppercase text-xs tracking-widest font-semibold">Nova Patente Executiva</span>
-              <span className="text-2xl font-bold text-cyan-400 mt-2 md:mt-0">{promotedLevel?.title}</span>
+          <div className="bg-[#020617]/50 p-8 rounded-xl border border-slate-800 mb-10 text-left relative overflow-hidden">
+            <div className="absolute left-0 top-0 w-1 h-full bg-cyan-500 shadow-[0_0_10px_#06b6d4]"></div>
+            <div className="flex flex-col md:flex-row justify-between items-end border-b border-slate-800/80 pb-6 mb-6">
+              <span className="text-slate-500 uppercase text-[10px] tracking-[0.2em] font-mono">Status Corporativo Adquirido</span>
+              <span className="text-2xl font-semibold text-cyan-400 tracking-wide mt-2 md:mt-0">{promotedLevel?.title}</span>
             </div>
             
             <div className="space-y-6">
               <div>
-                <h3 className="text-cyan-500/80 font-semibold uppercase text-[10px] tracking-widest mb-1">Mapeamento de Força Técnica</h3>
+                <h3 className="text-cyan-500/70 font-mono uppercase text-[10px] tracking-widest mb-2">Parecer Técnico Favorável</h3>
                 <p className="text-slate-300 text-sm font-light leading-relaxed">{promotedLevel?.feedback?.forca}</p>
               </div>
               <div>
-                <h3 className="text-amber-500/80 font-semibold uppercase text-[10px] tracking-widest mb-1">Foco de Desenvolvimento (Ponto Cego)</h3>
+                <h3 className="text-amber-500/70 font-mono uppercase text-[10px] tracking-widest mb-2">Exigência para Novo Ciclo (Alerta Crítico)</h3>
                 <p className="text-slate-400 text-sm font-light leading-relaxed">{promotedLevel?.feedback?.vulnerabilidade}</p>
               </div>
             </div>
           </div>
 
-          <button
-            onClick={proceedToNextQuestion}
-            className="bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold tracking-widest py-4 px-10 rounded-md shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all uppercase"
-          >
-            Assumir Novo Comando
+          <button onClick={proceedToNextQuestion} className="bg-cyan-950/50 border border-cyan-800 hover:border-cyan-400 text-cyan-400 text-xs font-mono tracking-[0.2em] py-4 px-12 rounded-xl transition-all uppercase hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+            Assumir Mesa de Operações
           </button>
         </div>
       </div>
@@ -362,146 +294,141 @@ export default function CodigoAzulGame() {
   const timerColor = timeLeft > 30 ? 'bg-cyan-500' : timeLeft > 15 ? 'bg-amber-500' : 'bg-red-500';
 
   return (
-    <div className="min-h-screen bg-[#050A15] text-slate-200 p-4 md:p-8 font-sans transition-all relative">
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none"></div>
+    <div className="min-h-screen bg-[#020617] text-slate-300 p-4 md:p-8 font-sans transition-all relative overflow-hidden">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"></div>
+      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-cyan-900/10 rounded-full blur-[120px] pointer-events-none"></div>
       
       <div className="max-w-5xl mx-auto space-y-6 relative z-10">
         
-        {/* HEADER CORPORATIVO */}
-        <header className="bg-[#0B1221]/90 backdrop-blur-xl p-6 rounded-xl border border-slate-800 flex flex-col md:flex-row justify-between items-center shadow-lg">
+        {/* HEADER */}
+        <header className="bg-[#0f172a]/60 backdrop-blur-2xl p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-center shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-900 to-transparent"></div>
+          
           <div className="w-full md:w-auto mb-4 md:mb-0">
-            <h1 className="text-lg font-light text-slate-300 tracking-wide uppercase mb-1">
-              <span className="font-bold text-cyan-400">{companyName}</span>
+            <h1 className="text-xl font-light text-slate-100 tracking-[0.15em] uppercase mb-1">
+              <span className="font-semibold text-cyan-400">{companyName}</span>
             </h1>
-            <p className="text-slate-500 text-[11px] uppercase tracking-widest">ID Logado: <span className="text-slate-300">{playerName}</span></p>
+            <p className="text-slate-500 text-[10px] font-mono tracking-widest uppercase">ID: <span className="text-slate-300">{playerName}</span></p>
           </div>
           
-          <div className="w-full md:w-1/3 text-left md:text-right">
-            <div className="flex justify-between md:justify-end md:space-x-4 items-baseline mb-3">
-              <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em]">{currentLevel.title}</p>
+          <div className="w-full md:w-96">
+            <div className="flex justify-between items-baseline mb-3">
+              <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">{currentLevel.title}</p>
             </div>
-            
             <div className="space-y-2">
-              <div className="flex justify-between text-[9px] text-slate-500 font-mono tracking-widest uppercase">
-                <span>XP Atual: {xp}</span>
-                <span>Meta: {nextLevel ? nextLevel.minXp : 'MAX'}</span>
+              <div className="flex justify-between text-[10px] text-slate-400 font-mono tracking-widest">
+                <span>XP ACUMULADO: {xp}</span>
+                <span className="text-cyan-600">META PARA ASCENSÃO: {nextLevel ? nextLevel.minXp : 'N/A'}</span>
               </div>
-              <div className="h-1 w-full bg-slate-800 rounded-none overflow-hidden">
-                <div 
-                  className="h-full bg-cyan-500 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(6,182,212,0.8)]" 
-                  style={{ width: `${progressToNext}%` }}
-                ></div>
+              <div className="h-1.5 w-full bg-[#020617] rounded-full overflow-hidden border border-white/5">
+                <div className="h-full bg-cyan-500 transition-all duration-1000 ease-out shadow-[0_0_10px_#06b6d4]" style={{ width: `${progressToNext}%` }}></div>
               </div>
             </div>
           </div>
         </header>
 
-        {/* ÁREA DE OPERAÇÕES */}
+        {/* MAIN PANEL */}
         {!feedback ? (
-          <main className="bg-[#0B1221] p-6 md:p-10 rounded-xl border border-slate-800 shadow-2xl">
+          <main className="bg-[#0f172a]/40 backdrop-blur-xl p-8 md:p-10 rounded-2xl border border-white/5 shadow-2xl relative">
             
             {currentLevel.hasTimer ? (
-              <div className="mb-8 bg-[#050A15] h-1.5 w-full overflow-hidden border-b border-slate-800">
-                <div 
-                  className={`h-full transition-all duration-1000 ease-linear ${timerColor} shadow-[0_0_8px_currentColor]`} 
-                  style={{ width: `${(timeLeft / 60) * 100}%` }}
-                ></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#020617] overflow-hidden rounded-t-2xl">
+                <div className={`h-full transition-all duration-1000 ease-linear ${timerColor} shadow-[0_0_10px_currentColor]`} style={{ width: `${(timeLeft / 60) * 100}%` }}></div>
               </div>
             ) : (
-              <div className="mb-8 border-b border-slate-800/50 pb-2 flex justify-end">
-                <span className="text-[9px] text-slate-600 uppercase tracking-widest font-mono">Timer Inativo (Nível Base)</span>
-              </div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-slate-800 overflow-hidden rounded-t-2xl"></div>
             )}
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-slate-800/50 pb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4 mt-2 border-b border-white/5 pb-6">
               <div>
-                <span className="text-cyan-500 text-[10px] uppercase tracking-widest font-bold block mb-2">{scenario.sector}</span>
-                <h2 className="text-xl md:text-2xl font-light text-white tracking-wide">
-                  {scenario.title}
-                </h2>
+                <span className="text-cyan-600 font-mono text-[10px] uppercase tracking-[0.2em] font-semibold mb-3 block">{scenario.sector}</span>
+                <h2 className="text-2xl md:text-3xl font-light text-slate-100 tracking-wide">{scenario.title}</h2>
               </div>
-              <span className="text-slate-500 text-xs font-mono uppercase border border-slate-700 px-3 py-1 rounded">Situação {currentStage + 1}/8</span>
+              <span className="text-slate-500 text-[10px] font-mono tracking-widest uppercase border border-slate-700/50 bg-[#020617]/50 px-3 py-1.5 rounded-md">
+                Ref: {currentStage + 1}/12
+              </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-[#050A15] p-6 rounded-lg border border-slate-800/80">
-                <h3 className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 inline-block"></span> 
-                  Diretriz Regulatória
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+              <div className="bg-[#020617]/40 p-6 rounded-xl border border-white/5 hover:border-cyan-900/30 transition-colors">
+                <h3 className="text-[10px] font-mono text-cyan-600 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span> Marco Regulatório / Teoria
                 </h3>
-                <p className="text-slate-300 text-sm font-light leading-relaxed">{scenario.theory}</p>
+                <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{scenario.theory}</p>
               </div>
 
-              <div className="bg-[#050A15] p-6 rounded-lg border border-slate-800/80 relative overflow-hidden">
+              <div className="bg-[#020617]/40 p-6 rounded-xl border border-white/5 hover:border-amber-900/20 transition-colors relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl"></div>
-                <h3 className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block"></span> 
-                  Contexto Operacional
+                <h3 className="text-[10px] font-mono text-amber-600 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-white/5 pb-3 relative z-10">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Dados do Field (Situação)
                 </h3>
-                <p className="text-slate-200 text-sm font-light leading-relaxed">{scenario.context}</p>
+                <p className="text-slate-200 text-[13px] font-light leading-relaxed text-justify relative z-10">{scenario.context}</p>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em] mb-4 text-center">Decisão Estratégica</h3>
+            <div className="space-y-4">
+              <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.3em] mb-4 text-center">Protocolo de Decisão Estratégica</h3>
               {scenario.options.map((option: any, index: number) => (
                 <button
                   key={index}
                   onClick={() => handleChoice(option.xp, option.feedback)}
-                  className="w-full text-left p-5 rounded-lg bg-[#080D1A] border border-slate-700/50 hover:border-cyan-500/50 hover:bg-[#0C1529] transition-all group hover:shadow-[0_0_15px_rgba(6,182,212,0.05)]"
+                  className="w-full text-left p-6 rounded-xl bg-[#020617]/50 border border-slate-700/50 hover:border-cyan-500/50 hover:bg-[#081229] transition-all group hover:shadow-[0_0_20px_rgba(6,182,212,0.1)] relative overflow-hidden"
                 >
-                  <p className="text-slate-300 text-sm font-light group-hover:text-cyan-50 transition-colors leading-relaxed">{option.text}</p>
+                  <div className="absolute left-0 top-0 w-1 h-full bg-transparent group-hover:bg-cyan-500 transition-colors"></div>
+                  <p className="text-slate-300 text-[13px] font-light group-hover:text-cyan-50 transition-colors leading-relaxed pl-2">{option.text}</p>
                 </button>
               ))}
             </div>
           </main>
         ) : (
-          /* TELA DE FEEDBACK DO RELATÓRIO */
-          <div className="bg-[#0B1221] p-10 rounded-xl border border-slate-800 shadow-2xl relative overflow-hidden text-center">
-            <div className={`absolute top-0 left-0 w-full h-1 ${lastXpChange && lastXpChange > 0 ? 'bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.8)]' : 'bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.8)]'}`}></div>
+          /* TELA DE FEEDBACK */
+          <div className="bg-[#0f172a]/60 backdrop-blur-2xl p-10 md:p-14 rounded-2xl border border-white/5 shadow-2xl relative text-center">
+            <div className={`absolute top-0 left-0 w-full h-1 ${lastXpChange && lastXpChange > 0 ? 'bg-cyan-500 shadow-[0_0_15px_#06b6d4]' : 'bg-red-500 shadow-[0_0_15px_#ef4444]'}`}></div>
             
-            <h2 className={`text-xs font-bold uppercase tracking-[0.3em] mb-6 mt-4 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-500' : 'text-red-400'}`}>
-              {lastXpChange && lastXpChange > 0 ? 'Parecer Aprovado' : 'Alerta Crítico'}
+            <h2 className={`text-[10px] font-mono uppercase tracking-[0.4em] mb-6 mt-4 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-500' : 'text-red-400'}`}>
+              {lastXpChange && lastXpChange > 0 ? 'Aprovação Sistêmica' : 'Risco de Ruína Detectado'}
             </h2>
             
-            <div className="text-4xl font-light text-white font-mono tracking-widest mb-2">
-              {lastXpChange && lastXpChange > 0 ? '+' : ''}{lastXpChange} <span className="text-xl text-slate-500">XP</span>
+            <div className="text-5xl font-light text-slate-100 tracking-wider mb-2 font-mono">
+              {lastXpChange && lastXpChange > 0 ? '+' : ''}{lastXpChange} <span className="text-xl text-slate-600">XP</span>
             </div>
             
             {timeBonus > 0 && (
-              <div className="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-8">
-                + Bônus de Resposta Rápida ({timeBonus} XP)
+              <div className="text-[10px] font-mono text-amber-500 uppercase tracking-widest mb-8">
+                + Bônus Operacional de Agilidade ({timeBonus} XP)
               </div>
             )}
 
-            <div className="bg-[#050A15] p-8 rounded-lg border border-slate-800/80 mb-10 text-left max-w-2xl mx-auto">
-              <span className="text-[9px] uppercase tracking-widest text-slate-500 font-semibold mb-2 block">{scenario.character}</span>
-              <p className="text-slate-300 text-sm font-light leading-relaxed border-l-2 border-slate-700 pl-4">
+            <div className="bg-[#020617]/50 p-8 rounded-xl border border-white/5 mb-10 text-left max-w-2xl mx-auto relative">
+               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">
+                 Auditoria: {scenario.character}
+               </span>
+              <p className="text-slate-300 text-sm font-light leading-relaxed mt-2 text-justify">
                 {feedback}
               </p>
             </div>
 
             <button
               onClick={handleNextStageOrPromotion}
-              className="bg-transparent border border-slate-600 hover:border-cyan-500 text-slate-300 hover:text-cyan-400 text-xs font-bold tracking-[0.2em] py-3 px-10 rounded transition-all uppercase"
+              className="bg-transparent border border-slate-600 hover:border-cyan-400 text-cyan-600 hover:text-cyan-400 text-[10px] font-mono tracking-[0.3em] py-4 px-12 rounded-xl transition-all uppercase hover:bg-cyan-950/20"
             >
-              {promotionPending ? "Acessar Relatório de Promoção" : "Próximo Arquivo"}
+              {promotionPending ? "Acessar Log de Promoção" : "Avançar Arquivo"}
             </button>
           </div>
         )}
 
-        {/* RODAPÉ OPERACIONAL */}
-        <div className="flex flex-wrap items-center justify-center gap-6 pb-8 pt-4">
-          <button onClick={handleManualSave} className="text-[10px] text-slate-500 hover:text-cyan-400 transition-colors uppercase tracking-widest font-semibold flex items-center gap-2">
-            {saveStatus ? <span className="text-cyan-500">{saveStatus}</span> : "Sincronizar Dados"}
+        {/* RODAPÉ */}
+        <div className="flex flex-wrap items-center justify-center gap-6 pb-6 pt-2 font-mono">
+          <button onClick={handleManualSave} className="text-[9px] text-cyan-600/50 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">
+            {saveStatus ? saveStatus : "Sincronizar Data Center"}
           </button>
-          <span className="text-slate-800">|</span>
-          <button onClick={handleLogout} className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-widest font-semibold">
-            Logout
+          <span className="text-slate-800">/</span>
+          <button onClick={handleLogout} className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-[0.2em]">
+            Desconectar (Logout)
           </button>
-          <span className="text-slate-800">|</span>
-          <button onClick={handleResetCareer} className="text-[10px] text-slate-500 hover:text-red-400 transition-colors uppercase tracking-widest font-semibold">
-            Liquidar Operação (Reset)
+          <span className="text-slate-800">/</span>
+          <button onClick={handleResetCareer} className="text-[9px] text-slate-600 hover:text-red-400 transition-colors uppercase tracking-[0.2em]">
+            Liquidar CNPJ (Reset Global)
           </button>
         </div>
 
