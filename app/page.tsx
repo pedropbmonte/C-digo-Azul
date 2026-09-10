@@ -22,7 +22,6 @@ const shuffleArray = (array: any[]) => {
 // --- EFEITOS SONOROS ---
 const playPromotionSound = () => {
   try {
-    // Som corporativo limpo para transição de nível
     const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3");
     audio.volume = 0.6;
     audio.play().catch(e => console.log("Áudio bloqueado pelas políticas do navegador", e));
@@ -222,9 +221,12 @@ export default function CodigoAzulGame() {
   const [promotionPending, setPromotionPending] = useState(false);
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
 
-  // Sistema de Save/Load Avançado
+  // Manual Save State
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
+
+  // Sistema de Auto-Save
   useEffect(() => {
-    const savedData = localStorage.getItem('codigoAzulSave_v5');
+    const savedData = localStorage.getItem('codigoAzulSave_v6');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       setPlayerName(parsedData.playerName);
@@ -239,7 +241,7 @@ export default function CodigoAzulGame() {
 
   useEffect(() => {
     if (gameStarted && sessionScenarios.length > 0) {
-      localStorage.setItem('codigoAzulSave_v5', JSON.stringify({
+      localStorage.setItem('codigoAzulSave_v6', JSON.stringify({
         playerName,
         companyName,
         xp,
@@ -281,9 +283,17 @@ export default function CodigoAzulGame() {
     setGameStarted(true);
   };
 
+  const handleManualSave = () => {
+    localStorage.setItem('codigoAzulSave_v6', JSON.stringify({
+      playerName, companyName, xp, currentStage, sessionScenarios
+    }));
+    setSaveStatus("💾 PROGRESSO SALVO COM SUCESSO!");
+    setTimeout(() => setSaveStatus(null), 3000); // Remove a mensagem após 3 segundos
+  };
+
   const resetGame = () => {
     if(confirm("Tem certeza que deseja apagar seu progresso e reiniciar sua jornada corporativa?")) {
-      localStorage.removeItem('codigoAzulSave_v5');
+      localStorage.removeItem('codigoAzulSave_v6');
       setGameStarted(false);
       setXp(0);
       setCurrentStage(0);
@@ -325,10 +335,8 @@ export default function CodigoAzulGame() {
     if (promotionPending) {
       setFeedback(null);
       playPromotionSound();
-      // O componente vai re-renderizar e mostrar a tela de promoção (tratado abaixo)
       return; 
     }
-
     proceedToNextQuestion();
   };
 
@@ -582,9 +590,22 @@ export default function CodigoAzulGame() {
           </div>
         )}
 
-        <div className="text-center pb-8">
-          <button onClick={resetGame} className="text-xs text-slate-600 hover:text-red-400 transition-colors uppercase tracking-widest">
-            Encerrar Sessão e Reiniciar
+        {/* RODAPÉ E PAINEL DE CONTROLE DE SESSÃO */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 pb-8 pt-4">
+          <button 
+            onClick={handleManualSave} 
+            className="text-xs font-bold text-emerald-500 hover:text-emerald-400 transition-colors uppercase tracking-widest flex items-center gap-2"
+          >
+            {saveStatus ? saveStatus : "💾 Salvar Progresso"}
+          </button>
+          
+          <span className="hidden md:inline text-slate-700">|</span>
+          
+          <button 
+            onClick={resetGame} 
+            className="text-xs font-bold text-slate-600 hover:text-red-400 transition-colors uppercase tracking-widest"
+          >
+            ❌ Encerrar Sessão e Reiniciar
           </button>
         </div>
 
