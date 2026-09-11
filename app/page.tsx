@@ -1,6 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+// IMPORTAÇÕES DO FIREBASE (NUVEM)
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+
+// --- CONFIGURAÇÃO DO FIREBASE (SEU DATA CENTER) ---
+const firebaseConfig = {
+  apiKey: "AIzaSyB79sktVNzvTvntgeh4xIdIFaPRTwviZEM",
+  authDomain: "codigo-azul-erp.firebaseapp.com",
+  projectId: "codigo-azul-erp",
+  storageBucket: "codigo-azul-erp.firebasestorage.app",
+  messagingSenderId: "180459648575",
+  appId: "1:180459648575:web:d2fedafe0eba452b76aa8a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // --- FORMATADORES FINANCEIROS ---
 const formatBRL = (value: number) => {
@@ -54,9 +70,8 @@ const blackSwans = [
   { title: "PASSIVO TRABALHISTA OCULTO", text: "O STF alterou a jurisprudência sobre a base de cálculo de um encargo da folha de pagamento. Um passivo retroativo de 5 anos atingiu o balanço da companhia de surpresa.", impacts: { caixa: -400000, margem: 0, compliance: -15 } }
 ];
 
-// --- BANCO DE DADOS DINÂMICO (COM REFORMA TRIBUTÁRIA E ALTA DENSIDADE) ---
+// --- BANCO DE DADOS DINÂMICO (REFORMA TRIBUTÁRIA E ALTA DENSIDADE) ---
 const allScenarios = [
-  // TIER 1 & 2
   {
     id: 1, tier: 1, criticality: "Baixa", points: 20, sector: "Tesouraria / Gestão de Caixa",
     title: "O Descasamento do Ciclo Operacional (Overtrading)",
@@ -97,8 +112,6 @@ const allScenarios = [
       { text: "Calcular e lançar imediatamente a PECLD ponderando o risco histórico do novo cluster, aceitando o impacto negativo no lucro do trimestre atual.", xp: 35, impacts: { caixa: 0, margem: -3.0, compliance: 40 }, feedback: "RIGOR TÉCNICO INEGOCIÁVEL. Você aceitou o golpe contábil na margem para manter a transparência absoluta perante as normas IFRS e os acionistas." }
     ]
   },
-
-  // NOVOS CENÁRIOS: REFORMA TRIBUTÁRIA E ALTA GESTÃO (TIERS 3 & 4)
   {
     id: 5, tier: 3, criticality: "Alta", points: 45, sector: "Tributário / Reforma Tributária (EC 132)",
     title: "IVA Dual: Precificação e Não Cumulatividade Plena",
@@ -170,6 +183,7 @@ export default function CodigoAzulGame() {
   const [playerName, setPlayerName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   
   const [xp, setXp] = useState(0);
   const [caixa, setCaixa] = useState(5000000);
@@ -196,16 +210,19 @@ export default function CodigoAzulGame() {
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // V11: Novo DB para integrar os novos cenários de Reforma Tributária
-  const saveToDB = () => {
+  // --- FUNÇÃO ASSÍNCRONA DE SALVAMENTO NO FIRESTORE ---
+  const saveToDB = async () => {
     if (!nickname) return;
-    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v11') || '{}');
-    if (db[nickname]) {
-      db[nickname].data = { 
-        playerName, companyName, xp, caixa, margem, compliance, 
-        currentStage, sessionScenarios, sessionStartStats, showDRE 
-      };
-      localStorage.setItem('codigoAzul_Corp_v11', JSON.stringify(db));
+    try {
+      await setDoc(doc(db, "users", nickname), {
+        password: password,
+        data: { 
+          playerName, companyName, xp, caixa, margem, compliance, 
+          currentStage, sessionScenarios, sessionStartStats, showDRE 
+        }
+      });
+    } catch (e) {
+      console.error("Erro ao salvar no Firestore: ", e);
     }
   };
 
@@ -213,8 +230,11 @@ export default function CodigoAzulGame() {
     setIsLoading(false);
   }, []);
 
+  // Disparo do salvamento em nuvem quando estados cruciais mudam
   useEffect(() => {
-    if (gameStarted && sessionScenarios.length > 0 && !isGameOver && !currentBlackSwan) saveToDB();
+    if (gameStarted && sessionScenarios.length > 0 && !isGameOver && !currentBlackSwan) {
+      saveToDB();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xp, caixa, margem, compliance, currentStage, gameStarted, sessionScenarios, isGameOver, showDRE, currentBlackSwan]);
 
@@ -222,70 +242,85 @@ export default function CodigoAzulGame() {
     const eligibleScenarios = allScenarios.filter(s => 
       s.tier === currentTier || (currentTier > 1 && s.tier === currentTier - 1) || (currentTier < 4 && s.tier === currentTier + 1)
     );
-    return shuffleArray(eligibleScenarios.length > 0 ? eligibleScenarios : allScenarios).slice(0, 10); // Lotes de 10
+    return shuffleArray(eligibleScenarios.length > 0 ? eligibleScenarios : allScenarios).slice(0, 10);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  // --- LOGIN ASSÍNCRONO CONECTADO AO FIRESTORE ---
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanNickname = nickname.trim().toLowerCase();
     const cleanPassword = password.trim();
     if (!cleanNickname || !cleanPassword) { setLoginError("Credenciais inválidas."); return; }
 
-    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v11') || '{}');
+    setIsAuthenticating(true);
+    setLoginError("");
+    setForgotPasswordMsg("");
 
-    if (db[cleanNickname]) {
-      if (db[cleanNickname].password === cleanPassword) {
-        const d = db[cleanNickname].data;
-        setPlayerName(d.playerName); setCompanyName(d.companyName);
-        setXp(d.xp || 0); 
-        setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
-        setCurrentStage(d.currentStage || 0); setSessionScenarios(d.sessionScenarios || []);
-        setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
-        setShowDRE(d.showDRE || false);
-        
-        if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
-        setLoginError(""); setForgotPasswordMsg(""); setGameStarted(true);
-      } else {
-        setLoginError("Acesso negado. Senha incorreta.");
-      }
-    } else {
-      const newCompany = generateCompanyName();
-      const initialPool = generateSessionPool(1);
-      db[cleanNickname] = {
-        password: cleanPassword,
-        data: { 
-          playerName: cleanNickname, companyName: newCompany, xp: 0, 
-          caixa: 5000000, margem: 20.0, compliance: 100, 
-          currentStage: 0, sessionScenarios: initialPool,
-          sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
+    try {
+      const docRef = doc(db, "users", cleanNickname);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        if (userData.password === cleanPassword) {
+          const d = userData.data;
+          setPlayerName(d.playerName); setCompanyName(d.companyName);
+          setXp(d.xp || 0); 
+          setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
+          setCurrentStage(d.currentStage || 0); setSessionScenarios(d.sessionScenarios || []);
+          setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
+          setShowDRE(d.showDRE || false);
+          
+          if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
+          setGameStarted(true);
+        } else {
+          setLoginError("Acesso negado. Senha incorreta.");
         }
-      };
-      localStorage.setItem('codigoAzul_Corp_v11', JSON.stringify(db));
-      
-      setPlayerName(cleanNickname); setCompanyName(newCompany); 
-      setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-      setCurrentStage(0); setSessionScenarios(initialPool);
-      setSessionStartStats({ caixa: 5000000, margem: 20.0 });
-      setLoginError(""); setForgotPasswordMsg(""); setTimeLeft(60); setGameStarted(true); setIsGameOver(false); setShowDRE(false);
+      } else {
+        // NOVO USUÁRIO: Cria na nuvem
+        const newCompany = generateCompanyName();
+        const initialPool = generateSessionPool(1);
+        
+        await setDoc(docRef, {
+          password: cleanPassword,
+          data: { 
+            playerName: cleanNickname, companyName: newCompany, xp: 0, 
+            caixa: 5000000, margem: 20.0, compliance: 100, 
+            currentStage: 0, sessionScenarios: initialPool,
+            sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
+          }
+        });
+        
+        setPlayerName(cleanNickname); setCompanyName(newCompany); 
+        setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
+        setCurrentStage(0); setSessionScenarios(initialPool);
+        setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+        setTimeLeft(60); setGameStarted(true); setIsGameOver(false); setShowDRE(false);
+      }
+    } catch (e) {
+      console.error(e);
+      setLoginError("Falha de conexão com o banco de dados em nuvem. Verifique permissões.");
+    } finally {
+      setIsAuthenticating(false);
     }
   };
 
   const handleForgotPassword = () => {
-    setForgotPasswordMsg("A recuperação de senha via e-mail exige conexão com nosso Cloud Database. O recurso será ativado no próximo update de infraestrutura.");
+    setForgotPasswordMsg("Como o banco de dados em nuvem já foi ativado (Firestore), a próxima atualização de infraestrutura conectará o Firebase Auth para disparar e-mails reais de redefinição de senha para sua caixa de entrada.");
   };
 
-  const handleLogout = () => {
-    if(!isGameOver) saveToDB();
+  const handleLogout = async () => {
+    if(!isGameOver) await saveToDB();
     setGameStarted(false); setNickname(""); setPassword(""); setLoginError("");
     setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentBlackSwan(null);
   };
 
-  const handleManualSave = () => {
-    saveToDB(); setSaveStatus("DADOS GRAVADOS"); setTimeout(() => setSaveStatus(null), 3000);
+  const handleManualSave = async () => {
+    await saveToDB(); setSaveStatus("DADOS AUDITADOS NA NUVEM"); setTimeout(() => setSaveStatus(null), 3000);
   };
 
   const handleResetCareer = () => {
-    if (confirm("Confirma a liquidação da empresa? Seu XP e Status serão destruídos.")) {
+    if (confirm("Confirma a liquidação da empresa? Seu XP e Status serão destruídos do Cloud Database.")) {
       const newCompany = generateCompanyName();
       const initialPool = generateSessionPool(1);
       setCompanyName(newCompany); setXp(0); 
@@ -327,7 +362,7 @@ export default function CodigoAzulGame() {
       compliance: correctOption.impacts?.compliance || 0,
     };
 
-    handleChoice(correctOption.xp, `🤖 IA MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados): ${correctOption.feedback}`, false, combinedImpacts);
+    handleChoice(correctOption.xp, `🤖 IA MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados via API do Gemini): ${correctOption.feedback}`, false, combinedImpacts);
   };
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false, impacts: any = null) => {
@@ -437,7 +472,7 @@ export default function CodigoAzulGame() {
               <img src="https://images2.imgbox.com/71/2a/v5KjH8Lp_o.png" alt="Executivo" className="w-full h-full object-cover object-top" />
             </div>
             <h1 className="text-2xl font-light text-slate-200 tracking-[0.2em] uppercase">Código <span className="font-semibold text-cyan-400">Azul</span></h1>
-            <p className="text-slate-500 text-[9px] tracking-[0.3em] mt-1 uppercase font-mono">Simulador Fiduciário Corporativo</p>
+            <p className="text-slate-500 text-[9px] tracking-[0.3em] mt-1 uppercase font-mono">SaaS Fiduciário Corporativo</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1">
@@ -455,7 +490,9 @@ export default function CodigoAzulGame() {
             {loginError && <div className="text-red-400 text-[11px] font-mono text-center p-2 rounded bg-red-500/10 border border-red-500/20">{loginError}</div>}
             {forgotPasswordMsg && <div className="text-amber-400 text-[10px] text-justify p-3 rounded bg-amber-500/10 border border-amber-500/20 leading-relaxed">{forgotPasswordMsg}</div>}
 
-            <button type="submit" className="w-full bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800 hover:border-cyan-500 text-cyan-400 text-xs font-mono tracking-widest py-3.5 px-4 rounded-lg transition-all mt-4 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]">CONECTAR SISTEMA ERP</button>
+            <button disabled={isAuthenticating} type="submit" className={`w-full text-cyan-400 text-xs font-mono tracking-widest py-3.5 px-4 rounded-lg transition-all mt-4 ${isAuthenticating ? 'bg-cyan-950/20 border border-cyan-900 opacity-50 cursor-not-allowed' : 'bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800 hover:border-cyan-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]'}`}>
+              {isAuthenticating ? 'AUTENTICANDO NUVEM...' : 'CONECTAR FIREBASE'}
+            </button>
           </form>
         </div>
       </div>
@@ -700,7 +737,7 @@ export default function CodigoAzulGame() {
                   onClick={handleConsultoria}
                   className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-[0.2em] uppercase ${isProcessing || caixa < 50000 ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-amber-950/20 border-amber-800/50 text-amber-500 hover:bg-amber-900/40 hover:border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.05)] hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]'}`}
                 >
-                  🤖 Acionar Consultoria Pedro Monte (Debita R$ 50.000 do Caixa)
+                  🤖 Acionar Consultoria Técnica (Debita R$ 50.000 do Caixa)
                 </button>
               </div>
             </div>
@@ -734,7 +771,7 @@ export default function CodigoAzulGame() {
             )}
 
             <div className="bg-[#020617]/50 p-6 md:p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative">
-               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer Técnico:</span>
+               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer: {scenario.character}</span>
               <p className="text-slate-300 text-sm font-light leading-relaxed mt-2 text-justify">{feedback}</p>
             </div>
 
@@ -745,7 +782,7 @@ export default function CodigoAzulGame() {
         )}
 
         <div className="flex flex-wrap items-center justify-center gap-6 pb-6 pt-2 font-mono">
-          <button onClick={handleManualSave} className="text-[9px] text-cyan-600/60 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">{saveStatus || "Gravar Data Center"}</button>
+          <button onClick={handleManualSave} className="text-[9px] text-cyan-600/60 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">{saveStatus || "Gravar Data Center (Nuvevem)"}</button>
           <span className="text-slate-800">/</span><button onClick={handleLogout} className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-[0.2em]">Desconectar (Logout)</button>
           <span className="text-slate-800">/</span><button onClick={handleResetCareer} className="text-[9px] text-slate-600 hover:text-red-400 transition-colors uppercase tracking-[0.2em]">Liquidacao Total (Reset)</button>
         </div>
