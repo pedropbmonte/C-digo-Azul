@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// IMPORTAÇÕES DO FIREBASE (NUVEM)
+// IMPORTAÇÕES DO FIREBASE
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
@@ -24,13 +24,6 @@ const formatBRL = (value: number) => {
 };
 const formatPct = (value: number) => {
   return value.toFixed(1).replace('.', ',') + '%';
-};
-
-// --- GERADORES DINÂMICOS ---
-const companyPrefixes = ["Indústria", "Varejo", "Tech", "Distribuidora", "Logística", "Holdings", "Construtora", "Laboratório", "Clínica", "Agronegócio"];
-const companySuffixes = ["Alfa", "Ômega", "Titan", "Vértice", "Nexus", "Prime", "Quantum", "Horizonte", "Global", "Meridiano"];
-const generateCompanyName = () => {
-  return `${companyPrefixes[Math.floor(Math.random() * companyPrefixes.length)]} ${companySuffixes[Math.floor(Math.random() * companySuffixes.length)]}`;
 };
 
 const shuffleArray = (array: any[]) => {
@@ -62,7 +55,7 @@ const levels = [
   { tier: 4, title: "CEO / Board Member", minXp: 2600, hasTimer: true, feedback: { forca: "Visão sistêmica institucional plena e liderança sobre o valor de mercado (Market Cap).", vulnerabilidade: "O desafio é a perpetuidade institucional diante de transformações regulatórias seculares e crises geopolíticas." } }
 ];
 
-// --- EVENTOS CISNE NEGRO (CHOQUES MACROECONÔMICOS) ---
+// --- EVENTOS CISNE NEGRO ---
 const blackSwans = [
   { title: "CHOQUE MACROECONÔMICO", text: "O Banco Central aumentou a Selic em 1.5% em reunião extraordinária. O custo da dívida flutuante da empresa explodiu, corroendo a margem e drenando o caixa operacional instantaneamente.", impacts: { caixa: -350000, margem: -1.5, compliance: 0 } },
   { title: "ATAQUE RANSOMWARE", text: "Os servidores sofreram uma tentativa de invasão (Phishing). A operação foi paralisada por 12 horas para contenção do vazamento de dados, gerando perda de faturamento e exposição regulatória.", impacts: { caixa: -250000, margem: -0.8, compliance: -10 } },
@@ -70,7 +63,7 @@ const blackSwans = [
   { title: "PASSIVO TRABALHISTA OCULTO", text: "O STF alterou a jurisprudência sobre a base de cálculo de um encargo da folha de pagamento. Um passivo retroativo de 5 anos atingiu o balanço da companhia de surpresa.", impacts: { caixa: -400000, margem: 0, compliance: -15 } }
 ];
 
-// --- BANCO DE DADOS DINÂMICO (REFORMA TRIBUTÁRIA E ALTA DENSIDADE) ---
+// --- BANCO DE DADOS DINÂMICO ---
 const allScenarios = [
   {
     id: 1, tier: 1, criticality: "Baixa", points: 20, sector: "Tesouraria / Gestão de Caixa",
@@ -115,75 +108,64 @@ const allScenarios = [
   {
     id: 5, tier: 3, criticality: "Alta", points: 45, sector: "Tributário / Reforma Tributária (EC 132)",
     title: "IVA Dual: Precificação e Não Cumulatividade Plena",
-    theory: "A Reforma Tributária extinguiu PIS, COFINS, IPI, ICMS e ISS, substituindo-os pelo IVA Dual (CBS federal e IBS subnacional). A grande mudança estrutural é a 'não cumulatividade plena': a empresa passa a creditar-se do imposto sobre praticamente todos os insumos adquiridos, mas as alíquotas nominais finais são significativamente maiores (estimadas acima de 26%). Precificar produtos usando lógicas antigas destrói a rentabilidade instantaneamente.",
-    context: "Sua indústria compra insumos pesados. No sistema antigo, você não tomava crédito de PIS/COFINS sobre várias despesas operacionais. Agora, com o IBS/CBS operando, o Diretor Comercial quer reduzir o preço de venda em 10% alegando que 'teremos mais créditos tributários para abater', sem repassar a nova alíquota nominal ao mercado.", character: "Comitê de Transição Tributária",
+    theory: "A Reforma Tributária extinguiu impostos em cascata, substituindo-os pelo IVA Dual (CBS e IBS). A grande mudança é a 'não cumulatividade plena': a empresa credita-se do imposto sobre os insumos, mas as alíquotas nominais finais são significativamente maiores. Precificar produtos usando lógicas antigas destrói a rentabilidade.",
+    context: "Sua indústria compra insumos pesados. No sistema antigo, não havia crédito de PIS/COFINS sobre várias despesas. Agora, com o IBS/CBS operando, o Diretor Comercial quer reduzir o preço de venda em 10% alegando que 'teremos mais créditos tributários para abater', sem repassar a nova alíquota nominal.", character: "Comitê de Transição Tributária",
     options: [
-      { text: "Aprovar a redução de preço sugerida pelo Comercial. Afinal, a promessa da reforma é baratear a carga, e a abundância de créditos do IBS/CBS compensará a queda da receita bruta.", xp: -45, impacts: { caixa: -1500000, margem: -5.5, compliance: 0 }, feedback: "RUÍNA DE PRECIFICAÇÃO. Você ignorou que a alíquota de saída do IBS/CBS é muito superior à soma do ICMS/PIS/COFINS antigos. Os créditos novos não compensaram o imposto final devido, sangrando a margem brutalmente." },
-      { text: "Vetar a redução. Exigir o recálculo do Markup (Mark-up Múltiplo) deduzindo os novos créditos da base de custo, mas aplicando a nova alíquota cheia (IVA) na formação do preço de venda final.", xp: 45, impacts: { caixa: 800000, margem: 2.5, compliance: 30 }, feedback: "MAESTRIA TRIBUTÁRIA. Você adaptou o DRE gerencial à nova realidade do IVA. O preço foi formado corretamente sobre o custo líquido, garantindo a proteção da margem e a neutralidade fiscal da operação." }
+      { text: "Aprovar a redução de preço sugerida. A promessa da reforma é baratear a carga, e a abundância de créditos do IBS/CBS compensará a queda da receita bruta.", xp: -45, impacts: { caixa: -1500000, margem: -5.5, compliance: 0 }, feedback: "RUÍNA DE PRECIFICAÇÃO. Você ignorou que a alíquota de saída do IBS/CBS é superior à soma dos tributos antigos. Os créditos não compensaram o imposto final, sangrando a margem brutalmente." },
+      { text: "Vetar a redução. Exigir o recálculo do Markup deduzindo os novos créditos da base de custo, mas aplicando a nova alíquota cheia (IVA) na formação do preço.", xp: 45, impacts: { caixa: 800000, margem: 2.5, compliance: 30 }, feedback: "MAESTRIA TRIBUTÁRIA. Você adaptou o DRE gerencial à nova realidade do IVA. O preço foi formado corretamente sobre o custo líquido, garantindo a proteção da margem." }
     ]
   },
   {
     id: 6, tier: 3, criticality: "Alta", points: 45, sector: "Controladoria / Orçamento",
     title: "O Custo de Compliance na Transição Tributária",
-    theory: "O artigo 125 do ADCT (Reforma Tributária) prevê um período de transição de 7 anos (2026 a 2032). Durante esse período, as empresas precisarão apurar simultaneamente os impostos do sistema antigo (ICMS, PIS, COFINS) em proporções decrescentes e os impostos do novo sistema (CBS, IBS) em proporções crescentes. O custo administrativo e sistêmico (ERP) para auditar dois mundos fiscais simultâneos é gigantesco.",
-    context: "Estamos elaborando o Orçamento Base Zero (OBZ) para o próximo biênio. O gerente de TI e o Controller solicitam a aprovação de R$ 2 Milhões em capex para a implantação de um novo módulo de motor de cálculo tributário no ERP, além da contratação de uma consultoria especialista na transição.", character: "Diretoria de Controladoria (FP&A)",
+    theory: "O ADCT prevê um período de transição de 7 anos (2026 a 2032). As empresas apurarão simultaneamente os impostos antigos em proporções decrescentes e os novos em proporções crescentes. O custo sistêmico (ERP) para auditar dois mundos fiscais simultâneos é gigantesco.",
+    context: "Estamos elaborando o Orçamento Base Zero (OBZ). O gerente de TI solicita R$ 2 Milhões em capex para a implantação de um novo módulo de motor de cálculo tributário no ERP, além da contratação de uma consultoria especialista na transição.", character: "Diretoria de FP&A",
     options: [
-      { text: "Reprovar o orçamento. Cortar o investimento em TI e exigir que o atual departamento contábil apure os dois sistemas tributários (Antigo e Novo) utilizando planilhas eletrônicas (Excel) para economizar caixa.", xp: -40, impacts: { caixa: 2000000, margem: 0, compliance: -70 }, feedback: "COLAPSO OPERACIONAL E MULTAS. Economizar 2 Milhões hoje gerou o caos. Planilhas não suportam cruzamento de alíquotas fracionadas do período de transição. As malhas finas da Receita bloquearão a empresa em meses." },
-      { text: "Aprovar integralmente o investimento (Capex). Encarar a atualização do ERP e a consultoria como custo indispensável de sobrevivência regulatória, amortizando a despesa ao longo dos anos de transição.", xp: 45, impacts: { caixa: -2000000, margem: -1.0, compliance: 60 }, feedback: "GOVERNANÇA PREVENTIVA. A dor no caixa foi pesada e imediata, mas você blindou a companhia contra o período mais caótico da história fiscal do país, garantindo continuidade dos negócios." }
+      { text: "Reprovar o orçamento. Cortar o investimento e exigir que a contabilidade apure os dois sistemas utilizando planilhas eletrônicas (Excel) para economizar caixa.", xp: -40, impacts: { caixa: 2000000, margem: 0, compliance: -70 }, feedback: "COLAPSO OPERACIONAL E MULTAS. Economizar 2 Milhões hoje gerou o caos. Planilhas não suportam cruzamento de alíquotas fracionadas. As malhas finas bloquearão a empresa em meses." },
+      { text: "Aprovar integralmente o investimento. Encarar a atualização do ERP como custo indispensável de sobrevivência regulatória, amortizando a despesa ao longo da transição.", xp: 45, impacts: { caixa: -2000000, margem: -1.0, compliance: 60 }, feedback: "GOVERNANÇA PREVENTIVA. A dor no caixa foi pesada e imediata, mas você blindou a companhia contra o período mais caótico da história fiscal do país." }
     ]
   },
   {
-    id: 7, tier: 4, criticality: "Extrema", points: 50, sector: "Planejamento Estratégico / Imposto Seletivo",
-    title: "A Ameaça do Imposto Seletivo (Sin Tax)",
-    theory: "A EC 132 criou o Imposto Seletivo (IS), incidindo sobre bens e serviços prejudiciais à saúde ou ao meio ambiente. Ao contrário do IVA, o IS compõe a própria base de cálculo de outros tributos (incidência 'por dentro') e não gera crédito tributário para o adquirente, configurando custo puro que destrói a competitividade do produto no mercado.",
-    context: "A sua indústria química acaba de ser notificada que seu principal produto (que representa 40% do faturamento) foi enquadrado na lista de incidência do novo Imposto Seletivo federal. O repasse integral do novo custo aumentaria o preço final na gôndola em absurdos 35%.", character: "Conselho de Administração",
-    options: [
-      { text: "Absorver o custo do Imposto Seletivo reduzindo a margem de lucro para não perder *Market Share*, mantendo os preços atuais na prateleira até a concorrência quebrar.", xp: -50, impacts: { caixa: -4500000, margem: -15.0, compliance: 0 }, feedback: "DESTRUIÇÃO DE VALOR ECONÔMICO. O Imposto Seletivo não gera crédito; é perda seca. Absorver 35% de carga eliminou o Ebitda da linha de produção. A empresa entrou em insolvência estrutural." },
-      { text: "Pivotar a estratégia: aprovar um plano imediato de *Spin-off* (separação) da linha afetada, focar o capex no desenvolvimento de um produto substituto verde (isento de IS) e realizar o *Pass-through* parcial do custo para o mercado até a transição concluir.", xp: 50, impacts: { caixa: -1000000, margem: 5.0, compliance: 20 }, feedback: "RESILIÊNCIA DE CEO. Você entendeu que tributação comportamental não se combate absorvendo margem, mas inovando o portfólio. A rápida readaptação salvou o Market Cap da empresa." }
-    ]
-  },
-  {
-    id: 8, tier: 4, criticality: "Extrema", points: 50, sector: "M&A / Engenharia Financeira",
+    id: 7, tier: 4, criticality: "Extrema", points: 50, sector: "M&A / Engenharia Financeira",
     title: "Alavancagem Ótima (WACC) em Leveraged Buyout",
-    theory: "Em finanças corporativas, fugir de dívidas a qualquer custo destrói valor. O capital próprio (Ke) exige prêmio de risco superior. A dívida bancária (Kd) gera escudo fiscal (dedutibilidade dos juros). O Leveraged Buyout (LBO) estrutura aquisições usando dívida atrelada ao próprio ativo comprado para maximizar o ROE.",
-    context: "O conselho aprovou a aquisição de um concorrente vital por R$ 30 Milhões. A matriz possui liquidez livre e poderia pagar à vista. A taxa exigida pelos acionistas da holding é de 19% a.a. Um sindicato de bancos oferece o financiamento a 11% a.a.", character: "Diretoria de Estratégia M&A",
+    theory: "O capital próprio (Ke) exige prêmio de risco superior. A dívida bancária (Kd) gera escudo fiscal (dedutibilidade dos juros). O Leveraged Buyout (LBO) estrutura aquisições usando dívida atrelada ao próprio ativo comprado para maximizar o ROE.",
+    context: "O conselho aprovou a aquisição de um concorrente vital por R$ 30 Milhões. A matriz possui liquidez livre. A taxa exigida pelos acionistas é de 19% a.a. Um sindicato de bancos oferece o financiamento a 11% a.a.", character: "Diretoria de Estratégia M&A",
     options: [
-      { text: "Liquidar a aquisição 100% à vista utilizando o caixa próprio, publicando na imprensa a solidez da empresa por não precisar de financiamentos.", xp: -40, impacts: { caixa: -30000000, margem: -4.0, compliance: 0 }, feedback: "MIOPIA DE ALOCAÇÃO DE CAPITAL. Você sangrou R$ 30M do balanço usando o capital mais caro da firma (19%). O Custo Médio Ponderado (WACC) subiu e o ROE despencou." },
-      { text: "Estruturar a transação em LBO: usar 30% do caixa como entrada e alavancar os 70% restantes no banco, travando os ativos da adquirida como garantia.", xp: 50, impacts: { caixa: -9000000, margem: 5.5, compliance: 10 }, feedback: "DOMÍNIO ABSOLUTO DE FINANÇAS. A aquisição custou apenas R$ 9M em caixa. Você capturou o escudo fiscal dos juros a 11% e explodiu o retorno sobre o capital investido." }
+      { text: "Liquidar a aquisição 100% à vista utilizando o caixa próprio, publicando na imprensa a solidez da empresa por não precisar de financiamentos.", xp: -40, impacts: { caixa: -30000000, margem: -4.0, compliance: 0 }, feedback: "MIOPIA DE ALOCAÇÃO DE CAPITAL. Sangrou R$ 30M do balanço usando o capital mais caro da firma. O WACC subiu e o ROE despencou." },
+      { text: "Estruturar a transação em LBO: usar 30% do caixa como entrada e alavancar os 70% restantes no banco, travando os ativos da adquirida como garantia.", xp: 50, impacts: { caixa: -9000000, margem: 5.5, compliance: 10 }, feedback: "DOMÍNIO ABSOLUTO DE FINANÇAS. A aquisição custou apenas R$ 9M em caixa. Você capturou o escudo fiscal dos juros e explodiu o retorno sobre o capital investido." }
     ]
   },
   {
-    id: 9, tier: 3, criticality: "Alta", points: 42, sector: "Compliance / Controles Internos",
-    title: "Matriz SoD e o Conflito de Acesso Bancário",
-    theory: "No framework do COSO, a Segregação de Funções (SoD) é a espinha dorsal da prevenção. Quem cadastra e agenda ordens de pagamento no ERP não pode possuir privilégios de liberação de token bancário. Falhas nesse ponto viabilizam a criação de empresas fantasmas e sangrias indetectáveis.",
-    context: "Para acelerar a expansão, o gerente de uma filial longínqua recebeu perfil de 'cadastro' no ERP e 'autorizador master' no banco corporativo para destravar fretes noturnos e pagar fornecedores sem depender do fuso da matriz.", character: "Inspetoria de Governança",
-    options: [
-      { text: "Manter a autonomia local temporariamente, mitigando o risco com a exigência de envio de um relatório mensal em Excel assinado pelo gerente.", xp: -30, impacts: { caixa: -1800000, margem: -1.0, compliance: -50 }, feedback: "VULNERABILIDADE EXPLORADA. Controles físicos atrasados não impediram um desvio eletrônico de R$ 1.8M via triangulação de notas frias." },
-      { text: "Revogar o acesso master na hora. O procedimento exige que a filial cadastre a despesa, e exclusivamente a Tesouraria Central libere a TED.", xp: 42, impacts: { caixa: 0, margem: 0, compliance: 35 }, feedback: "BLINDAGEM DO AMBIENTE DE CONTROLE. Você eliminou um vetor crítico de fraude corporativa fechando a brecha no fluxo de aprovação sistêmica." }
-    ]
-  },
-  {
-    id: 10, tier: 4, criticality: "Extrema", points: 50, sector: "Finanças Estruturadas",
+    id: 8, tier: 4, criticality: "Extrema", points: 50, sector: "Finanças Estruturadas",
     title: "Covenants Financeiros e Risco de Cross Default",
-    theory: "Debêntures e linhas de crédito internacionais exigem conformidade contínua de travas financeiras (Covenants). Romper a relação 'Dívida Líquida / Ebitda' aciona a quebra de contrato, permitindo aos credores declarar o vencimento antecipado e imediato de todo o passivo da empresa.",
-    context: "A holding emitiu debêntures com um teto de Covenant estrito de 2,5x. O balanço trimestral fechou com o índice batendo 2,42x. Ignorando isso, a diretoria exige aprovar hoje uma campanha massiva de aquisição de mercado que queimará R$ 12 Milhões à vista.", character: "Comitê de Relações com Investidores",
+    theory: "Linhas de crédito internacionais exigem conformidade contínua de travas financeiras (Covenants). Romper a relação 'Dívida Líquida / Ebitda' aciona a quebra de contrato, permitindo aos credores declarar o vencimento antecipado e imediato do passivo.",
+    context: "A holding emitiu debêntures com um teto de Covenant estrito de 2,5x. O balanço trimestral fechou em 2,42x. Ignorando isso, a diretoria exige aprovar hoje uma campanha de aquisição de mercado que queimará R$ 12 Milhões à vista.", character: "Comitê de Relações com Investidores",
     options: [
-      { text: "Aprovar a verba de marketing para não travar o crescimento da receita, operando na esperança de que os bancos não executem a dívida em caso de leve estouro.", xp: -50, impacts: { caixa: -12000000, margem: -2.0, compliance: -60 }, feedback: "RISCO DE RUÍNA CONCRETIZADO. A queima de R$ 12M elevou a Dívida Líquida. O covenant de 2.5x estourou e os credores bloquearam as contas para execução sumária." },
-      { text: "Vetar a campanha categoricamente. Instituir um regime de retenção de liquidez e contenção de OPEX até que o indicador recue para uma margem de segurança de 2,0x.", xp: 50, impacts: { caixa: 5500000, margem: 1.5, compliance: 40 }, feedback: "PROTEÇÃO FIDUCIÁRIA. Você enfrentou a diretoria, protegeu a solidez contratual perante o mercado e garantiu a sobrevivência do CNPJ. A imprudência foi evitada." }
+      { text: "Aprovar a verba de marketing para não travar o crescimento, operando na esperança de que os bancos não executem a dívida em caso de leve estouro.", xp: -50, impacts: { caixa: -12000000, margem: -2.0, compliance: -60 }, feedback: "RISCO DE RUÍNA CONCRETIZADO. A queima de R$ 12M elevou a Dívida Líquida. O covenant estourou e os credores bloquearam as contas para execução sumária." },
+      { text: "Vetar a campanha categoricamente. Instituir um regime de retenção de liquidez até que o indicador recue para uma margem de segurança de 2,0x.", xp: 50, impacts: { caixa: 5500000, margem: 1.5, compliance: 40 }, feedback: "PROTEÇÃO FIDUCIÁRIA. Você enfrentou a diretoria, protegeu a solidez contratual perante o mercado e garantiu a sobrevivência do CNPJ." }
     ]
   }
 ];
 
 export default function CodigoAzulGame() {
-  const [nickname, setNickname] = useState("");
+  // --- ESTADOS DE AUTENTICAÇÃO E ONBOARDING ---
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [forgotPasswordMsg, setForgotPasswordMsg] = useState("");
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  
+  const [authError, setAuthError] = useState("");
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  
+  const [needsCompanySetup, setNeedsCompanySetup] = useState(false);
+  const [companyNameInput, setCompanyNameInput] = useState("");
+  const [playerNameInput, setPlayerNameInput] = useState(""); // Novo estado para o Nome do Operador
 
+  // --- ESTADOS CORE DO JOGO ---
   const [playerName, setPlayerName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
   
   const [xp, setXp] = useState(0);
   const [caixa, setCaixa] = useState(5000000);
@@ -210,19 +192,20 @@ export default function CodigoAzulGame() {
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- FUNÇÃO ASSÍNCRONA DE SALVAMENTO NO FIRESTORE ---
+  // --- FUNÇÕES DE BANCO DE DADOS (FIRESTORE) ---
   const saveToDB = async () => {
-    if (!nickname) return;
+    if (!email) return;
     try {
-      await setDoc(doc(db, "users", nickname), {
+      await setDoc(doc(db, "users", email.toLowerCase()), {
         password: password,
         data: { 
-          playerName, companyName, xp, caixa, margem, compliance, 
+          playerName, phone: telefone, email: email.toLowerCase(),
+          companyName, xp, caixa, margem, compliance, 
           currentStage, sessionScenarios, sessionStartStats, showDRE 
         }
       });
     } catch (e) {
-      console.error("Erro ao salvar no Firestore: ", e);
+      console.error("Erro no Data Center: ", e);
     }
   };
 
@@ -230,7 +213,6 @@ export default function CodigoAzulGame() {
     setIsLoading(false);
   }, []);
 
-  // Disparo do salvamento em nuvem quando estados cruciais mudam
   useEffect(() => {
     if (gameStarted && sessionScenarios.length > 0 && !isGameOver && !currentBlackSwan) {
       saveToDB();
@@ -245,73 +227,97 @@ export default function CodigoAzulGame() {
     return shuffleArray(eligibleScenarios.length > 0 ? eligibleScenarios : allScenarios).slice(0, 10);
   };
 
-  // --- LOGIN ASSÍNCRONO CONECTADO AO FIRESTORE ---
-  const handleLogin = async (e: React.FormEvent) => {
+  // --- CONTROLE DE AUTENTICAÇÃO ---
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanNickname = nickname.trim().toLowerCase();
+    const cleanEmail = email.trim().toLowerCase();
     const cleanPassword = password.trim();
-    if (!cleanNickname || !cleanPassword) { setLoginError("Credenciais inválidas."); return; }
+    
+    if (!cleanEmail || !cleanPassword) { setAuthError("Preencha todos os campos obrigatórios."); return; }
+    if (authMode === 'register' && (!nome.trim() || !telefone.trim())) {
+      setAuthError("Preencha Nome e Telefone para concluir o cadastro."); return;
+    }
 
     setIsAuthenticating(true);
-    setLoginError("");
-    setForgotPasswordMsg("");
+    setAuthError("");
 
     try {
-      const docRef = doc(db, "users", cleanNickname);
+      const docRef = doc(db, "users", cleanEmail);
       const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        if (userData.password === cleanPassword) {
-          const d = userData.data;
-          setPlayerName(d.playerName); setCompanyName(d.companyName);
-          setXp(d.xp || 0); 
-          setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
-          setCurrentStage(d.currentStage || 0); setSessionScenarios(d.sessionScenarios || []);
-          setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
-          setShowDRE(d.showDRE || false);
+      if (authMode === 'login') {
+        if (docSnap.exists() && docSnap.data().password === cleanPassword) {
+          const d = docSnap.data().data;
+          setPlayerName(d.playerName); setTelefone(d.phone || "");
           
-          if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
-          setGameStarted(true);
+          if (!d.companyName) {
+            setPlayerNameInput(d.playerName || "");
+            setNeedsCompanySetup(true);
+          } else {
+            setCompanyName(d.companyName);
+            setXp(d.xp || 0); 
+            setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
+            setCurrentStage(d.currentStage || 0); setSessionScenarios(d.sessionScenarios || []);
+            setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
+            setShowDRE(d.showDRE || false);
+            
+            if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
+            setGameStarted(true);
+          }
         } else {
-          setLoginError("Acesso negado. Senha incorreta.");
+          setAuthError("E-mail ou senha incorretos.");
         }
       } else {
-        // NOVO USUÁRIO: Cria na nuvem
-        const newCompany = generateCompanyName();
-        const initialPool = generateSessionPool(1);
-        
-        await setDoc(docRef, {
-          password: cleanPassword,
-          data: { 
-            playerName: cleanNickname, companyName: newCompany, xp: 0, 
-            caixa: 5000000, margem: 20.0, compliance: 100, 
-            currentStage: 0, sessionScenarios: initialPool,
-            sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
-          }
-        });
-        
-        setPlayerName(cleanNickname); setCompanyName(newCompany); 
-        setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-        setCurrentStage(0); setSessionScenarios(initialPool);
-        setSessionStartStats({ caixa: 5000000, margem: 20.0 });
-        setTimeLeft(60); setGameStarted(true); setIsGameOver(false); setShowDRE(false);
+        // MODO REGISTRO
+        if (docSnap.exists()) {
+          setAuthError("E-mail já cadastrado na base. Faça login.");
+        } else {
+          const initialPool = generateSessionPool(1);
+          await setDoc(docRef, {
+            password: cleanPassword,
+            data: { 
+              playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail,
+              companyName: "", xp: 0, 
+              caixa: 5000000, margem: 20.0, compliance: 100, 
+              currentStage: 0, sessionScenarios: initialPool,
+              sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
+            }
+          });
+          
+          setPlayerName(nome.trim());
+          setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
+          setCurrentStage(0); setSessionScenarios(initialPool);
+          setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+          
+          setPlayerNameInput(nome.trim()); // Pré-preenche com o nome de cadastro
+          setNeedsCompanySetup(true);
+        }
       }
     } catch (e) {
       console.error(e);
-      setLoginError("Falha de conexão com o banco de dados em nuvem. Verifique permissões.");
+      setAuthError("Falha de conexão com o banco de dados em nuvem.");
     } finally {
       setIsAuthenticating(false);
     }
   };
 
-  const handleForgotPassword = () => {
-    setForgotPasswordMsg("Como o banco de dados em nuvem já foi ativado (Firestore), a próxima atualização de infraestrutura conectará o Firebase Auth para disparar e-mails reais de redefinição de senha para sua caixa de entrada.");
+  const handleCompanySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!companyNameInput.trim() || !playerNameInput.trim()) return;
+    
+    setCompanyName(companyNameInput.trim());
+    setPlayerName(playerNameInput.trim()); // Salva o nome de crachá escolhido
+    setNeedsCompanySetup(false);
+    setTimeLeft(60); 
+    setGameStarted(true); 
+    setIsGameOver(false); 
+    setShowDRE(false);
   };
 
   const handleLogout = async () => {
-    if(!isGameOver) await saveToDB();
-    setGameStarted(false); setNickname(""); setPassword(""); setLoginError("");
+    if(gameStarted && !isGameOver) await saveToDB();
+    setGameStarted(false); setNeedsCompanySetup(false);
+    setEmail(""); setPassword(""); setAuthError(""); setNome(""); setTelefone("");
     setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentBlackSwan(null);
   };
 
@@ -320,17 +326,21 @@ export default function CodigoAzulGame() {
   };
 
   const handleResetCareer = () => {
-    if (confirm("Confirma a liquidação da empresa? Seu XP e Status serão destruídos do Cloud Database.")) {
-      const newCompany = generateCompanyName();
+    if (confirm("Confirma a liquidação da empresa? Seu histórico no Cloud Database será reiniciado.")) {
       const initialPool = generateSessionPool(1);
-      setCompanyName(newCompany); setXp(0); 
-      setCaixa(5000000); setMargem(20.0); setCompliance(100);
+      setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
       setCurrentStage(0); setSessionScenarios(initialPool);
       setSessionStartStats({ caixa: 5000000, margem: 20.0 });
-      setFeedback(null); setPromotionPending(false); setTimeLeft(60); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); setCurrentBlackSwan(null);
+      setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); setCurrentBlackSwan(null);
+      
+      setGameStarted(false);
+      setCompanyNameInput("");
+      setPlayerNameInput(playerName); // Mantém o crachá atual sugerido
+      setNeedsCompanySetup(true);
     }
   };
 
+  // --- MECÂNICA DE JOGO ---
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
   const progressToNext = nextLevel ? ((xp - currentLevel.minXp) / (nextLevel.minXp - currentLevel.minXp)) * 100 : 100;
@@ -344,7 +354,7 @@ export default function CodigoAzulGame() {
   useEffect(() => {
     if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && !currentBlackSwan && gameStarted && currentLevel.hasTimer) {
       const timeoutImpacts = { caixa: -500000, margem: -1.5, compliance: -10 };
-      handleChoice(-15, "TEMPO ESGOTADO. Hesitação corporativa sob fogo inimigo destrói liquidez imediata e afasta investidores.", true, timeoutImpacts);
+      handleChoice(-15, "TEMPO ESGOTADO. Hesitação corporativa sob fogo inimigo destrói liquidez e afasta investidores.", true, timeoutImpacts);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, gameStarted, currentLevel.hasTimer]);
@@ -362,7 +372,7 @@ export default function CodigoAzulGame() {
       compliance: correctOption.impacts?.compliance || 0,
     };
 
-    handleChoice(correctOption.xp, `🤖 IA MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados via API do Gemini): ${correctOption.feedback}`, false, combinedImpacts);
+    handleChoice(correctOption.xp, `🤖 IA MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados): ${correctOption.feedback}`, false, combinedImpacts);
   };
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false, impacts: any = null) => {
@@ -391,7 +401,7 @@ export default function CodigoAzulGame() {
       setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi aniquilado sumariamente. Sem liquidez imediata para honrar a folha de pagamento e impostos, os credores pediram a recuperação judicial da holding."); return;
     }
     if (newCompliance <= 0) {
-      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. O nível de compliance atingiu margens inaceitáveis. O acúmulo de sonegações, infrações na matriz SoD e violações do IFRS desencadearam bloqueio cautelar das contas."); return;
+      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. O nível de compliance atingiu margens inaceitáveis. O acúmulo de infrações na matriz SoD e violações fiscais desencadearam bloqueio cautelar das contas."); return;
     }
 
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
@@ -458,7 +468,53 @@ export default function CodigoAzulGame() {
 
   if (isLoading) return <div className="min-h-screen bg-[#060c17] flex items-center justify-center text-cyan-500 font-mono tracking-widest text-sm">Sincronizando Terminal Corporativo...</div>;
 
-  // --- TELA DE LOGIN ---
+  // --- TELA DE ONBOARDING: CRIAÇÃO DO CNPJ E CRACHÁ ---
+  if (needsCompanySetup) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div className="z-10 bg-[#0f172a]/80 backdrop-blur-2xl p-10 rounded-2xl border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.1)] max-w-md w-full text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-cyan-950/50 border border-cyan-500/50 flex items-center justify-center">
+             <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+          </div>
+          <h2 className="text-[10px] font-mono text-cyan-500 uppercase tracking-[0.4em] mb-2">Abertura de Empresa</h2>
+          <h1 className="text-2xl font-light text-slate-100 mb-8 tracking-wide">Assinatura de <span className="font-semibold text-cyan-400">Posse</span></h1>
+          
+          <form onSubmit={handleCompanySubmit} className="space-y-5">
+            <div className="space-y-1 text-left">
+              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Nome da Corporação</label>
+              <input 
+                type="text" 
+                value={companyNameInput} 
+                onChange={(e) => setCompanyNameInput(e.target.value)} 
+                placeholder="Ex: Nexus Corp, Indústria Alfa..." 
+                className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" 
+                required 
+              />
+            </div>
+            <div className="space-y-1 text-left">
+              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Seu Nome no Crachá</label>
+              <input 
+                type="text" 
+                value={playerNameInput} 
+                onChange={(e) => setPlayerNameInput(e.target.value)} 
+                placeholder="Ex: Pedro Monte, Sr. Diretor..." 
+                className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" 
+                required 
+              />
+            </div>
+            <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-mono tracking-widest py-4 px-4 rounded-lg transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] uppercase mt-4">
+              Iniciar Operação
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // --- TELA DE LOGIN / REGISTRO ---
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
@@ -466,32 +522,59 @@ export default function CodigoAzulGame() {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-600/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <div className="z-10 bg-[#0f172a]/70 backdrop-blur-2xl p-10 rounded-2xl border border-white/5 shadow-2xl max-w-sm w-full relative">
+        <div className="z-10 bg-[#0f172a]/70 backdrop-blur-2xl p-8 md:p-10 rounded-2xl border border-white/5 shadow-2xl max-w-md w-full relative">
           <div className="text-center mb-8">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full border-2 border-cyan-500/40 bg-slate-900 overflow-hidden shadow-[0_0_20px_rgba(6,182,212,0.2)]">
-              <img src="https://images2.imgbox.com/71/2a/v5KjH8Lp_o.png" alt="Executivo" className="w-full h-full object-cover object-top" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full border-2 border-cyan-500/40 bg-slate-900 overflow-hidden shadow-[0_0_20px_rgba(6,182,212,0.2)] flex items-center justify-center">
+              <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
             </div>
             <h1 className="text-2xl font-light text-slate-200 tracking-[0.2em] uppercase">Código <span className="font-semibold text-cyan-400">Azul</span></h1>
             <p className="text-slate-500 text-[9px] tracking-[0.3em] mt-1 uppercase font-mono">SaaS Fiduciário Corporativo</p>
           </div>
-          <form onSubmit={handleLogin} className="space-y-4">
+
+          <div className="flex bg-[#020617]/50 rounded-lg p-1 mb-6 border border-white/5">
+            <button 
+              onClick={() => { setAuthMode('login'); setAuthError(""); }}
+              className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'login' ? 'bg-cyan-900/50 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              Acessar
+            </button>
+            <button 
+              onClick={() => { setAuthMode('register'); setAuthError(""); }}
+              className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'register' ? 'bg-cyan-900/50 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              Criar Conta
+            </button>
+          </div>
+
+          <form onSubmit={handleAuth} className="space-y-4">
+            {authMode === 'register' && (
+              <>
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Nome Completo</label>
+                  <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Seu nome real" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">WhatsApp</label>
+                  <input type="tel" value={telefone} onChange={(e) => setTelefone(e.target.value)} placeholder="(DD) 90000-0000" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
+                </div>
+              </>
+            )}
+
             <div className="space-y-1">
-              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Credencial de Operador</label>
-              <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="diretoria.corp" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
+              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">E-mail Corporativo</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ceo@empresa.com" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
             </div>
             <div className="space-y-1">
               <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono flex justify-between">
-                <span>Chave de Segurança</span>
-                <button type="button" onClick={handleForgotPassword} className="text-cyan-600 hover:text-cyan-400 underline">Esqueci a Senha</button>
+                <span>Senha Segura</span>
               </label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
             </div>
             
-            {loginError && <div className="text-red-400 text-[11px] font-mono text-center p-2 rounded bg-red-500/10 border border-red-500/20">{loginError}</div>}
-            {forgotPasswordMsg && <div className="text-amber-400 text-[10px] text-justify p-3 rounded bg-amber-500/10 border border-amber-500/20 leading-relaxed">{forgotPasswordMsg}</div>}
+            {authError && <div className="text-red-400 text-[10px] font-mono text-center p-2 rounded bg-red-500/10 border border-red-500/20">{authError}</div>}
 
             <button disabled={isAuthenticating} type="submit" className={`w-full text-cyan-400 text-xs font-mono tracking-widest py-3.5 px-4 rounded-lg transition-all mt-4 ${isAuthenticating ? 'bg-cyan-950/20 border border-cyan-900 opacity-50 cursor-not-allowed' : 'bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800 hover:border-cyan-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]'}`}>
-              {isAuthenticating ? 'AUTENTICANDO NUVEM...' : 'CONECTAR FIREBASE'}
+              {isAuthenticating ? 'CONECTANDO NUVEM...' : authMode === 'login' ? 'ACESSAR TERMINAL' : 'FINALIZAR CADASTRO'}
             </button>
           </form>
         </div>
@@ -737,7 +820,7 @@ export default function CodigoAzulGame() {
                   onClick={handleConsultoria}
                   className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-[0.2em] uppercase ${isProcessing || caixa < 50000 ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-amber-950/20 border-amber-800/50 text-amber-500 hover:bg-amber-900/40 hover:border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.05)] hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]'}`}
                 >
-                  🤖 Acionar Consultoria Técnica (Debita R$ 50.000 do Caixa)
+                  🤖 Acionar Consultoria Pedro Monte (Debita R$ 50.000 do Caixa)
                 </button>
               </div>
             </div>
@@ -771,7 +854,7 @@ export default function CodigoAzulGame() {
             )}
 
             <div className="bg-[#020617]/50 p-6 md:p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative">
-               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer: {scenario.character}</span>
+               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer Técnico:</span>
               <p className="text-slate-300 text-sm font-light leading-relaxed mt-2 text-justify">{feedback}</p>
             </div>
 
@@ -782,7 +865,7 @@ export default function CodigoAzulGame() {
         )}
 
         <div className="flex flex-wrap items-center justify-center gap-6 pb-6 pt-2 font-mono">
-          <button onClick={handleManualSave} className="text-[9px] text-cyan-600/60 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">{saveStatus || "Gravar Data Center (Nuvevem)"}</button>
+          <button onClick={handleManualSave} className="text-[9px] text-cyan-600/60 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">{saveStatus || "Gravar Data Center (Nuvem)"}</button>
           <span className="text-slate-800">/</span><button onClick={handleLogout} className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-[0.2em]">Desconectar (Logout)</button>
           <span className="text-slate-800">/</span><button onClick={handleResetCareer} className="text-[9px] text-slate-600 hover:text-red-400 transition-colors uppercase tracking-[0.2em]">Liquidacao Total (Reset)</button>
         </div>
