@@ -92,7 +92,7 @@ export default function CodigoAzulGame() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
   
-  const [timeLeft, setTimeLeft] = useState(90);
+  const [timeLeft, setTimeLeft] = useState(120); // Tempo estendido para leitura densa
   const [promotionPending, setPromotionPending] = useState(false);
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -123,57 +123,57 @@ export default function CodigoAzulGame() {
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- GERAÇÃO DE CASO DE ENSINO COM PROFUNDIDADE EXTREMA ---
+  // --- GERAÇÃO DE CASO COM EXIGÊNCIA ABSOLUTA DE PROFUNDIDADE TEÓRICA ---
   const fetchScenarioFromAI = async () => {
     if (isGeneratingScenario) return;
     setIsGeneratingScenario(true);
     setCurrentScenario(null);
     setFeedback(null);
     setSupplementaryComment("");
-    setTimeLeft(90);
+    setTimeLeft(120);
 
-    const prompt = `Você é o reitor sênior da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático de altíssimo nível acadêmico e técnico em formato JSON estrito.
+    const prompt = `Você é o reitor sênior da escola de negócios de alta performance 'Código Azul'. Sua missão é gerar um Estudo de Caso Prático com PROFUNDIDADE TEÓRICA EXTREMA, rigor acadêmico implacável e formatação em JSON estrito.
     Nível do aluno: ${currentLevel.title} (Tier ${currentLevel.tier}).
-    Indicadores da empresa (${companyName}): Caixa R$ ${caixa}, Margem ${margem}%, Compliance ${compliance}%.
-    Estágio atual da jornada: Questão ${currentStage + 1} de 10. Garanta total inovação e aleatoriedade temática em relação a cenários anteriores comuns (explore temas como CPC 27 Imobilizado, CPC 06 Arrendamentos, IFRS 9 Perdas Esperadas, IVA Dual/Reforma Tributária, Custo de Capital WACC ou Governança SoD).
-
-    Requisitos obrigatórios:
-    1. A teoria deve ser extremamente densa, aprofundada, explicando o raciocínio contábil/financeiro, leis e normas aplicáveis (mínimo de 4 linhas conceituais sólidas).
-    2. O contexto deve simular uma crise real e tensa no CNPJ, com números, prazos e pressões mercadológicas.
-    3. Crie 3 opções de respostas objetivas estratégicas (uma excelente, uma mediana/paliativa e uma desastrosa).
+    Indicadores da empresa (${companyName}): Caixa R$ ${caixa}, Margem EBITDA ${margem}%, Compliance ${compliance}%.
+    Estágio atual: Questão ${currentStage + 1} de 10.
+    
+    DIRETRIZ INEGOCIÁVEL DE CONTEÚDO:
+    - O campo 'theory' NÃO PODE SER RASO. Ele deve conter um ensinamento corporativo denso, estruturado em parágrafos normativos, citando explicitamente CPCs, IFRS, normas do BACEN, CVM ou leis da Reforma Tributária (EC 132/IVA Dual). Explique o conceito contábil, o impacto patrimonial (Ativo, Passivo ou PL) e o efeito estrutural no Fluxo de Caixa Livre (FCF). Mínimo de 6 linhas de explicações puras e técnicas.
+    - O campo 'context' deve apresentar uma situação real e tensa no CNPJ, com números detalhados, prazos e a pressão sufocante da diretoria ou mercado.
+    - Crie 3 opções de respostas objetivas de altíssimo nível (uma ótima/estratégica, uma mediana/paliativa e uma desastrosa).
 
     Retorne APENAS um JSON válido nesta estrutura exata, sem formatação markdown:
     {
-      "sector": "Setor do Desafio",
+      "sector": "Setor do Desafio (ex: Controladoria & Engenharia Financeira)",
       "criticality": "Alta",
-      "title": "Título do Caso Prático",
-      "theory": "Fundamentação teórica rigorosa, detalhando princípios contábeis, normativos e econômicos...",
-      "context": "Situação simulando o dia a dia real no CNPJ, detalhando a pressão e os indicadores financeiros...",
-      "character": "Autoridade cobrando a decisão (ex: Auditoria Externa, Conselho, Banco)",
+      "title": "Título Imponente do Caso Prático",
+      "theory": "Texto longo, robusto e acadêmico explicando a norma, o princípio contábil, o impacto de balanço e a mecânica financeira do problema...",
+      "context": "Descrição cirúrgica de um problema financeiro ou contábil real estourando na empresa...",
+      "character": "Autoridade executiva cobrando a tomada de decisão (ex: Auditoria Independente, Conselho de Administração)",
       "options": [
         {
           "id": "A",
-          "text": "Estratégia objetiva de alta gestão...",
+          "text": "Estratégia objetiva de alta gestão avançada...",
           "xp": 35,
           "isBest": true,
           "impacts": { "caixa": 1000000, "margem": 1.5, "compliance": 10 },
-          "feedback": "Parecer técnico explicando o acerto sob a ótica da alta gestão e da norma aplicável."
+          "feedback": "Parecer técnico aprofundado explicando por que esta decisão garantiu a blindagem patrimonial e alinhamento normativo."
         },
         {
           "id": "B",
-          "text": "Estratégia intermediária ou paliativa...",
+          "text": "Estratégia intermediária ou paliativa de curto prazo...",
           "xp": 10,
           "isBest": false,
           "impacts": { "caixa": 0, "margem": -0.5, "compliance": 0 },
-          "feedback": "Parecer técnico explicando que a medida foi paliativa e gerou passivos ocultos."
+          "feedback": "Parecer técnico explicando que a medida foi superficial e apenas adiou a insolvência estrutural."
         },
         {
           "id": "C",
-          "text": "Estratégia desastrosa ou especulativa...",
+          "text": "Estratégia desastrosa, especulativa ou de maquiagem contábil...",
           "xp": -40,
           "isBest": false,
           "impacts": { "caixa": -2000000, "margem": -4.0, "compliance": -25 },
-          "feedback": "Parecer técnico explicando a ruína financeira gerada por essa escolha equivocada."
+          "feedback": "Parecer técnico explicando a violação normativa cometida e o colapso financeiro gerado."
         }
       ]
     }`;
@@ -182,7 +182,7 @@ export default function CodigoAzulGame() {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9 } })
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8 } })
       });
 
       const data = await response.json();
@@ -195,15 +195,39 @@ export default function CodigoAzulGame() {
       setCurrentScenario(parsedScenario);
     } catch (error) {
       console.error("Erro ao gerar cenário da IA:", error);
+      // Fallback robusto se a API falhar
       setCurrentScenario({
-        sector: "Controladoria Estratégica", criticality: "Alta", title: "Otimização de Capital de Giro",
-        theory: "Segundo as premissas do CPC 00 e a gestão de solvência, o descasamento de prazos corrói o Ebitda livre.",
-        context: "O caixa reduziu e as duplicatas a receber estão longas.",
-        character: "Diretoria Executiva",
+        sector: "Controladoria & Solvência",
+        criticality: "Extrema",
+        title: "Gestão do Ciclo de Conversão de Caixa e Efeito Tesoura",
+        theory: "O Ciclo de Conversão de Caixa (CCC), regulado estruturalmente pelos princípios de solvência patrimonial (CPC 00), mede o tempo em que o recurso financeiro permanece imobilizado nas operações. Quando a empresa cresce as vendas a prazo (aumentando o PMR) financiando com fornecedores à vista (reduzindo o PMP), ocorre o Efeito Tesoura: o lucro contábil sobe na DRE, mas a liquidez desaparece, exigindo capital de giro estressado que corrói o FCF.",
+        context: "Sua rede de distribuição faturou 40% a mais este trimestre. No entanto, o caixa operacional amanheceu descoberto em R$ 1,2 Milhão. Os fornecedores cortaram o prazo de 30 para 10 dias, enquanto os clientes corporativos agora pagam em até 75 dias. O banco oferece crédito rotativo a taxas de 5% ao mês.",
+        character: "Comitê de Tesouraria",
         options: shuffleArray([
-          { id: "A", text: "Travar crédito e antecipar recebíveis com trava de spread.", xp: 30, isBest: true, impacts: { caixa: 800000, margem: -0.5, compliance: 10 }, feedback: "Correto. Protegeu a liquidez." },
-          { id: "B", text: "Manter a operação sem mudanças e aguardar.", xp: -20, isBest: false, impacts: { caixa: -500000, margem: -2.0, compliance: -5 }, feedback: "Incorreto. Gerou colapso de caixa." },
-          { id: "C", text: "Tomar empréstimo bancário a juros rotativos altos.", xp: -40, isBest: false, impacts: { caixa: 200000, margem: -5.0, compliance: -15 }, feedback: "Desastroso. Dívida cara." }
+          {
+            id: "A",
+            "text": "Travar vendas a prazo para novos clientes sem rating de crédito, antecipar recebíveis seletivos com trava de spread e renegociar PMP com fornecedores críticos.",
+            xp: 35,
+            isBest: true,
+            impacts: { caixa: 1200000, margem: 1.0, compliance: 15 },
+            feedback: "CIRÚRGICO. Você estancou o Efeito Tesoura, reequilibrou o CCC e preservou a margem sem se endividar no rotativo caro."
+          },
+          {
+            id: "B",
+            "text": "Aceitar integralmente a linha de crédito rotativo bancário a 5% ao mês para cobrir os boletos imediatos dos fornecedores.",
+            xp: 10,
+            isBest: false,
+            impacts: { caixa: 1200000, margem: -2.5, compliance: 0 },
+            feedback: "PALIATIVO PERigoso. Você comprou tempo com dívida cara, destruindo a margem líquida e mascarando o problema estrutural."
+          },
+          {
+            id: "C",
+            "text": "Continuar expandindo as vendas agressivamente em 60 dias para diluir os custos fixos, ignorando o buraco no caixa de curto prazo.",
+            xp: -40,
+            isBest: false,
+            impacts: { caixa: -2500000, margem: -5.0, compliance: -30 },
+            feedback: "RUÍNA OPERACIONAL. Quanto mais você vendeu nas regras atuais, mais rápido acelerou a falência por falta de capital de giro."
+          }
         ])
       });
     } finally {
@@ -211,7 +235,6 @@ export default function CodigoAzulGame() {
     }
   };
 
-  // Disparo seguro do gerador quando o estágio muda ou o cenário é limpo
   useEffect(() => {
     if (gameStarted && !isGameOver && !showDRE && !feedback && !promotionPending && !currentScenario && !isGeneratingScenario) {
       fetchScenarioFromAI();
@@ -220,7 +243,7 @@ export default function CodigoAzulGame() {
   }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentScenario]);
 
 
-  // --- AVALIAÇÃO DO COMENTÁRIO COMPLEMENTAR PELA IA ---
+  // --- AVALIAÇÃO DE BÔNUS DO COMENTÁRIO COMPLEMENTAR ---
   const handleOptionSelectWithComment = async (selectedOption: any) => {
     if (isEvaluatingChoice || isGameOver) return;
     setIsEvaluatingChoice(true);
@@ -232,13 +255,13 @@ export default function CodigoAzulGame() {
     if (supplementaryComment.trim()) {
       try {
         const prompt = `Você é o reitor do 'Código Azul'. O aluno escolheu a opção "${selectedOption.text}" para o caso: "${currentScenario.context}".
-        Comentário complementar do aluno: "${supplementaryComment}"
-        Avalie se este comentário é tecnicamente ASSERTIVO e traz visão de CFO.
+        Comentário complementar redigido pelo aluno: "${supplementaryComment}"
+        Avalie se este comentário é tecnicamente ASSERTIVO, profundo e demonstra domínio de CFO.
         Retorne APENAS um JSON estrito:
         {
           "isAssertive": [true/false],
           "bonusXp": [número entre 10 e 20 se true, 0 se false],
-          "commentEvaluation": "Feedback de 1 parágrafo sobre o argumento."
+          "commentEvaluation": "Feedback de 1 parágrafo avaliando criticamente o argumento complementar do aluno."
         }`;
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -254,9 +277,9 @@ export default function CodigoAzulGame() {
 
         if (evaluation.isAssertive) {
           finalXp += evaluation.bonusXp;
-          bonusMessage = `\n\n⭐ BÔNUS DO ESTRATEGISTA: Sua tese complementar foi julgada ASSERTIVA pela banca (+${evaluation.bonusXp} XP).\nAnálise: ${evaluation.commentEvaluation}`;
+          bonusMessage = `\n\n⭐ BÔNUS DO ESTRATEGISTA: Sua tese complementar foi julgada ASSERTIVA pela banca acadêmica (+${evaluation.bonusXp} XP).\nAnálise da Banca: ${evaluation.commentEvaluation}`;
         } else {
-          bonusMessage = `\n\n💡 NOTA DA BANCA SOBRE O COMENTÁRIO: ${evaluation.commentEvaluation}`;
+          bonusMessage = `\n\n💡 NOTA DA BANCA SOBRE O SEU COMENTÁRIO: ${evaluation.commentEvaluation}`;
         }
       } catch (e) {
         console.error("Erro ao avaliar bônus:", e);
@@ -301,7 +324,7 @@ export default function CodigoAzulGame() {
         if (!nome.trim() || !telefone.trim()) { setAuthError("Preencha Nome e WhatsApp."); setIsAuthenticating(false); return; }
         if (docSnap.exists()) { setAuthError("E-mail já cadastrado."); } 
         else {
-          await docRef.type ? null : setDoc(docRef, {
+          await setDoc(docRef, {
             password: cleanPassword,
             data: { 
               playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail,
@@ -330,7 +353,7 @@ export default function CodigoAzulGame() {
     e.preventDefault();
     if (!companyNameInput.trim() || !playerNameInput.trim()) return;
     setCompanyName(companyNameInput.trim()); setPlayerName(playerNameInput.trim());
-    setNeedsCompanySetup(false); setCurrentScenario(null); setTimeLeft(90); 
+    setNeedsCompanySetup(false); setCurrentScenario(null); setTimeLeft(120); 
     setGameStarted(true); setIsGameOver(false); setShowDRE(false);
   };
 
@@ -360,7 +383,7 @@ export default function CodigoAzulGame() {
 
   useEffect(() => {
     if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && currentScenario && gameStarted && currentLevel.hasTimer && !isEvaluatingChoice) {
-      handleChoice(-15, "TEMPO ESGOTADO. O conselho rejeitou a inércia por falta de decisão no prazo.", true, { caixa: -500000, margem: -1.5, compliance: -10 });
+      handleChoice(-15, "TEMPO ESGOTADO. O conselho rejeitou a inércia por falta de deliberação no prazo.", true, { caixa: -500000, margem: -1.5, compliance: -10 });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentScenario, gameStarted, currentLevel.hasTimer, isEvaluatingChoice]);
@@ -370,7 +393,7 @@ export default function CodigoAzulGame() {
 
     let bonus = 0;
     if (baseXpGained > 0 && !isTimeout && currentLevel.hasTimer) {
-      if (timeLeft >= 60) bonus = 5; else if (timeLeft >= 30) bonus = 2;
+      if (timeLeft >= 80) bonus = 5; else if (timeLeft >= 40) bonus = 2;
     }
     
     const totalXpGained = baseXpGained + bonus;
@@ -401,18 +424,13 @@ export default function CodigoAzulGame() {
     setFeedback(feedbackText);
   };
 
-  // Correção crítica do avanço de estágio
   const proceedToNextQuestion = () => {
-    setPromotionPending(false); 
-    setPromotedLevel(null); 
-    setFeedback(null); 
-    setLastXpChange(null); 
-    setLastImpacts(null); 
-    setSupplementaryComment("");
+    setPromotionPending(false); setPromotedLevel(null); setFeedback(null); 
+    setLastXpChange(null); setLastImpacts(null); setSupplementaryComment("");
     
     if (currentStage < 9) { 
       setCurrentStage(prev => prev + 1); 
-      setCurrentScenario(null); // Força o useEffect a puxar novo caso prático
+      setCurrentScenario(null); 
     } else { 
       setShowDRE(true); 
     }
@@ -558,9 +576,9 @@ export default function CodigoAzulGame() {
     );
   }
 
-  const timerColor = timeLeft > 45 ? 'bg-cyan-500' : timeLeft > 20 ? 'bg-amber-500' : 'bg-red-500';
+  const timerColor = timeLeft > 60 ? 'bg-cyan-500' : timeLeft > 30 ? 'bg-amber-500' : 'bg-red-500';
 
-  // --- PAINEL PRINCIPAL DA ESCOLA ---
+  // --- PAINEL PRINCIPAL DA ESCOLA COM TEORIA Densa ---
   return (
     <div className="min-h-screen bg-[#020617] text-slate-300 p-4 md:p-8 font-sans relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"></div>
@@ -589,7 +607,7 @@ export default function CodigoAzulGame() {
         {!feedback ? (
           <main className="bg-[#0f172a]/40 p-6 md:p-10 rounded-2xl border border-white/5 shadow-2xl relative">
             {currentLevel.hasTimer && (
-              <div className="absolute top-0 left-0 w-full h-1 bg-[#020617] rounded-t-2xl"><div className={`h-full ${timerColor} transition-all`} style={{ width: `${(timeLeft / 90) * 100}%` }}></div></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#020617] rounded-t-2xl"><div className={`h-full ${timerColor} transition-all`} style={{ width: `${(timeLeft / 120) * 100}%` }}></div></div>
             )}
 
             <div className="mb-6 border-b border-white/5 pb-4 mt-2">
@@ -597,11 +615,11 @@ export default function CodigoAzulGame() {
               <h2 className="text-xl md:text-2xl font-light text-slate-100 tracking-wide">{currentScenario.title}</h2>
             </div>
 
-            {/* DUPLO BLOCO: TEORIA PROFUNDA + REALIDADE DO DIA A DIA */}
+            {/* DUPLO BLOCO COM TEORIA DENSIDADE MÁXIMA */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-[#020617]/50 p-6 rounded-xl border border-cyan-900/40">
                 <h3 className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> 1. Fundamentação Teórica & Normativa
+                  <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> 1. Fundamentação Teórica & Normativa (Aprofundada)
                 </h3>
                 <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{currentScenario.theory}</p>
               </div>
@@ -615,7 +633,7 @@ export default function CodigoAzulGame() {
               </div>
             </div>
 
-            {/* QUADRO DE COMENTÁRIO COMPLEMENTAR (OPCIONAL PARA BÔNUS) */}
+            {/* QUADRO DE COMENTÁRIO COMPLEMENTAR (BÔNUS) */}
             <div className="mb-6 bg-[#020617]/30 p-5 rounded-xl border border-slate-800">
               <label className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block mb-2">
                 ⭐ Quadro de Comentário Complementar (Opcional — Justifique sua tese e ganhe BÔNUS em XP se a banca julgar assertivo):
@@ -646,7 +664,7 @@ export default function CodigoAzulGame() {
             </div>
           </main>
         ) : (
-          /* FEEDBACK PEDAGÓGICO DA TESE E BÔNUS */
+          /* FEEDBACK DA TESE */
           <div className="bg-[#0f172a]/60 p-8 md:p-12 rounded-2xl border border-white/5 text-center shadow-2xl">
             <h2 className={`text-[10px] font-mono uppercase tracking-[0.3em] mb-4 mt-2 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-400' : 'text-red-400'}`}>
               {lastXpChange && lastXpChange > 0 ? 'Parecer Acadêmico Aprovado' : 'Reprovação Parcial de Tese'}
