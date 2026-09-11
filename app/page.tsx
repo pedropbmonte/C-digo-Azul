@@ -46,13 +46,15 @@ const levels = [
 ];
 
 export default function CodigoAzulGame() {
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Novo estado para ver a senha
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   
   const [authError, setAuthError] = useState("");
+  const [authSuccess, setAuthSuccess] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [needsCompanySetup, setNeedsCompanySetup] = useState(false);
   const [companyNameInput, setCompanyNameInput] = useState("");
@@ -71,7 +73,7 @@ export default function CodigoAzulGame() {
   const [showDRE, setShowDRE] = useState(false);
   const [sessionStartStats, setSessionStartStats] = useState({ caixa: 5000000, margem: 20.0 });
 
-  // --- MOTOR IA DINÂMICO ---
+  // --- MOTOR IA ESCOLA DE ESTRATEGISTAS ---
   const [currentScenario, setCurrentScenario] = useState<any>(null);
   const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
   const [customDecisionText, setCustomDecisionText] = useState(""); 
@@ -81,8 +83,7 @@ export default function CodigoAzulGame() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
   
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [timeBonus, setTimeBonus] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(90); // Mais tempo para o aluno ler a teoria e formular a tese
   const [promotionPending, setPromotionPending] = useState(false);
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -104,9 +105,7 @@ export default function CodigoAzulGame() {
     }
   };
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
+  useEffect(() => { setIsLoading(false); }, []);
 
   useEffect(() => {
     if (gameStarted && !isGameOver) saveToDB();
@@ -114,57 +113,41 @@ export default function CodigoAzulGame() {
   }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE]);
 
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
-  const nextLevel = levels.find(l => l.minXp > xp); // Declarado corretamente para sumir com o erro
+  const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- IA CONTEXTUAL: GERAÇÃO DO PROBLEMA ---
+  // --- GERAÇÃO DE CASO ESCOLAR PELA IA ---
   const fetchScenarioFromAI = async () => {
     setIsGeneratingScenario(true);
     setCurrentScenario(null);
     setFeedback(null);
     setCustomDecisionText("");
     setIsProcessing(false);
-    setTimeLeft(60);
+    setTimeLeft(90);
 
-    const prompt = `Você é o arquiteto do simulador corporativo 'Código Azul'. Gere um cenário crítico, técnico e único em JSON.
-    Contexto ATUAL da empresa do jogador:
-    - Empresa: ${companyName}
-    - Patente do Jogador: ${currentLevel.title}
-    - Caixa Atual: R$ ${caixa} (Se abaixo de R$ 1M, force crise de liquidez extrema).
-    - Margem Atual: ${margem}% (Se abaixo de 5%, foque em Ebitda corroído ou custos).
-    - Compliance Atual: ${compliance}% (Se abaixo de 50%, foque em auditoria ou fraude).
+    const prompt = `Você é o reitor e professor sênior do 'Código Azul', uma escola de elite em contabilidade avançada, finanças corporativas e estratégia de negócios. 
+    Gere um Estudo de Caso Real e Imersivo em formato JSON para o aluno que ocupa o cargo de: ${currentLevel.title}.
+    Indicadores da empresa (${companyName}):
+    - Caixa: R$ ${caixa}
+    - Margem EBITDA: ${margem}%
+    - Compliance: ${compliance}%
 
-    Missão: Crie uma situação corporativa imersiva. O texto deve ter jargões de alta gestão.
-    Crie APENAS 2 opções pré-definidas (uma boa estratégica e uma armadilha ruim). O usuário também terá opção de digitar texto livre.
+    A missão é ensinar o aluno a pensar como um CFO de verdade. O estudo de caso deve conter uma rica fundamentação teórica conectada a normas reais (como CPCs, IFRS, Reforma Tributária EC 132, Governança COSO) e uma situação crítica simulando o dia a dia de uma empresa real. O aluno NÃO terá múltipla escolha; ele precisará digitar uma tese gerencial própria.
 
-    Retorne APENAS um JSON válido nesta estrutura exata:
+    Retorne APENAS um JSON válido nesta exata estrutura, sem formatação markdown:
     {
-      "sector": "Setor do Problema",
+      "sector": "Nome do Setor (ex: Controladoria & Tesouraria)",
       "criticality": "Alta",
-      "title": "Título do Problema",
-      "theory": "Embasamento técnico profundo sobre o tema...",
-      "context": "O que explodiu na empresa agora...",
-      "character": "Quem cobra a decisão (ex: Conselho, Banco)",
-      "options": [
-        {
-          "text": "Ação 1...",
-          "xp": 30,
-          "impacts": { "caixa": 0, "margem": 0, "compliance": 0 },
-          "feedback": "Parecer financeiro da opção 1."
-        },
-        {
-          "text": "Ação 2...",
-          "xp": -30,
-          "impacts": { "caixa": 0, "margem": 0, "compliance": 0 },
-          "feedback": "Parecer financeiro da opção 2."
-        }
-      ]
+      "title": "Título do Estudo de Caso",
+      "theory": "Contexto teórico profundo e conceitual de alta gestão, citando leis, normas e princípios contábeis aplicáveis ao tema...",
+      "context": "Descrição detalhada de um problema real que o CFO precisa resolver agora na empresa, detalhando números, prazos e a pressão da diretoria ou bancos...",
+      "character": "Autoridade cobrando uma diretriz (ex: Conselho de Administração, Auditoria Independente)"
     }`;
 
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9 } })
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8 } })
       });
 
       const data = await response.json();
@@ -176,13 +159,10 @@ export default function CodigoAzulGame() {
     } catch (error) {
       console.error(error);
       setCurrentScenario({
-        sector: "Riscos Sistêmicos", criticality: "Extrema", title: "Falha de Rede",
-        theory: "Risco de continuidade de negócios.", context: "API do sistema financeiro falhou.",
-        character: "Diretoria de TI",
-        options: [
-          { text: "Acionar backup redundante", xp: 10, impacts: { caixa: -50000, margem: 0, compliance: 5 }, feedback: "Restabelecido com custo." },
-          { text: "Aguardar retorno normal", xp: -20, impacts: { caixa: -150000, margem: -1, compliance: -10 }, feedback: "Perda de vendas gerada pela inércia." }
-        ]
+        sector: "Controladoria Geral", criticality: "Alta", title: "Risco de Continuidade Operacional",
+        theory: "Conforme o CPC 26 e IFRS, a administração deve avaliar a capacidade da entidade de continuar em operação.",
+        context: "O caixa está em queda livre e os fornecedores fecharam o crédito.",
+        character: "Comitê Executivo"
       });
     } finally {
       setIsGeneratingScenario(false);
@@ -197,28 +177,32 @@ export default function CodigoAzulGame() {
   }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentScenario, isGeneratingScenario]);
 
 
-  // --- IA AVALIADORA: DECISÃO ABERTA DO USUÁRIO ---
+  // --- AVALIAÇÃO DA TESE DO ALUNO PELA IA ---
   const handleCustomActionSubmit = async () => {
     if (!customDecisionText.trim() || isEvaluatingCustom || isGameOver) return;
     setIsEvaluatingCustom(true);
 
-    const prompt = `Você atua como Pedro Monte, estrategista do simulador 'Código Azul'. 
-    Contexto da Crise: ${currentScenario.context}
+    const prompt = `Você é Pedro Monte, reitor implacável da escola de negócios 'Código Azul'. O aluno (cargo: ${currentLevel.title}) leu o seguinte estudo de caso:
+    Teoria e Contexto: ${currentScenario.theory} - ${currentScenario.context}
     
-    O jogador DIGITOU A PRÓPRIA ESTRATÉGIA:
+    O aluno DIGITOU A SEGUINTE TESE / PLANO DE AÇÃO GERENCIAL:
     "${customDecisionText}"
     
-    Avalie como um Mentor de Negócios rígido. Foi inteligente ou loucura impensada?
+    Avalie profundamente a resposta do aluno com base na técnica contábil e financeira:
+    1) O aluno demonstrou raciocínio de CFO ou falou besteira / mágica financeira?
+    2) Atribua uma pontuação de XP justa (entre -50 e +50).
+    3) Calcule os impactos numéricos reais no Caixa, Margem EBITDA e Compliance.
+    4) Dê um feedback pedagógico impecável, corrigindo falhas conceituais e elogiando acertos, no estilo 'Dono para Dono'.
 
     Retorne APENAS um JSON válido nesta estrutura:
     {
-      "xp": [número entre -50 e +50],
+      "xp": [número],
       "impacts": {
-        "caixa": [valor financeiro real de impacto, positivo ou negativo. Ex: -500000],
+        "caixa": [valor financeiro real, positivo ou negativo],
         "margem": [variação em %],
-        "compliance": [pontos de compliance]
+        "compliance": [pontos]
       },
-      "feedback": "Parecer textual denso explicando o impacto real. Termine com 'CÓDIGO AZUL.'"
+      "feedback": "Parecer pedagógico e técnico detalhado ensinando o aluno. Termine obrigatoriamente com 'CÓDIGO AZUL.'"
     }`;
 
     try {
@@ -233,10 +217,10 @@ export default function CodigoAzulGame() {
       aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
       const parsedResult = JSON.parse(aiText);
       
-      handleChoice(parsedResult.xp, `🧠 AVALIAÇÃO DA SUA ESTRATÉGIA (IA):\n\n${parsedResult.feedback}`, false, parsedResult.impacts);
+      handleChoice(parsedResult.xp, `🎓 AVALIAÇÃO DA SUA TESE GERENCIAL:\n\n${parsedResult.feedback}`, false, parsedResult.impacts);
 
     } catch (error) {
-      alert("A auditoria do mercado (IA) falhou ao processar seu texto. Use uma ação padrão.");
+      alert("A banca examinadora (IA) não conseguiu processar sua tese. Tente reformular e enviar novamente.");
     } finally {
       setIsEvaluatingCustom(false);
     }
@@ -247,10 +231,9 @@ export default function CodigoAzulGame() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPassword = password.trim();
     
-    if (!cleanEmail || !cleanPassword) { setAuthError("Preencha todos os campos obrigatórios."); return; }
-    if (authMode === 'register' && (!nome.trim() || !telefone.trim())) { setAuthError("Preencha Nome e Telefone."); return; }
-
-    setIsAuthenticating(true); setAuthError("");
+    if (!cleanEmail || !cleanPassword) { setAuthError("Preencha todos os campos."); return; }
+    
+    setIsAuthenticating(true); setAuthError(""); setAuthSuccess("");
 
     try {
       const docRef = doc(db, "users", cleanEmail);
@@ -260,7 +243,6 @@ export default function CodigoAzulGame() {
         if (docSnap.exists() && docSnap.data().password === cleanPassword) {
           const d = docSnap.data().data;
           setPlayerName(d.playerName); setTelefone(d.phone || "");
-          
           if (!d.companyName) {
             setPlayerNameInput(d.playerName || ""); setNeedsCompanySetup(true);
           } else {
@@ -270,13 +252,13 @@ export default function CodigoAzulGame() {
             setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
             setShowDRE(d.showDRE || false);
             setCurrentScenario(null); 
-            
             if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
             setGameStarted(true);
           }
         } else { setAuthError("E-mail ou senha incorretos."); }
-      } else {
-        if (docSnap.exists()) { setAuthError("E-mail já cadastrado na base. Faça login."); } 
+      } else if (authMode === 'register') {
+        if (!nome.trim() || !telefone.trim()) { setAuthError("Preencha Nome e WhatsApp."); setIsAuthenticating(false); return; }
+        if (docSnap.exists()) { setAuthError("E-mail já cadastrado. Faça login."); } 
         else {
           await setDoc(docRef, {
             password: cleanPassword,
@@ -290,6 +272,14 @@ export default function CodigoAzulGame() {
           setCurrentStage(0); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
           setPlayerNameInput(nome.trim()); setNeedsCompanySetup(true);
         }
+      } else if (authMode === 'forgot') {
+        // Redefinição de senha direto na tela
+        if (docSnap.exists()) {
+          await setDoc(docRef, { password: cleanPassword }, { merge: true });
+          setAuthSuccess("Senha redefinida com sucesso! Alterne para a aba de Acessar.");
+        } else {
+          setAuthError("E-mail não encontrado na base de dados.");
+        }
       }
     } catch (e) {
       setAuthError("Falha de conexão com a nuvem.");
@@ -300,19 +290,19 @@ export default function CodigoAzulGame() {
     e.preventDefault();
     if (!companyNameInput.trim() || !playerNameInput.trim()) return;
     setCompanyName(companyNameInput.trim()); setPlayerName(playerNameInput.trim());
-    setNeedsCompanySetup(false); setCurrentScenario(null); setTimeLeft(60); 
+    setNeedsCompanySetup(false); setCurrentScenario(null); setTimeLeft(90); 
     setGameStarted(true); setIsGameOver(false); setShowDRE(false);
   };
 
   const handleLogout = async () => {
     if(gameStarted && !isGameOver) await saveToDB();
     setGameStarted(false); setNeedsCompanySetup(false);
-    setEmail(""); setPassword(""); setAuthError(""); setNome(""); setTelefone("");
+    setEmail(""); setPassword(""); setAuthError(""); setAuthSuccess(""); setNome(""); setTelefone("");
     setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentScenario(null);
   };
 
   const handleResetCareer = () => {
-    if (confirm("Confirma a liquidação da empresa? O histórico no banco de dados será reiniciado.")) {
+    if (confirm("Confirma a liquidação da empresa? O histórico será reiniciado.")) {
       setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
       setCurrentStage(0); setCurrentScenario(null); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); 
@@ -330,7 +320,7 @@ export default function CodigoAzulGame() {
 
   useEffect(() => {
     if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && currentScenario && gameStarted && currentLevel.hasTimer && !isEvaluatingCustom) {
-      handleChoice(-15, "TEMPO ESGOTADO. O mercado não espera. A indecisão custou caixa e oportunidade.", true, { caixa: -500000, margem: -1.5, compliance: -10 });
+      handleChoice(-15, "TEMPO ESGOTADO. O conselho rejeitou a inércia por falta de entrega de tese no prazo.", true, { caixa: -500000, margem: -1.5, compliance: -10 });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentScenario, gameStarted, currentLevel.hasTimer, isEvaluatingCustom]);
@@ -341,7 +331,7 @@ export default function CodigoAzulGame() {
 
     let bonus = 0;
     if (baseXpGained > 0 && !isTimeout && currentLevel.hasTimer) {
-      if (timeLeft >= 45) bonus = 5; else if (timeLeft >= 30) bonus = 2;
+      if (timeLeft >= 60) bonus = 5; else if (timeLeft >= 30) bonus = 2;
     }
     
     const totalXpGained = baseXpGained + bonus;
@@ -355,13 +345,13 @@ export default function CodigoAzulGame() {
     }
 
     setCaixa(newCaixa); setMargem(newMargem); setCompliance(newCompliance);
-    setXp(newXp); setLastXpChange(totalXpGained); setTimeBonus(bonus); setLastImpacts(impacts);
+    setXp(newXp); setLastXpChange(totalXpGained); setLastImpacts(impacts);
 
     if (newCaixa <= 0) {
-      setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi aniquilado sumariamente."); return;
+      setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi exaurido sem cobertura."); return;
     }
     if (newCompliance <= 0) {
-      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. O nível de compliance atingiu margens inaceitáveis. Bloqueio cautelar das contas."); return;
+      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. Bloqueio cautelar de compliance acionado."); return;
     }
 
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
@@ -372,22 +362,10 @@ export default function CodigoAzulGame() {
     setFeedback(feedbackText);
   };
 
-  // Função declarada corretamente para sumir com o erro de compilação
   const proceedToNextQuestion = () => {
-    setPromotionPending(false); 
-    setPromotedLevel(null); 
-    setFeedback(null); 
-    setLastXpChange(null); 
-    setTimeBonus(0); 
-    setLastImpacts(null);
-    setIsProcessing(false); 
-    setCurrentScenario(null); 
-
-    if (currentStage < 9) { 
-      setCurrentStage(prev => prev + 1); 
-    } else { 
-      setShowDRE(true); 
-    }
+    setPromotionPending(false); setPromotedLevel(null); setFeedback(null); 
+    setLastXpChange(null); setLastImpacts(null); setIsProcessing(false); setCurrentScenario(null); 
+    if (currentStage < 9) { setCurrentStage(prev => prev + 1); } else { setShowDRE(true); }
   };
 
   const handleNextStageOrPromotion = () => {
@@ -402,7 +380,7 @@ export default function CodigoAzulGame() {
   const caixaBarFill = Math.min(100, (caixa / 15000000) * 100);
   const margemBarFill = Math.min(100, Math.max(0, (margem / 40.0) * 100));
 
-  if (isLoading) return <div className="min-h-screen bg-[#060c17] flex items-center justify-center text-cyan-500 font-mono tracking-widest text-sm">Sincronizando Terminal...</div>;
+  if (isLoading) return <div className="min-h-screen bg-[#060c17] flex items-center justify-center text-cyan-500 font-mono tracking-widest text-sm">Sincronizando Escola...</div>;
 
   // --- TELA DE ONBOARDING ---
   if (needsCompanySetup) {
@@ -410,41 +388,71 @@ export default function CodigoAzulGame() {
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
         <div className="z-10 bg-[#0f172a]/80 backdrop-blur-2xl p-10 rounded-2xl border border-cyan-500/30 max-w-md w-full text-center">
-          <h2 className="text-[10px] font-mono text-cyan-500 uppercase tracking-[0.4em] mb-2">Abertura de Empresa</h2>
-          <h1 className="text-2xl font-light text-slate-100 mb-8 tracking-wide">Assinatura de <span className="font-semibold text-cyan-400">Posse</span></h1>
+          <h2 className="text-[10px] font-mono text-cyan-500 uppercase tracking-[0.4em] mb-2">Escola de Estrategistas</h2>
+          <h1 className="text-2xl font-light text-slate-100 mb-8 tracking-wide">Registro de <span className="font-semibold text-cyan-400">Posse</span></h1>
           <form onSubmit={handleCompanySubmit} className="space-y-5">
             <div className="space-y-1 text-left"><label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Nome da Corporação</label><input type="text" value={companyNameInput} onChange={(e) => setCompanyNameInput(e.target.value)} className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 focus:border-cyan-500 transition-all" required /></div>
             <div className="space-y-1 text-left"><label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Seu Nome no Crachá</label><input type="text" value={playerNameInput} onChange={(e) => setPlayerNameInput(e.target.value)} className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 focus:border-cyan-500 transition-all" required /></div>
-            <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-mono tracking-widest py-4 px-4 rounded-lg transition-all uppercase mt-4">Iniciar Simulação</button>
+            <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-mono tracking-widest py-4 px-4 rounded-lg transition-all uppercase mt-4">Iniciar Jornada Prática</button>
           </form>
         </div>
       </div>
     );
   }
 
-  // --- TELA DE LOGIN ---
+  // --- TELA DE LOGIN / REGISTRO / REDEFINIÇÃO DE SENHA ---
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
         <div className="z-10 bg-[#0f172a]/70 backdrop-blur-2xl p-8 md:p-10 rounded-2xl border border-white/5 shadow-2xl max-w-md w-full relative">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h1 className="text-2xl font-light text-slate-200 tracking-[0.2em] uppercase">Código <span className="font-semibold text-cyan-400">Azul</span></h1>
-            <p className="text-slate-500 text-[9px] tracking-[0.3em] mt-1 uppercase font-mono">Motor Adaptativo por IA</p>
+            <p className="text-slate-500 text-[9px] tracking-[0.3em] mt-1 uppercase font-mono">Escola de Contabilidade & Finanças</p>
           </div>
+
           <div className="flex bg-[#020617]/50 rounded-lg p-1 mb-6 border border-white/5">
-            <button onClick={() => { setAuthMode('login'); setAuthError(""); }} className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'login' ? 'bg-cyan-900/50 text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>Acessar</button>
-            <button onClick={() => { setAuthMode('register'); setAuthError(""); }} className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'register' ? 'bg-cyan-900/50 text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>Criar Conta</button>
+            <button onClick={() => { setAuthMode('login'); setAuthError(""); setAuthSuccess(""); }} className={`flex-1 py-2 text-[9px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'login' ? 'bg-cyan-900/50 text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>Acessar</button>
+            <button onClick={() => { setAuthMode('register'); setAuthError(""); setAuthSuccess(""); }} className={`flex-1 py-2 text-[9px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'register' ? 'bg-cyan-900/50 text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>Criar Conta</button>
+            <button onClick={() => { setAuthMode('forgot'); setAuthError(""); setAuthSuccess(""); }} className={`flex-1 py-2 text-[9px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'forgot' ? 'bg-amber-900/50 text-amber-400' : 'text-slate-500 hover:text-slate-300'}`}>Redefinir</button>
           </div>
+
           <form onSubmit={handleAuth} className="space-y-4">
             {authMode === 'register' && (
               <><div className="space-y-1"><label className="text-[10px] text-slate-400 uppercase font-mono">Nome Completo</label><input type="text" value={nome} onChange={(e) => setNome(e.target.value)} className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-cyan-50" required /></div>
               <div className="space-y-1"><label className="text-[10px] text-slate-400 uppercase font-mono">WhatsApp</label><input type="tel" value={telefone} onChange={(e) => setTelefone(e.target.value)} className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-cyan-50" required /></div></>
             )}
+
             <div className="space-y-1"><label className="text-[10px] text-slate-400 uppercase font-mono">E-mail Corporativo</label><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-cyan-50" required /></div>
-            <div className="space-y-1"><label className="text-[10px] text-slate-400 uppercase font-mono">Senha Segura</label><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-cyan-50" required /></div>
+            
+            <div className="space-y-1 relative">
+              <label className="text-[10px] text-slate-400 uppercase font-mono flex justify-between">
+                <span>{authMode === 'forgot' ? 'Nova Senha Segura' : 'Senha Segura'}</span>
+              </label>
+              <div className="relative">
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-cyan-50 pr-12" 
+                  required 
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)} 
+                  className="absolute right-3 top-2.5 text-[10px] font-mono text-cyan-500 hover:text-cyan-300 uppercase tracking-widest"
+                >
+                  {showPassword ? "Ocultar" : "Mostrar"}
+                </button>
+              </div>
+            </div>
+
             {authError && <div className="text-red-400 text-[10px] font-mono text-center p-2 rounded bg-red-500/10 border border-red-500/20">{authError}</div>}
-            <button disabled={isAuthenticating} type="submit" className={`w-full text-cyan-400 text-xs font-mono py-3.5 rounded-lg mt-4 ${isAuthenticating ? 'opacity-50' : 'bg-cyan-950/40 border border-cyan-800'}`}>{isAuthenticating ? 'CONECTANDO NUVEM...' : authMode === 'login' ? 'ACESSAR TERMINAL' : 'FINALIZAR CADASTRO'}</button>
+            {authSuccess && <div className="text-emerald-400 text-[10px] font-mono text-center p-2 rounded bg-emerald-500/10 border border-emerald-500/20">{authSuccess}</div>}
+
+            <button disabled={isAuthenticating} type="submit" className={`w-full text-xs font-mono py-3.5 rounded-lg mt-4 transition-all uppercase tracking-widest ${isAuthenticating ? 'opacity-50' : authMode === 'forgot' ? 'bg-amber-950/40 border border-amber-800 text-amber-400 hover:bg-amber-900/60' : 'bg-cyan-950/40 border border-cyan-800 text-cyan-400 hover:bg-cyan-900/60'}`}>
+              {isAuthenticating ? 'PROCESSANDO...' : authMode === 'login' ? 'ACESSAR ESCOLA' : authMode === 'register' ? 'CADASTRAR E INICIAR' : 'ATUALIZAR SENHA DIRETO NA TELA'}
+            </button>
           </form>
         </div>
       </div>
@@ -458,7 +466,7 @@ export default function CodigoAzulGame() {
         <div className="z-10 bg-[#170f0f]/80 p-8 md:p-12 rounded-3xl border border-red-900/50 max-w-2xl w-full text-center">
           <h1 className="text-2xl md:text-4xl font-light text-slate-100 mb-8 uppercase">{caixa <= 0 ? "FALÊNCIA DECRETADA" : "INTERVENÇÃO REGULATÓRIA"}</h1>
           <p className="text-slate-300 text-sm md:text-base font-light text-justify border-l-2 border-red-500 pl-4 mb-8">{feedback}</p>
-          <button onClick={handleResetCareer} className="bg-red-950/50 border border-red-800 text-red-400 text-xs font-mono py-4 px-10 rounded-xl uppercase">Liquidar CNPJ e Iniciar Nova Operação</button>
+          <button onClick={handleResetCareer} className="bg-red-950/50 border border-red-800 text-red-400 text-xs font-mono py-4 px-10 rounded-xl uppercase">Liquidar CNPJ e Reiniciar Aprendizado</button>
         </div>
       </div>
     );
@@ -468,12 +476,12 @@ export default function CodigoAzulGame() {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative font-sans">
         <div className="z-10 bg-[#0f172a]/90 p-8 md:p-12 rounded-3xl border border-white/5 max-w-2xl w-full text-center">
-          <h1 className="text-2xl md:text-3xl font-light text-slate-100 mb-8 uppercase">Fechamento do Trimestre</h1>
+          <h1 className="text-2xl md:text-3xl font-light text-slate-100 mb-8 uppercase">Fechamento do Módulo Executivo</h1>
           <div className="bg-[#020617]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left space-y-4 font-mono">
             <div className="flex justify-between border-b border-slate-800/80 pb-2"><span className="text-slate-500 text-xs">Caixa Final:</span><span className="text-slate-300 text-xs">{formatBRL(caixa)}</span></div>
-            <div className="flex justify-between pt-2"><span className="text-slate-500 text-xs">XP Consolidado:</span><span className="text-cyan-400 text-xs font-bold">{xp} Pontos</span></div>
+            <div className="flex justify-between pt-2"><span className="text-slate-500 text-xs">XP Acumulado na Escola:</span><span className="text-cyan-400 text-xs font-bold">{xp} Pontos</span></div>
           </div>
-          <button onClick={handleStartNewQuarter} className="bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-mono py-4 px-10 rounded-xl uppercase">Assinar Balanço & Iniciar Novo Ciclo</button>
+          <button onClick={handleStartNewQuarter} className="bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-mono py-4 px-10 rounded-xl uppercase">Avançar para Próximo Módulo de Ensino</button>
         </div>
       </div>
     );
@@ -483,9 +491,9 @@ export default function CodigoAzulGame() {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative">
         <div className="z-10 bg-[#0f172a]/80 p-8 md:p-12 rounded-3xl border border-white/5 max-w-2xl w-full text-center">
-          <h1 className="text-2xl md:text-4xl font-light text-slate-100 mb-8 uppercase">Ascensão Homologada</h1>
+          <h1 className="text-2xl md:text-4xl font-light text-slate-100 mb-8 uppercase">Promoção Acadêmica Homologada</h1>
           <div className="bg-[#020617]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left"><span className="text-cyan-400 text-xl font-semibold">{promotedLevel?.title}</span></div>
-          <button onClick={proceedToNextQuestion} className="bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-mono py-3.5 px-10 rounded-xl uppercase">Assumir Painel</button>
+          <button onClick={proceedToNextQuestion} className="bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-mono py-3.5 px-10 rounded-xl uppercase">Continuar Jornada</button>
         </div>
       </div>
     );
@@ -495,14 +503,14 @@ export default function CodigoAzulGame() {
     return (
       <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4 relative">
         <div className="w-16 h-16 border-4 border-cyan-900 border-t-cyan-500 rounded-full animate-spin mb-6"></div>
-        <h2 className="text-cyan-400 font-mono text-[10px] tracking-[0.3em] uppercase animate-pulse">A IA Está Analisando Seus Indicadores...</h2>
+        <h2 className="text-cyan-400 font-mono text-[10px] tracking-[0.3em] uppercase animate-pulse">A Banca da Escola Está Elaborando Seu Estudo de Caso...</h2>
       </div>
     );
   }
 
-  const timerColor = timeLeft > 30 ? 'bg-cyan-500' : timeLeft > 15 ? 'bg-amber-500' : 'bg-red-500';
+  const timerColor = timeLeft > 45 ? 'bg-cyan-500' : timeLeft > 20 ? 'bg-amber-500' : 'bg-red-500';
 
-  // --- PAINEL PRINCIPAL DO JOGO ---
+  // --- PAINEL PRINCIPAL DA ESCOLA DE ESTRATEGISTAS ---
   return (
     <div className="min-h-screen bg-[#020617] text-slate-300 p-4 md:p-8 font-sans relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"></div>
@@ -519,7 +527,7 @@ export default function CodigoAzulGame() {
         {/* HEADER */}
         <header className="bg-[#0f172a]/50 p-5 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-center shadow-xl">
           <div className="flex items-center gap-4 w-full md:w-auto mb-4 md:mb-0">
-            <div><h1 className="text-base font-light text-slate-100 uppercase"><span className="font-semibold text-cyan-400">{companyName}</span></h1><p className="text-slate-500 text-[10px] font-mono uppercase">Estrategista: <span className="text-slate-300">{playerName}</span></p></div>
+            <div><h1 className="text-base font-light text-slate-100 uppercase"><span className="font-semibold text-cyan-400">{companyName}</span></h1><p className="text-slate-500 text-[10px] font-mono uppercase">Estudante / CFO: <span className="text-slate-300">{playerName}</span></p></div>
           </div>
           <div className="w-full md:w-80">
             <div className="flex justify-between items-baseline mb-2"><p className="text-[10px] font-mono text-slate-400 uppercase">{currentLevel.title}</p></div>
@@ -527,68 +535,92 @@ export default function CodigoAzulGame() {
           </div>
         </header>
 
-        {/* ÁREA DO PROBLEMA */}
+        {/* ÁREA DE ENSINO E CASO PRÁTICO */}
         {!feedback ? (
           <main className="bg-[#0f172a]/40 p-6 md:p-10 rounded-2xl border border-white/5 shadow-2xl relative">
             {currentLevel.hasTimer && (
-              <div className="absolute top-0 left-0 w-full h-1 bg-[#020617] rounded-t-2xl"><div className={`h-full ${timerColor} transition-all`} style={{ width: `${(timeLeft / 60) * 100}%` }}></div></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#020617] rounded-t-2xl"><div className={`h-full ${timerColor} transition-all`} style={{ width: `${(timeLeft / 90) * 100}%` }}></div></div>
             )}
 
-            <div className="mb-8 border-b border-white/5 pb-4 mt-2">
-              <span className="text-cyan-600 font-mono text-[10px] uppercase font-semibold block mb-2">{currentScenario.sector} | Risco: {currentScenario.criticality}</span>
+            <div className="mb-6 border-b border-white/5 pb-4 mt-2">
+              <span className="text-cyan-600 font-mono text-[10px] uppercase font-semibold block mb-1">{currentScenario.sector} | Módulo Prático</span>
               <h2 className="text-xl md:text-2xl font-light text-slate-100 tracking-wide">{currentScenario.title}</h2>
             </div>
 
+            {/* DUPLO BLOCO: TEORIA PROFUNDA + REALIDADE DO DIA A DIA */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-[#020617]/40 p-5 rounded-xl border border-white/5"><h3 className="text-[10px] font-mono text-cyan-600 uppercase mb-3">Teoria / Compliance</h3><p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{currentScenario.theory}</p></div>
-              <div className="bg-[#020617]/40 p-5 rounded-xl border border-white/5"><h3 className="text-[10px] font-mono text-amber-600 uppercase mb-3">Contexto (O que explodiu)</h3><p className="text-slate-200 text-[13px] font-light leading-relaxed text-justify">{currentScenario.context}</p></div>
+              <div className="bg-[#020617]/50 p-6 rounded-xl border border-cyan-900/40">
+                <h3 className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> 1. Fundamentação Teórica & Normativa
+                </h3>
+                <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{currentScenario.theory}</p>
+              </div>
+
+              <div className="bg-[#020617]/50 p-6 rounded-xl border border-amber-900/40">
+                <h3 className="text-[10px] font-mono text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-500"></span> 2. Estudo de Caso (Realidade no CNPJ)
+                </h3>
+                <p className="text-slate-200 text-[13px] font-light leading-relaxed text-justify">{currentScenario.context}</p>
+                <p className="text-[10px] font-mono text-slate-500 mt-4 uppercase">Cobrança Direta: <span className="text-slate-400">{currentScenario.character}</span></p>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.3em] mb-3 text-center">Decisões Pré-Formatadas ({currentScenario.character})</h3>
-              {currentScenario.options.map((option: any, index: number) => (
-                <button key={index} disabled={isProcessing || isEvaluatingCustom} onClick={() => handleChoice(option.xp, option.feedback, false, option.impacts)} className="w-full text-left p-6 rounded-xl bg-[#020617]/50 border border-slate-700/50 hover:border-cyan-500/50 hover:bg-[#081229] transition-all">
-                  <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{option.text}</p>
-                </button>
-              ))}
-
-              {/* OPÇÃO DE DECISÃO LIVRE (MOTOR IA) */}
-              <div className="pt-6 border-t border-white/5 mt-6 space-y-3">
-                <h3 className="text-[10px] font-mono text-cyan-500 uppercase tracking-widest">Estratégia de Intervenção Direta (Livre)</h3>
-                <textarea
-                  disabled={isProcessing || isEvaluatingCustom}
-                  value={customDecisionText}
-                  onChange={(e) => setCustomDecisionText(e.target.value)}
-                  placeholder="Escreva sua estratégia exata para este cenário. A auditoria do mercado (IA) vai avaliar sua decisão e precificar o impacto..."
-                  className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-xl p-4 text-sm text-cyan-50 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 font-sans transition-all resize-none h-24"
-                />
-                <button
-                  disabled={isProcessing || isEvaluatingCustom || !customDecisionText.trim()}
-                  onClick={handleCustomActionSubmit}
-                  className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] uppercase flex justify-center items-center gap-2 ${isProcessing || isEvaluatingCustom || !customDecisionText.trim() ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-cyan-950/20 border-cyan-800/50 text-cyan-500 hover:bg-cyan-900/40 hover:border-cyan-500'}`}
-                >
-                  {isEvaluatingCustom ? '🤖 AVALIANDO ESTRATÉGIA NO MERCADO...' : 'EXECUTAR ESTRATÉGIA PERSONALIZADA'}
-                </button>
+            {/* CAMPO DE RESPOSTA ABERTA (O CFO CRIA A SAÍDA) */}
+            <div className="space-y-4 pt-2">
+              <div className="flex justify-between items-baseline">
+                <h3 className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.2em]">3. Sua Tese / Plano de Ação Gerencial (Resposta Aberta)</h3>
+                <span className="text-[9px] font-mono text-slate-500">Sem respostas prontas. Pense como estrategista.</span>
               </div>
+              <textarea
+                disabled={isEvaluatingCustom}
+                value={customDecisionText}
+                onChange={(e) => setCustomDecisionText(e.target.value)}
+                placeholder="Escreva sua tese detalhada para resolver este caso. Explique quais contas você vai mexer, como protegerá o caixa, quais normas considerou e qual a estratégia de execução..."
+                className="w-full bg-[#020617]/70 border border-slate-700/60 rounded-xl p-5 text-sm text-cyan-50 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-sans transition-all resize-none h-36"
+              />
+              <button
+                disabled={isEvaluatingCustom || !customDecisionText.trim()}
+                onClick={handleCustomActionSubmit}
+                className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-widest uppercase flex justify-center items-center gap-2 ${isEvaluatingCustom || !customDecisionText.trim() ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-cyan-950/40 border-cyan-800 text-cyan-400 hover:bg-cyan-900/60 hover:border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.15)]'}`}
+              >
+                {isEvaluatingCustom ? '🎓 BANCA EXAMINADORA (IA) AUDITANDO SUA TESE...' : 'SUBMETER TESE GERENCIAL AO MERCADO'}
+              </button>
             </div>
           </main>
         ) : (
-          /* FEEDBACK DA DECISÃO */
-          <div className="bg-[#0f172a]/60 p-8 md:p-12 rounded-2xl border border-white/5 text-center">
-            <h2 className={`text-[10px] font-mono uppercase mb-4 mt-2 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-500' : 'text-red-400'}`}>{lastXpChange && lastXpChange > 0 ? 'Parecer Homologado' : 'Alerta de Risco'}</h2>
-            <div className="text-4xl md:text-5xl font-light text-slate-100 mb-6 font-mono">{lastXpChange && lastXpChange > 0 ? '+' : ''}{lastXpChange} XP</div>
+          /* FEEDBACK PEDAGÓGICO DA TESE */
+          <div className="bg-[#0f172a]/60 p-8 md:p-12 rounded-2xl border border-white/5 text-center shadow-2xl">
+            <h2 className={`text-[10px] font-mono uppercase tracking-[0.3em] mb-4 mt-2 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-400' : 'text-red-400'}`}>
+              {lastXpChange && lastXpChange > 0 ? 'Parecer Acadêmico Aprovado' : 'Reprovação Parcial de Tese'}
+            </h2>
+            <div className="text-4xl md:text-5xl font-light text-slate-100 mb-6 font-mono">
+              {lastXpChange && lastXpChange > 0 ? '+' : ''}{lastXpChange} <span className="text-xl text-slate-600">XP</span>
+            </div>
+
             {lastImpacts && (
-              <div className="flex justify-center gap-6 mb-8 border-y border-white/5 py-6">
-                 <div><p className="text-[9px] uppercase font-mono text-slate-500">Caixa</p><p className={`font-mono text-lg font-bold ${lastImpacts.caixa >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{lastImpacts.caixa >= 0 ? '+' : ''}{formatBRL(lastImpacts.caixa)}</p></div>
-                 <div><p className="text-[9px] uppercase font-mono text-slate-500">Margem</p><p className={`font-mono text-lg font-bold ${lastImpacts.margem >= 0 ? 'text-blue-400' : 'text-red-400'}`}>{lastImpacts.margem >= 0 ? '+' : ''}{formatPct(lastImpacts.margem)}</p></div>
+              <div className="flex justify-center gap-8 mb-8 border-y border-white/5 py-6 bg-[#020617]/30">
+                 <div><p className="text-[9px] uppercase font-mono text-slate-500 mb-1">Impacto no Caixa</p><p className={`font-mono text-lg font-bold ${lastImpacts.caixa >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{lastImpacts.caixa >= 0 ? '+' : ''}{formatBRL(lastImpacts.caixa)}</p></div>
+                 <div><p className="text-[9px] uppercase font-mono text-slate-500 mb-1">Impacto na Margem</p><p className={`font-mono text-lg font-bold ${lastImpacts.margem >= 0 ? 'text-blue-400' : 'text-red-400'}`}>{lastImpacts.margem >= 0 ? '+' : ''}{formatPct(lastImpacts.margem)}</p></div>
               </div>
             )}
-            <div className="bg-[#020617]/50 p-6 rounded-xl border border-white/5 mb-8 text-left whitespace-pre-wrap">
-              <p className="text-slate-300 text-sm font-light text-justify">{feedback}</p>
+
+            <div className="bg-[#020617]/60 p-6 md:p-8 rounded-xl border border-white/5 mb-8 text-left max-w-3xl mx-auto relative whitespace-pre-wrap">
+               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-cyan-400 font-mono border border-slate-700/50 rounded-md">Feedback da Banca Examinadora:</span>
+              <p className="text-slate-300 text-sm font-light leading-relaxed mt-2 text-justify">{feedback}</p>
             </div>
-            <button onClick={handleNextStageOrPromotion} className="border border-slate-600 hover:border-cyan-400 text-cyan-600 text-[10px] font-mono py-3.5 px-10 rounded-xl uppercase">Próximo Arquivo</button>
+
+            <button onClick={handleNextStageOrPromotion} className="border border-slate-600 hover:border-cyan-400 text-cyan-400 text-[10px] font-mono tracking-[0.2em] py-3.5 px-10 rounded-xl transition-all uppercase">
+              {promotionPending ? "Acessar Promoção Acadêmica" : "Avançar para Próximo Caso Prático"}
+            </button>
           </div>
         )}
+
+        <div className="flex flex-wrap items-center justify-center gap-6 pb-6 pt-2 font-mono">
+          <button onClick={handleLogout} className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-[0.2em]">Desconectar (Logout)</button>
+          <span className="text-slate-800">/</span>
+          <button onClick={handleResetCareer} className="text-[9px] text-slate-600 hover:text-red-400 transition-colors uppercase tracking-[0.2em]">Reiniciar Escola (Reset)</button>
+        </div>
+
       </div>
     </div>
   );
