@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
-// --- CONFIGURAÇÃO DO FIREBASE (SEU DATA CENTER) ---
+// --- CONFIGURAÇÃO DO FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyB79sktVNzvTvntgeh4xIdIFaPRTwviZEM",
   authDomain: "codigo-azul-erp.firebaseapp.com",
@@ -22,21 +22,8 @@ const db = getFirestore(app);
 const GEMINI_API_KEY = "AQ.Ab8RN6IlD5wf8Me0nDtLf1TJ_krl6vU760sU0yjFpfiSu3bMyw";
 
 // --- FORMATADORES FINANCEIROS ---
-const formatBRL = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-};
-const formatPct = (value: number) => {
-  return value.toFixed(1).replace('.', ',') + '%';
-};
-
-const shuffleArray = (array: any[]) => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
+const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+const formatPct = (value: number) => value.toFixed(1).replace('.', ',') + '%';
 
 const playPromotionSound = () => {
   try {
@@ -49,25 +36,16 @@ const playPromotionSound = () => {
 // --- CURVA DE CARREIRA ---
 const levels = [
   { tier: 1, title: "Estagiário", minXp: 0, hasTimer: false, feedback: null },
-  { tier: 1, title: "Assistente Financeiro", minXp: 120, hasTimer: false, feedback: { forca: "Execução metódica de conciliações e rotinas de contas a pagar/receber.", vulnerabilidade: "Sua leitura ainda é de curto prazo (regime de caixa). É preciso absorver o impacto das obrigações futuras e da competência contábil." } },
+  { tier: 1, title: "Assistente Financeiro", minXp: 120, hasTimer: false, feedback: { forca: "Execução metódica de conciliações e rotinas de contas a pagar/receber.", vulnerabilidade: "Sua leitura ainda é de curto prazo (regime de caixa). É preciso absorver o impacto das obrigações futuras." } },
   { tier: 2, title: "Analista Financeiro Jr.", minXp: 280, hasTimer: false, feedback: { forca: "Domínio dos fluxos de tesouraria e identificação ágil de descasamentos.", vulnerabilidade: "Falta visão de estrutura de custos indiretos, provisões e impacto tributário na precificação." } },
-  { tier: 2, title: "Analista Financeiro Pleno", minXp: 500, hasTimer: true, feedback: { forca: "Análise consistente de margem de contribuição, Custeio ABC e sensibilidade de caixa.", vulnerabilidade: "Planejamento orçamentário plurianual e projeção de impactos macroeconômicos (como a transição tributária)." } },
+  { tier: 2, title: "Analista Financeiro Pleno", minXp: 500, hasTimer: true, feedback: { forca: "Análise consistente de margem de contribuição, Custeio ABC e sensibilidade de caixa.", vulnerabilidade: "Planejamento orçamentário plurianual e projeção de impactos macroeconômicos." } },
   { tier: 3, title: "Business Partner / Analista Sr.", minXp: 800, hasTimer: true, feedback: { forca: "Ponte estratégica entre comercial, RH corporativo e diretoria financeira.", vulnerabilidade: "Conhecimento avançado de CPCs complexos, auditoria atuária e proteção cambial estrutural." } },
   { tier: 3, title: "Controller", minXp: 1200, hasTimer: true, feedback: { forca: "Blindagem de compliance, controle interno (SoD), auditoria externa e mitigação fiscal agressiva.", vulnerabilidade: "Alocação de capital em M&A e otimização de custo médio ponderado de capital (WACC)." } },
   { tier: 4, title: "CFO", minXp: 1800, hasTimer: true, feedback: { forca: "Engenharia de capital de elite, escudos fiscais, gestão de covenants e funding estruturado.", vulnerabilidade: "Governança executiva máxima, política sucessória e relacionamento direto com o conselho e acionistas." } },
   { tier: 4, title: "CEO / Board Member", minXp: 2600, hasTimer: true, feedback: { forca: "Visão sistêmica institucional plena e liderança sobre o valor de mercado (Market Cap).", vulnerabilidade: "O desafio é a perpetuidade institucional diante de transformações regulatórias seculares e crises geopolíticas." } }
 ];
 
-// --- EVENTOS CISNE NEGRO ---
-const blackSwans = [
-  { title: "CHOQUE MACROECONÔMICO", text: "O Banco Central aumentou a Selic em 1.5% em reunião extraordinária. O custo da dívida flutuante da empresa explodiu, corroendo a margem e drenando o caixa operacional instantaneamente.", impacts: { caixa: -350000, margem: -1.5, compliance: 0 } },
-  { title: "ATAQUE RANSOMWARE", text: "Os servidores sofreram uma tentativa de invasão (Phishing). A operação foi paralisada por 12 horas para contenção do vazamento de dados, gerando perda de faturamento e exposição regulatória.", impacts: { caixa: -250000, margem: -0.8, compliance: -10 } },
-  { title: "QUEBRA DE CADEIA LOGÍSTICA", text: "Um fornecedor crítico asiático decretou falência abruptamente. A necessidade de compra emergencial de insumos no mercado interno para não parar a fábrica esvaziou as reservas de caixa.", impacts: { caixa: -600000, margem: -2.5, compliance: 0 } },
-  { title: "PASSIVO TRABALHISTA OCULTO", text: "O STF alterou a jurisprudência sobre a base de cálculo de um encargo da folha de pagamento. Um passivo retroativo de 5 anos atingiu o balanço da companhia de surpresa.", impacts: { caixa: -400000, margem: 0, compliance: -15 } }
-];
-
 export default function CodigoAzulGame() {
-  // --- ESTADOS DE AUTENTICAÇÃO E ONBOARDING ---
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,12 +54,10 @@ export default function CodigoAzulGame() {
   
   const [authError, setAuthError] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  
   const [needsCompanySetup, setNeedsCompanySetup] = useState(false);
   const [companyNameInput, setCompanyNameInput] = useState("");
   const [playerNameInput, setPlayerNameInput] = useState("");
 
-  // --- ESTADOS CORE DO JOGO ---
   const [playerName, setPlayerName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
@@ -92,14 +68,15 @@ export default function CodigoAzulGame() {
   const [compliance, setCompliance] = useState(100);
   const [isGameOver, setIsGameOver] = useState(false);
   const [lastImpacts, setLastImpacts] = useState<any>(null);
-
   const [showDRE, setShowDRE] = useState(false);
   const [sessionStartStats, setSessionStartStats] = useState({ caixa: 5000000, margem: 20.0 });
-  const [currentBlackSwan, setCurrentBlackSwan] = useState<any>(null);
 
   // --- MOTOR IA DINÂMICO ---
   const [currentScenario, setCurrentScenario] = useState<any>(null);
   const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
+  const [customDecisionText, setCustomDecisionText] = useState(""); // Novo estado para texto livre
+  const [isEvaluatingCustom, setIsEvaluatingCustom] = useState(false); // Carregamento da decisão livre
+
   const [currentStage, setCurrentStage] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
@@ -110,10 +87,6 @@ export default function CodigoAzulGame() {
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const [saveStatus, setSaveStatus] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // --- FUNÇÕES DE BANCO DE DADOS (FIRESTORE) ---
   const saveToDB = async () => {
     if (!email) return;
     try {
@@ -131,67 +104,53 @@ export default function CodigoAzulGame() {
   };
 
   useEffect(() => {
-    setIsLoading(false);
-  }, []);
-
-  // Salva no banco sempre que um turno termina
-  useEffect(() => {
-    if (gameStarted && !isGameOver && !currentBlackSwan) {
-      saveToDB();
-    }
+    if (gameStarted && !isGameOver) saveToDB();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE, currentBlackSwan]);
+  }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE]);
 
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
 
-  // --- MOTOR GERADOR DE CENÁRIOS IA ---
+  // --- IA CONTEXTUAL: GERAÇÃO DO PROBLEMA ---
   const fetchScenarioFromAI = async () => {
     setIsGeneratingScenario(true);
     setCurrentScenario(null);
     setFeedback(null);
+    setCustomDecisionText("");
     setIsProcessing(false);
-    setTimeLeft(60); // Reseta o timer enquanto gera
+    setTimeLeft(60);
 
-    const temasPorTier: any = {
-      1: "Tesouraria, Contas a Pagar/Receber, Capital de Giro, Retenções Simples (EC 103), Conciliação.",
-      2: "Custeio ABC, Margem de Contribuição, Provisões de PDD (IFRS 9), Vesting de RH, Orçamento Base Zero.",
-      3: "CPC 33 (Passivo Atuarial), Compliance SoD, IFRS 15 (Receita), Reforma Tributária (IVA Dual, IBS/CBS, Transição).",
-      4: "M&A, LBO (Leveraged Buyout), Covenants Restritivos, Imposto Seletivo, Migração de Risco Atuarial (BD para CD)."
-    };
+    const prompt = `Você é o arquiteto do simulador corporativo 'Código Azul'. Gere um cenário crítico, técnico e único em JSON.
+    Contexto ATUAL da empresa do jogador:
+    - Empresa: ${companyName}
+    - Patente do Jogador: ${currentLevel.title}
+    - Caixa Atual: R$ ${caixa} (Se estiver abaixo de R$ 1.000.000, o cenário DEVE ser uma crise de liquidez ou risco de insolvência).
+    - Margem Atual: ${margem}% (Se estiver abaixo de 5%, foque em Ebitda corroído, custos ou precificação errada).
+    - Compliance Atual: ${compliance}% (Se estiver abaixo de 50%, foque em auditoria CVM, multas trabalhistas ou fraude).
 
-    const temaNivel = temasPorTier[currentLevel.tier] || temasPorTier[1];
-
-    const prompt = `Você é o arquiteto do simulador de negócios 'Código Azul'. Crie um cenário corporativo inédito, altamente técnico, complexo e realista em formato JSON ESTRITO.
-    O jogador atual atua como: ${currentLevel.title} (Tier ${currentLevel.tier}).
-    A empresa se chama: ${companyName}.
-    Temas obrigatórios para este nível: ${temaNivel}. Escolha 1 ou 2 temas para aprofundar.
+    Sua missão: Crie uma situação corporativa densa e imersiva baseada EXATAMENTE nesses indicadores. O problema deve refletir a dor real do dono de negócio. O texto deve ter jargões de alta gestão (CPCs, IFRS, DRE, fluxo de caixa, covenants, markup).
     
-    Atenção: O campo 'theory' deve ser denso, com vocabulário de 'alta gestão' e referenciar explicitamente normas (CPCs, IFRS, EC 132/Reforma Tributária, CVM, BCB).
-    
-    Você deve fornecer exatamente 2 opções de decisão. 
-    Uma opção DEVE ser ESTRATEGICAMENTE CORRETA (xp positivo, ex: 35) com impactos favoráveis de médio/longo prazo no caixa, margem ou compliance.
-    A outra opção DEVE ser UMA ARMADILHA COMUM DE GESTÃO (xp negativo, ex: -30) que resolve algo rápido mas destrói a empresa (impactos negativos drásticos no caixa, margem ou compliance).
+    Crie APENAS 2 opções pré-definidas (uma conservadora e uma arriscada). O usuário também terá a opção de digitar a própria resposta livremente depois.
 
-    O JSON final deve obedecer EXATAMENTE esta estrutura, sem crases Markdown (como \`\`\`json) e sem quebras de linha fora das strings:
+    Retorne APENAS um JSON válido nesta estrutura, sem formatação markdown:
     {
-      "sector": "Nome do Setor Auditado",
-      "criticality": "Alta",
-      "title": "Título Dramático do Problema",
-      "theory": "Texto longo, técnico e denso com a base teórica e regulatória da situação...",
-      "context": "Contexto do problema que explodiu na empresa agora...",
-      "character": "Nome do Comitê ou Diretor cobrando a ação",
+      "sector": "Setor do Problema",
+      "criticality": "Alta/Extrema",
+      "title": "Título do Problema",
+      "theory": "Embasamento técnico profundo sobre o tema...",
+      "context": "O que acabou de explodir na empresa detalhadamente...",
+      "character": "Quem está cobrando a decisão (ex: Conselho, Auditoria, Banco)",
       "options": [
         {
-          "text": "Ação detalhada A...",
-          "xp": 40,
-          "impacts": { "caixa": 1500000, "margem": 2.5, "compliance": 10 },
-          "feedback": "Parecer longo explicando por que a decisão foi brilhante ou desastrosa."
+          "text": "Ação 1...",
+          "xp": 30,
+          "impacts": { "caixa": 0, "margem": 0, "compliance": 0 },
+          "feedback": "Parecer financeiro da opção 1."
         },
         {
-          "text": "Ação detalhada B...",
-          "xp": -40,
-          "impacts": { "caixa": -2500000, "margem": -4.0, "compliance": -30 },
-          "feedback": "Parecer longo explicando por que a decisão foi brilhante ou desastrosa."
+          "text": "Ação 2...",
+          "xp": -30,
+          "impacts": { "caixa": 0, "margem": 0, "compliance": 0 },
+          "feedback": "Parecer financeiro da opção 2."
         }
       ]
     }`;
@@ -200,66 +159,99 @@ export default function CodigoAzulGame() {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7 }
-        })
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9 } })
       });
-
-      if (!response.ok) throw new Error("Erro na API do Gemini");
 
       const data = await response.json();
       let aiText = data.candidates[0].content.parts[0].text;
-      
-      // Limpeza de Markdown indesejado que a IA possa enviar
       aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
-
+      
       const parsedScenario = JSON.parse(aiText);
-      
-      // Embaralha as opções para não viciar a resposta (a certa nunca ficará sempre na mesma posição)
-      parsedScenario.options = shuffleArray(parsedScenario.options);
-      
       setCurrentScenario(parsedScenario);
     } catch (error) {
-      console.error("Falha ao gerar cenário IA:", error);
-      // Fallback seguro de emergência em caso de queda da API
+      console.error(error);
+      // Fallback mínimo para garantir que o jogo não trave
       setCurrentScenario({
-        sector: "Compliance & TI", criticality: "Extrema", title: "Falha de Conexão com Servidor CVM",
-        theory: "O fluxo contínuo de dados exige contingência constante.",
-        context: "A comunicação com o Data Center Central (IA) sofreu timeout. Tome uma decisão operacional imediata.",
-        character: "Auditoria Sistêmica",
-        options: shuffleArray([
-          { text: "Acionar os protocolos de contingência manuais e reestabelecer o ciclo.", xp: 20, impacts: { caixa: 0, margem: 0, compliance: 10 }, feedback: "Eficiência tática. Sistema restabelecido." },
-          { text: "Parar a empresa até que a TI global resolva o problema.", xp: -20, impacts: { caixa: -100000, margem: -1.0, compliance: -10 }, feedback: "Operação parada perde margem. Decisão ineficiente." }
-        ])
+        sector: "Riscos Sistêmicos", criticality: "Extrema", title: "Falha de Rede CVM",
+        theory: "Risco de continuidade de negócios.", context: "A API do sistema financeiro falhou. Tome uma ação de contigência.",
+        character: "Diretoria de TI",
+        options: [
+          { text: "Acionar backup redundante", xp: 10, impacts: { caixa: -50000, margem: 0, compliance: 5 }, feedback: "Restabelecido com custo." }
+        ]
       });
     } finally {
       setIsGeneratingScenario(false);
     }
   };
 
-  // Aciona a IA sempre que a fase avança e precisa de uma nova questão
   useEffect(() => {
-    if (gameStarted && !isGameOver && !showDRE && !feedback && !promotionPending && !currentBlackSwan && !currentScenario && !isGeneratingScenario) {
+    if (gameStarted && !isGameOver && !showDRE && !feedback && !promotionPending && !currentScenario && !isGeneratingScenario) {
       fetchScenarioFromAI();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentBlackSwan, currentScenario, isGeneratingScenario]);
+  }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentScenario, isGeneratingScenario]);
 
 
-  // --- CONTROLE DE AUTENTICAÇÃO ---
+  // --- IA AVALIADORA: DECISÃO ABERTA DO USUÁRIO ---
+  const handleCustomActionSubmit = async () => {
+    if (!customDecisionText.trim() || isEvaluatingCustom || isGameOver) return;
+    setIsEvaluatingCustom(true);
+
+    const prompt = `Você atua como Pedro Monte, o estrategista rigoroso do simulador 'Código Azul'. O jogador (CEO) se deparou com a seguinte crise:
+    Contexto da Crise: ${currentScenario.context}
+    
+    Em vez de escolher uma opção padrão, o jogador DIGITOU A PRÓPRIA ESTRATÉGIA:
+    "${customDecisionText}"
+    
+    Status atual da empresa: Caixa R$ ${caixa}, Margem ${margem}%, Compliance ${compliance}%.
+
+    Sua missão: Avalie a decisão do jogador. Foi um pensamento estratégico de dono ou uma loucura irresponsável? 
+    1) Se for uma boa ideia (corte de custos inteligente, renegociação, injeção de capital sustentável), dê XP positivo e impactos favoráveis.
+    2) Se for irresponsável, mágica fiscal, ou ilegal, dê XP negativo e puna severamente o caixa ou compliance.
+
+    Retorne APENAS um JSON válido nesta estrutura, sem formatação markdown:
+    {
+      "xp": [número entre -50 e +50],
+      "impacts": {
+        "caixa": [valor financeiro real de impacto, positivo ou negativo. Ex: -500000 ou 1000000],
+        "margem": [variação em pontos percentuais. Ex: -2.5 ou 1.0],
+        "compliance": [pontos de compliance perdidos ou ganhos. Ex: -20 ou 5]
+      },
+      "feedback": "Seu parecer textual denso, como Pedro Monte, explicando para o jogador o impacto real no mercado da decisão que ele acabou de digitar. Termine com 'CÓDIGO AZUL'."
+    }`;
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7 } })
+      });
+
+      const data = await response.json();
+      let aiText = data.candidates[0].content.parts[0].text;
+      aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
+      
+      const parsedResult = JSON.parse(aiText);
+      
+      handleChoice(parsedResult.xp, `🧠 AVALIAÇÃO DA SUA ESTRATÉGIA LIVRE:\n\n${parsedResult.feedback}`, false, parsedResult.impacts);
+
+    } catch (error) {
+      console.error(error);
+      alert("A auditoria do mercado (IA) não conseguiu processar seu texto. Tente novamente ou use uma ação padrão.");
+    } finally {
+      setIsEvaluatingCustom(false);
+    }
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = email.trim().toLowerCase();
     const cleanPassword = password.trim();
     
     if (!cleanEmail || !cleanPassword) { setAuthError("Preencha todos os campos obrigatórios."); return; }
-    if (authMode === 'register' && (!nome.trim() || !telefone.trim())) {
-      setAuthError("Preencha Nome e Telefone para concluir o cadastro."); return;
-    }
+    if (authMode === 'register' && (!nome.trim() || !telefone.trim())) { setAuthError("Preencha Nome e Telefone."); return; }
 
-    setIsAuthenticating(true);
-    setAuthError("");
+    setIsAuthenticating(true); setAuthError("");
 
     try {
       const docRef = doc(db, "users", cleanEmail);
@@ -271,154 +263,78 @@ export default function CodigoAzulGame() {
           setPlayerName(d.playerName); setTelefone(d.phone || "");
           
           if (!d.companyName) {
-            setPlayerNameInput(d.playerName || "");
-            setNeedsCompanySetup(true);
+            setPlayerNameInput(d.playerName || ""); setNeedsCompanySetup(true);
           } else {
-            setCompanyName(d.companyName);
-            setXp(d.xp || 0); 
+            setCompanyName(d.companyName); setXp(d.xp || 0); 
             setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
             setCurrentStage(d.currentStage || 0); 
             setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
             setShowDRE(d.showDRE || false);
-            setCurrentScenario(null); // Vai forçar a geração de um cenário novo
+            setCurrentScenario(null); 
             
             if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
             setGameStarted(true);
           }
-        } else {
-          setAuthError("E-mail ou senha incorretos.");
-        }
+        } else { setAuthError("E-mail ou senha incorretos."); }
       } else {
-        // MODO REGISTRO
-        if (docSnap.exists()) {
-          setAuthError("E-mail já cadastrado na base. Faça login.");
-        } else {
+        if (docSnap.exists()) { setAuthError("E-mail já cadastrado na base. Faça login."); } 
+        else {
           await setDoc(docRef, {
             password: cleanPassword,
             data: { 
               playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail,
-              companyName: "", xp: 0, 
-              caixa: 5000000, margem: 20.0, compliance: 100, 
-              currentStage: 0,
-              sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
+              companyName: "", xp: 0, caixa: 5000000, margem: 20.0, compliance: 100, 
+              currentStage: 0, sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
             }
           });
-          
-          setPlayerName(nome.trim());
-          setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-          setCurrentStage(0); 
-          setSessionStartStats({ caixa: 5000000, margem: 20.0 });
-          
-          setPlayerNameInput(nome.trim());
-          setNeedsCompanySetup(true);
+          setPlayerName(nome.trim()); setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
+          setCurrentStage(0); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+          setPlayerNameInput(nome.trim()); setNeedsCompanySetup(true);
         }
       }
     } catch (e) {
-      console.error(e);
       setAuthError("Falha de conexão com o banco de dados em nuvem.");
-    } finally {
-      setIsAuthenticating(false);
-    }
+    } finally { setIsAuthenticating(false); }
   };
 
   const handleCompanySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyNameInput.trim() || !playerNameInput.trim()) return;
-    
-    setCompanyName(companyNameInput.trim());
-    setPlayerName(playerNameInput.trim());
-    setNeedsCompanySetup(false);
-    setCurrentScenario(null);
-    setTimeLeft(60); 
-    setGameStarted(true); 
-    setIsGameOver(false); 
-    setShowDRE(false);
+    setCompanyName(companyNameInput.trim()); setPlayerName(playerNameInput.trim());
+    setNeedsCompanySetup(false); setCurrentScenario(null); setTimeLeft(60); 
+    setGameStarted(true); setIsGameOver(false); setShowDRE(false);
   };
 
   const handleLogout = async () => {
     if(gameStarted && !isGameOver) await saveToDB();
     setGameStarted(false); setNeedsCompanySetup(false);
     setEmail(""); setPassword(""); setAuthError(""); setNome(""); setTelefone("");
-    setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentBlackSwan(null); setCurrentScenario(null);
-  };
-
-  const handleManualSave = async () => {
-    await saveToDB(); setSaveStatus("DADOS AUDITADOS NA NUVEM"); setTimeout(() => setSaveStatus(null), 3000);
+    setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentScenario(null);
   };
 
   const handleResetCareer = () => {
     if (confirm("Confirma a liquidação da empresa? Seu histórico no Cloud Database será reiniciado.")) {
       setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-      setCurrentStage(0); setCurrentScenario(null);
-      setSessionStartStats({ caixa: 5000000, margem: 20.0 });
-      setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); setCurrentBlackSwan(null);
-      setGameStarted(false);
-      setCompanyNameInput("");
-      setPlayerNameInput(playerName);
-      setNeedsCompanySetup(true);
+      setCurrentStage(0); setCurrentScenario(null); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+      setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); 
+      setGameStarted(false); setCompanyNameInput(""); setPlayerNameInput(playerName); setNeedsCompanySetup(true);
     }
   };
 
-  // --- MECÂNICA DE TEMPO ---
-  const nextLevel = levels.find(l => l.minXp > xp);
   const progressToNext = nextLevel ? ((xp - currentLevel.minXp) / (nextLevel.minXp - currentLevel.minXp)) * 100 : 100;
 
   useEffect(() => {
-    if (!gameStarted || feedback || promotionPending || isGameOver || showDRE || currentBlackSwan || !currentScenario || isGeneratingScenario || !currentLevel.hasTimer || timeLeft <= 0) return;
+    if (!gameStarted || feedback || promotionPending || isGameOver || showDRE || !currentScenario || isGeneratingScenario || isEvaluatingCustom || !currentLevel.hasTimer || timeLeft <= 0) return;
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [gameStarted, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, currentScenario, isGeneratingScenario, timeLeft, currentLevel.hasTimer]);
+  }, [gameStarted, feedback, promotionPending, isGameOver, showDRE, currentScenario, isGeneratingScenario, isEvaluatingCustom, timeLeft, currentLevel.hasTimer]);
 
   useEffect(() => {
-    if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && !currentBlackSwan && currentScenario && gameStarted && currentLevel.hasTimer) {
-      const timeoutImpacts = { caixa: -500000, margem: -1.5, compliance: -10 };
-      handleChoice(-15, "TEMPO ESGOTADO. Hesitação corporativa sob fogo inimigo destrói liquidez e afasta investidores.", true, timeoutImpacts);
+    if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && currentScenario && gameStarted && currentLevel.hasTimer && !isEvaluatingCustom) {
+      handleChoice(-15, "TEMPO ESGOTADO. O mercado não espera. A indecisão custou caixa operacional e oportunidade.", true, { caixa: -500000, margem: -1.5, compliance: -10 });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, currentScenario, gameStarted, currentLevel.hasTimer]);
-
-  // --- MENTORIA IA (CHAT INTEGRADO) ---
-  const handleConsultoriaIA = async () => {
-    if (caixa < 50000 || isProcessing || isGameOver || !currentScenario) return;
-    setIsProcessing(true);
-    
-    // Identifica qual é a opção correta para pontuar e aplicar o impacto
-    const correctOption = currentScenario.options.reduce((prev: any, curr: any) => (prev.xp > curr.xp) ? prev : curr);
-    
-    const combinedImpacts = {
-      caixa: (correctOption.impacts?.caixa || 0) - 50000, // Custo da consultoria debitado
-      margem: correctOption.impacts?.margem || 0,
-      compliance: correctOption.impacts?.compliance || 0,
-    };
-
-    try {
-      const prompt = `Você é Pedro Monte, Estrategista de Negócios. O jogador pagou R$ 50.000 virtuais pela sua consultoria no jogo 'Código Azul'.
-      Cenário: ${currentScenario.context}
-      Opção Correta que o jogador deve tomar: ${correctOption.text}
-      Feedback que você deve elaborar em cima: ${correctOption.feedback}
-      Sua missão: Escreva um conselho curto, de 'Dono para Dono', dando um choque de realidade técnico e financeiro. Diga claramente ao jogador o que ele deve fazer, referenciando a opção correta de forma indireta e termine com "CÓDIGO AZUL."`;
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.8 }
-        })
-      });
-
-      if (!response.ok) throw new Error("Falha na API da IA");
-
-      const data = await response.json();
-      const aiFeedback = data.candidates[0].content.parts[0].text;
-
-      handleChoice(correctOption.xp, `🤖 MENTORIA PEDRO MONTE (R$ 50k debitados via IA):\n\n${aiFeedback}`, false, combinedImpacts);
-
-    } catch (error) {
-      console.error(error);
-      handleChoice(correctOption.xp, `💡 PARECER TÉCNICO (Fallback Seguro - R$ 50k): ${correctOption.feedback}`, false, combinedImpacts);
-    }
-  };
+  }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentScenario, gameStarted, currentLevel.hasTimer, isEvaluatingCustom]);
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false, impacts: any = null) => {
     if (isProcessing || isGameOver) return;
@@ -446,7 +362,7 @@ export default function CodigoAzulGame() {
       setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi aniquilado sumariamente. Sem liquidez imediata para honrar a folha de pagamento e impostos, os credores pediram a recuperação judicial da holding."); return;
     }
     if (newCompliance <= 0) {
-      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. O nível de compliance atingiu margens inaceitáveis. O acúmulo de infrações na matriz SoD e violações fiscais desencadearam bloqueio cautelar das contas."); return;
+      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. O nível de compliance atingiu margens inaceitáveis. Bloqueio cautelar das contas."); return;
     }
 
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
@@ -458,54 +374,16 @@ export default function CodigoAzulGame() {
   };
 
   const handleNextStageOrPromotion = () => {
-    if (promotionPending) {
-      setFeedback(null); playPromotionSound(); setIsProcessing(false); return;
-    }
-    proceedToNextQuestion();
-  };
+    if (promotionPending) { setFeedback(null); playPromotionSound(); setIsProcessing(false); return; }
+    setPromotionPending(false); setPromotedLevel(null); setFeedback(null); setLastXpChange(null); setTimeBonus(0); setLastImpacts(null);
+    setIsProcessing(false); setCurrentScenario(null); 
 
-  const proceedToNextQuestion = () => {
-    setPromotionPending(false); setPromotedLevel(null); setFeedback(null);
-    setLastXpChange(null); setTimeBonus(0); setLastImpacts(null);
-    setIsProcessing(false);
-    setCurrentScenario(null); // Define como nulo para forçar a IA a gerar um novo
-
-    if (currentStage < 9) { // 10 rodadas por bateria (0 a 9)
-      if (Math.random() < 0.20 && currentLevel.tier >= 2) {
-        const randomSwan = blackSwans[Math.floor(Math.random() * blackSwans.length)];
-        setCurrentBlackSwan(randomSwan);
-      } else {
-        setCurrentStage(prev => prev + 1);
-      }
-    } else {
-      setShowDRE(true);
-    }
-  };
-
-  const handleAcknowledgeBlackSwan = () => {
-    const impacts = currentBlackSwan.impacts;
-    const newCaixa = Math.max(0, caixa + impacts.caixa);
-    const newMargem = margem + impacts.margem;
-    const newCompliance = Math.min(100, Math.max(0, compliance + impacts.compliance));
-
-    setCaixa(newCaixa); setMargem(newMargem); setCompliance(newCompliance);
-    setCurrentBlackSwan(null);
-
-    if (newCaixa <= 0) {
-      setIsGameOver(true); setFeedback("FALÊNCIA POR CHOQUE EXTERNO (Cisne Negro). Seu colchão de liquidez era insuficiente para absorver a crise sistêmica no mercado."); return;
-    }
-    if (newCompliance <= 0) {
-      setIsGameOver(true); setFeedback("COLAPSO INSTITUCIONAL. A tempestade externa encontrou uma empresa com controles internos fragilizados, levando à intervenção."); return;
-    }
-
-    setCurrentStage(prev => prev + 1);
+    if (currentStage < 9) { setCurrentStage(prev => prev + 1); } 
+    else { setShowDRE(true); }
   };
 
   const handleStartNewQuarter = () => {
-    setShowDRE(false);
-    setSessionStartStats({ caixa, margem });
-    setCurrentStage(0);
-    setCurrentScenario(null); // Força a IA a gerar novos cenários para o novo ciclo
+    setShowDRE(false); setSessionStartStats({ caixa, margem }); setCurrentStage(0); setCurrentScenario(null);
   };
 
   const caixaBarFill = Math.min(100, (caixa / 15000000) * 100);
@@ -530,14 +408,14 @@ export default function CodigoAzulGame() {
           <form onSubmit={handleCompanySubmit} className="space-y-5">
             <div className="space-y-1 text-left">
               <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Nome da Corporação</label>
-              <input type="text" value={companyNameInput} onChange={(e) => setCompanyNameInput(e.target.value)} placeholder="Ex: Nexus Corp, Indústria Alfa..." className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" required />
+              <input type="text" value={companyNameInput} onChange={(e) => setCompanyNameInput(e.target.value)} placeholder="Ex: Nexus Corp..." className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 transition-all" required />
             </div>
             <div className="space-y-1 text-left">
               <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Seu Nome no Crachá</label>
-              <input type="text" value={playerNameInput} onChange={(e) => setPlayerNameInput(e.target.value)} placeholder="Ex: Pedro Monte, Sr. Diretor..." className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" required />
+              <input type="text" value={playerNameInput} onChange={(e) => setPlayerNameInput(e.target.value)} placeholder="Ex: Pedro Monte..." className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 transition-all" required />
             </div>
             <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-mono tracking-widest py-4 px-4 rounded-lg transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] uppercase mt-4">
-              Iniciar Operação
+              Iniciar Simulação IA
             </button>
           </form>
         </div>
@@ -603,7 +481,7 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DE GAME OVER (FALÊNCIA) ---
+  // --- TELA DE GAME OVER E DRE ---
   if (isGameOver) {
     return (
       <div className="min-h-screen bg-[#060202] flex items-center justify-center p-4 relative overflow-hidden font-sans">
@@ -625,86 +503,38 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DRE GAMIFICADO (FECHAMENTO DE TRIMESTRE) ---
   if (showDRE) {
     const deltaCaixa = caixa - sessionStartStats.caixa;
     const deltaMargem = margem - sessionStartStats.margem;
-    
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
         <div className="z-10 bg-[#0f172a]/90 backdrop-blur-3xl p-8 md:p-12 rounded-3xl border border-white/5 shadow-2xl max-w-2xl w-full text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-[#020617]/50 border border-white/10 mb-6 shadow-inner">
-            <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-          </div>
           <h2 className="text-[10px] font-mono text-cyan-500 uppercase tracking-[0.4em] mb-2">DRE Sintético Gerencial</h2>
           <h1 className="text-2xl md:text-3xl font-light text-slate-100 mb-8 tracking-wide uppercase">Fechamento do <span className="font-semibold text-cyan-400">Trimestre</span></h1>
-          
           <div className="bg-[#020617]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left space-y-4 font-mono">
-            <div className="flex justify-between border-b border-slate-800/80 pb-2">
-              <span className="text-slate-500 text-xs">Caixa Abertura Trimestre:</span><span className="text-slate-300 text-xs">{formatBRL(sessionStartStats.caixa)}</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-800/80 pb-2">
-              <span className="text-slate-500 text-xs">Caixa Fechamento Atual:</span><span className="text-slate-300 text-xs">{formatBRL(caixa)}</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-800/80 pb-2 bg-slate-900/30 p-2 rounded">
-              <span className="text-slate-400 text-xs font-bold">Fluxo de Caixa Livre (FCF):</span>
-              <span className={`text-sm font-bold ${deltaCaixa >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{deltaCaixa >= 0 ? '+' : ''}{formatBRL(deltaCaixa)}</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-800/80 pb-2 pt-2">
-              <span className="text-slate-500 text-xs">Variação EBITDA Margin:</span>
-              <span className={`text-xs font-bold ${deltaMargem >= 0 ? 'text-blue-400' : 'text-red-400'}`}>{deltaMargem >= 0 ? '+' : ''}{formatPct(deltaMargem)}</span>
-            </div>
-            <div className="flex justify-between pt-2">
-              <span className="text-slate-500 text-xs">XP Executivo Consolidado:</span><span className="text-cyan-400 text-xs font-bold">{xp} Pontos</span>
-            </div>
+            <div className="flex justify-between border-b border-slate-800/80 pb-2"><span className="text-slate-500 text-xs">Caixa Inicial:</span><span className="text-slate-300 text-xs">{formatBRL(sessionStartStats.caixa)}</span></div>
+            <div className="flex justify-between border-b border-slate-800/80 pb-2"><span className="text-slate-500 text-xs">Caixa Final:</span><span className="text-slate-300 text-xs">{formatBRL(caixa)}</span></div>
+            <div className="flex justify-between border-b border-slate-800/80 pb-2 bg-slate-900/30 p-2 rounded"><span className="text-slate-400 text-xs font-bold">Fluxo de Caixa Livre (FCF):</span><span className={`text-sm font-bold ${deltaCaixa >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{deltaCaixa >= 0 ? '+' : ''}{formatBRL(deltaCaixa)}</span></div>
+            <div className="flex justify-between border-b border-slate-800/80 pb-2 pt-2"><span className="text-slate-500 text-xs">Variação EBITDA Margin:</span><span className={`text-xs font-bold ${deltaMargem >= 0 ? 'text-blue-400' : 'text-red-400'}`}>{deltaMargem >= 0 ? '+' : ''}{formatPct(deltaMargem)}</span></div>
+            <div className="flex justify-between pt-2"><span className="text-slate-500 text-xs">XP Executivo:</span><span className="text-cyan-400 text-xs font-bold">{xp} Pontos</span></div>
           </div>
-          <button onClick={handleStartNewQuarter} className="bg-cyan-950/50 border border-cyan-800 hover:border-cyan-400 text-cyan-400 text-xs font-mono tracking-[0.2em] py-4 px-10 rounded-xl transition-all uppercase hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]">Assinar Balanço & Iniciar Novo Ciclo</button>
+          <button onClick={handleStartNewQuarter} className="bg-cyan-950/50 border border-cyan-800 hover:border-cyan-400 text-cyan-400 text-xs font-mono tracking-[0.2em] py-4 px-10 rounded-xl transition-all uppercase">Assinar Balanço & Iniciar Novo Ciclo</button>
         </div>
       </div>
     );
   }
 
-  // --- TELA DE CISNE NEGRO (CHOQUES MACRO) ---
-  if (currentBlackSwan) {
-    return (
-      <div className="min-h-screen bg-[#060202] flex items-center justify-center p-4 relative overflow-hidden font-sans">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-[150px] animate-pulse pointer-events-none"></div>
-        <div className="z-10 bg-[#170f0f]/90 backdrop-blur-3xl p-8 md:p-12 rounded-3xl border border-red-900/50 shadow-2xl max-w-2xl w-full text-center">
-          <div className="text-red-500 text-6xl mb-6">📉</div>
-          <h2 className="text-[10px] font-mono text-red-500 uppercase tracking-[0.4em] mb-2">Cisne Negro (Tail Risk)</h2>
-          <h1 className="text-2xl md:text-3xl font-light text-slate-100 mb-8 tracking-wide uppercase">{currentBlackSwan.title}</h1>
-          <div className="bg-[#060202]/50 p-6 rounded-xl border border-red-900/40 mb-8 text-left">
-            <p className="text-slate-300 text-sm font-light leading-relaxed text-justify border-l-2 border-red-500 pl-4 mb-4">{currentBlackSwan.text}</p>
-            <div className="font-mono text-[11px] text-red-400 border-t border-red-900/50 pt-4 mt-4 space-y-1">
-               <p>Impacto Conta Caixa: <span className="font-bold">{formatBRL(currentBlackSwan.impacts.caixa)}</span></p>
-               <p>Erosão de Margem: <span className="font-bold">{formatPct(currentBlackSwan.impacts.margem)}</span></p>
-            </div>
-          </div>
-          <button onClick={handleAcknowledgeBlackSwan} className="bg-red-950/50 border border-red-800 hover:border-red-500 text-red-400 text-xs font-mono tracking-[0.2em] py-3.5 px-10 rounded-xl transition-all uppercase hover:shadow-[0_0_30px_rgba(239,68,68,0.2)]">Absorver Prejuízo e Operar</button>
-        </div>
-      </div>
-    );
-  }
-
-  // --- TELA DE PROMOÇÃO DE PATENTE ---
   if (promotionPending && !feedback) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] animate-pulse pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] pointer-events-none"></div>
         <div className="z-10 bg-[#0f172a]/80 backdrop-blur-3xl p-8 md:p-12 rounded-3xl border border-white/5 shadow-2xl max-w-2xl w-full text-center">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-full border-2 border-cyan-400 bg-slate-900 overflow-hidden shadow-[0_0_25px_rgba(6,182,212,0.4)]">
-            <img src="https://images2.imgbox.com/71/2a/v5KjH8Lp_o.png" alt="Executivo" className="w-full h-full object-cover object-top" />
-          </div>
           <h2 className="text-[10px] font-mono text-cyan-500 uppercase tracking-[0.4em] mb-2">Comitê de Governança</h2>
           <h1 className="text-2xl md:text-4xl font-light text-slate-100 mb-8 tracking-wide uppercase">Ascensão <span className="font-semibold text-cyan-400">Homologada</span></h1>
-          
           <div className="bg-[#020617]/50 p-6 md:p-8 rounded-xl border border-slate-800 mb-8 text-left relative overflow-hidden">
-            <div className="absolute left-0 top-0 w-1 h-full bg-cyan-500 shadow-[0_0_10px_#06b6d4]"></div>
-            <div className="flex justify-between items-end border-b border-slate-800/80 pb-4 mb-4">
-              <span className="text-slate-500 uppercase text-[10px] tracking-[0.2em] font-mono">Nova Patente Adquirida</span>
-              <span className="text-xl md:text-2xl font-semibold text-cyan-400">{promotedLevel?.title}</span>
-            </div>
+            <div className="absolute left-0 top-0 w-1 h-full bg-cyan-500"></div>
+            <div className="flex justify-between items-end border-b border-slate-800/80 pb-4 mb-4"><span className="text-slate-500 uppercase text-[10px] tracking-[0.2em] font-mono">Nova Patente Adquirida</span><span className="text-xl md:text-2xl font-semibold text-cyan-400">{promotedLevel?.title}</span></div>
             <div className="space-y-4">
               <div><h3 className="text-cyan-500/80 font-mono uppercase text-[10px] tracking-widest mb-1">Parecer de Capacidade Instalada</h3><p className="text-slate-300 text-xs md:text-sm font-light leading-relaxed text-justify">{promotedLevel?.feedback?.forca}</p></div>
               <div><h3 className="text-amber-500/80 font-mono uppercase text-[10px] tracking-widest mb-1">Ponto de Atenção para Próximo Ciclo</h3><p className="text-slate-400 text-xs md:text-sm font-light leading-relaxed text-justify">{promotedLevel?.feedback?.vulnerabilidade}</p></div>
@@ -716,18 +546,16 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DE CARREGAMENTO (GERAÇÃO DE IA) ---
+  // --- TELA DE CARREGAMENTO IA ---
   if (isGeneratingScenario || !currentScenario) {
     return (
       <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <div className="w-16 h-16 border-4 border-cyan-900 border-t-cyan-500 rounded-full animate-spin mb-6"></div>
-        <h2 className="text-cyan-400 font-mono text-[10px] tracking-[0.3em] uppercase animate-pulse">Sintetizando Cenário Técnico via Inteligência Artificial...</h2>
-        <p className="text-slate-600 font-mono text-[9px] tracking-widest mt-2 uppercase">Ajustando dificuldade para: {currentLevel.title}</p>
+        <h2 className="text-cyan-400 font-mono text-[10px] tracking-[0.3em] uppercase animate-pulse">A IA Está Analisando Seus Indicadores...</h2>
+        <p className="text-slate-600 font-mono text-[9px] tracking-widest mt-2 uppercase">Caixa: {formatBRL(caixa)} | Risco Nível: {currentLevel.title}</p>
       </div>
     );
   }
-
-  const timerColor = timeLeft > 30 ? 'bg-cyan-500' : timeLeft > 15 ? 'bg-amber-500' : 'bg-red-500';
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-300 p-4 md:p-8 font-sans transition-all relative overflow-hidden">
@@ -735,171 +563,35 @@ export default function CodigoAzulGame() {
       
       <div className="max-w-5xl mx-auto space-y-4 relative z-10">
         
-        {/* HUD FINANCEIRO: SINAIS VITAIS */}
+        {/* HUD FINANCEIRO */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 bg-[#0f172a]/80 backdrop-blur-md p-5 rounded-xl border border-white/5 shadow-lg">
-          <div className="flex flex-col">
-            <div className="flex justify-between items-baseline mb-1">
-               <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Caixa Operacional</span>
-               <span className={`text-xs font-bold font-mono ${caixa > 2000000 ? 'text-emerald-400' : 'text-amber-400'}`}>{formatBRL(caixa)}</span>
-            </div>
-            <div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden border border-emerald-900/30">
-              <div className={`h-full transition-all duration-700 ease-out ${caixa > 2500000 ? 'bg-emerald-500' : caixa > 1000000 ? 'bg-amber-500' : 'bg-red-500 shadow-[0_0_8px_#ef4444]'}`} style={{ width: `${caixaBarFill}%` }}></div>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="flex justify-between items-baseline mb-1">
-               <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Margem EBITDA</span>
-               <span className={`text-xs font-bold font-mono ${margem >= 15 ? 'text-blue-400' : 'text-amber-400'}`}>{formatPct(margem)}</span>
-            </div>
-            <div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden border border-blue-900/30">
-              <div className={`h-full transition-all duration-700 ease-out ${margem > 10 ? 'bg-blue-500' : 'bg-red-500'}`} style={{ width: `${margemBarFill}%` }}></div>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="flex justify-between items-baseline mb-1">
-               <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Compliance Matriz</span>
-               <span className={`text-xs font-bold font-mono ${compliance >= 80 ? 'text-purple-400' : 'text-amber-400'}`}>{compliance}%</span>
-            </div>
-            <div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden border border-purple-900/30">
-              <div className={`h-full transition-all duration-700 ease-out ${compliance > 60 ? 'bg-purple-500' : 'bg-red-500'}`} style={{ width: `${compliance}%` }}></div>
-            </div>
-          </div>
+          <div className="flex flex-col"><div className="flex justify-between items-baseline mb-1"><span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Caixa Operacional</span><span className={`text-xs font-bold font-mono ${caixa > 2000000 ? 'text-emerald-400' : 'text-amber-400'}`}>{formatBRL(caixa)}</span></div><div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden border border-emerald-900/30"><div className={`h-full transition-all duration-700 ease-out ${caixa > 2500000 ? 'bg-emerald-500' : caixa > 1000000 ? 'bg-amber-500' : 'bg-red-500 shadow-[0_0_8px_#ef4444]'}`} style={{ width: `${caixaBarFill}%` }}></div></div></div>
+          <div className="flex flex-col"><div className="flex justify-between items-baseline mb-1"><span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Margem EBITDA</span><span className={`text-xs font-bold font-mono ${margem >= 15 ? 'text-blue-400' : 'text-amber-400'}`}>{formatPct(margem)}</span></div><div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden border border-blue-900/30"><div className={`h-full transition-all duration-700 ease-out ${margem > 10 ? 'bg-blue-500' : 'bg-red-500'}`} style={{ width: `${margemBarFill}%` }}></div></div></div>
+          <div className="flex flex-col"><div className="flex justify-between items-baseline mb-1"><span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Compliance Matriz</span><span className={`text-xs font-bold font-mono ${compliance >= 80 ? 'text-purple-400' : 'text-amber-400'}`}>{compliance}%</span></div><div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden border border-purple-900/30"><div className={`h-full transition-all duration-700 ease-out ${compliance > 60 ? 'bg-purple-500' : 'bg-red-500'}`} style={{ width: `${compliance}%` }}></div></div></div>
         </div>
 
-        {/* HEADER IDENTIFICAÇÃO */}
+        {/* HEADER */}
         <header className="bg-[#0f172a]/50 backdrop-blur-xl p-5 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-center shadow-xl">
           <div className="flex items-center gap-4 w-full md:w-auto mb-4 md:mb-0">
-            <div className="w-12 h-12 rounded-xl border border-cyan-500/40 bg-slate-900 overflow-hidden shrink-0 hidden md:block">
-              <img src="https://images2.imgbox.com/71/2a/v5KjH8Lp_o.png" alt="Avatar" className="w-full h-full object-cover object-top" />
-            </div>
-            <div>
-              <h1 className="text-base font-light text-slate-100 tracking-[0.15em] uppercase"><span className="font-semibold text-cyan-400">{companyName}</span></h1>
-              <p className="text-slate-500 text-[10px] font-mono tracking-widest uppercase">Estrategista: <span className="text-slate-300">{playerName}</span></p>
-            </div>
-          </div>
-          
-          <div className="w-full md:w-80">
-            <div className="flex justify-between items-baseline mb-2">
-              <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest">{currentLevel.title}</p>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-[9px] text-slate-400 font-mono tracking-widest">
-                <span>XP GERADO: {xp}</span><span className="text-cyan-600">GATILHO: {nextLevel ? `${nextLevel.minXp}` : 'MAX'}</span>
-              </div>
-              <div className="h-1 w-full bg-[#020617] rounded-full overflow-hidden border border-white/5">
-                <div className="h-full bg-cyan-500 transition-all duration-1000 ease-out" style={{ width: `${progressToNext}%` }}></div>
-              </div>
-            </div>
-          </div>
-        </header>
+            <div><h1 className="text-base font-light text-slate-100 tracking-[0.15em] uppercase"><span className="font-semibold text-cyan-400">{companyName}</span></h1><p className="text-slate-500 text-[10px] font-mono tracking-widest uppercase">Estrategista: <span className="Você tem toda a razão. Ficar em dilemas teóricos e perguntas de múltipla escolha é perda de tempo para quem vive o campo de batalha. Chega de "arroz com feijão". Vamos dar um choque de realidade e testar, na prática, o que separa as empresas que crescem daquelas que estão apenas adiando a falência. 
 
-        {/* PAINEL DE OPERAÇÕES PRINCIPAL GERADO PELA IA */}
-        {!feedback ? (
-          <main className="bg-[#0f172a]/40 backdrop-blur-xl p-6 md:p-10 rounded-2xl border border-white/5 shadow-2xl relative">
-            {currentLevel.hasTimer ? (
-              <div className="absolute top-0 left-0 w-full h-1 bg-[#020617] rounded-t-2xl overflow-hidden">
-                <div className={`h-full transition-all duration-1000 ease-linear ${timerColor} shadow-[0_0_10px_currentColor]`} style={{ width: `${(timeLeft / 60) * 100}%` }}></div>
-              </div>
-            ) : null}
+A partir de agora, o motor do jogo muda. O algoritmo não vai avaliar "conceitos", vai analisar a robustez estratégica das suas decisões de sobrevivência e crescimento.
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-white/5 pb-4 mt-2">
-              <div>
-                <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2">
-                  <span className="text-cyan-600 font-mono text-[10px] uppercase tracking-[0.2em] font-semibold">{currentScenario.sector}</span>
-                  <span className="hidden md:inline text-slate-600 font-mono text-[9px]">•</span>
-                  <span className={`text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border ${currentScenario.criticality === 'Extrema' ? 'border-red-500/40 text-red-400 bg-red-950/20' : currentScenario.criticality === 'Alta' ? 'border-amber-500/40 text-amber-400 bg-amber-950/20' : currentScenario.criticality === 'Média' ? 'border-cyan-500/40 text-cyan-400 bg-cyan-950/20' : 'border-slate-600/40 text-slate-400 bg-slate-900/30'}`}>
-                    Risco: {currentScenario.criticality}
-                  </span>
-                </div>
-                <h2 className="text-xl md:text-2xl font-light text-slate-100 tracking-wide">{currentScenario.title}</h2>
-              </div>
-              <span className="text-slate-500 text-[10px] font-mono tracking-widest uppercase border border-slate-700/50 bg-[#020617]/50 px-3 py-1.5 rounded-md whitespace-nowrap">
-                Fase {currentStage + 1}/10
-              </span>
-            </div>
+Aqui está o seu painel de controle. Os sinais vitais estão apitando. É um **CÓDIGO AZUL**.
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-[#020617]/40 p-5 rounded-xl border border-white/5">
-                <h3 className="text-[10px] font-mono text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2 border-b border-white/5 pb-2"><span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span> Marco Normativo / Teoria</h3>
-                <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{currentScenario.theory}</p>
-              </div>
-              <div className="bg-[#020617]/40 p-5 rounded-xl border border-white/5 relative overflow-hidden">
-                <h3 className="text-[10px] font-mono text-amber-600 uppercase tracking-widest mb-3 flex items-center gap-2 border-b border-white/5 pb-2 relative z-10"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Contexto Corporativo (Field)</h3>
-                <p className="text-slate-200 text-[13px] font-light leading-relaxed text-justify relative z-10">{currentScenario.context}</p>
-              </div>
-            </div>
+### O Cenário: A Sangria do "Falso Crescimento"
 
-            <div className="space-y-4">
-              <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.3em] mb-3 text-center">Definição do C-Level ({currentScenario.character})</h3>
-              {currentScenario.options.map((option: any, index: number) => (
-                <button
-                  key={index}
-                  disabled={isProcessing}
-                  onClick={() => handleChoice(option.xp, option.feedback, false, option.impacts)}
-                  className={`w-full text-left p-6 rounded-xl bg-[#020617]/50 border border-slate-700/50 transition-all group relative overflow-hidden ${isProcessing ? 'opacity-50' : 'hover:border-cyan-500/50 hover:bg-[#081229] hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]'}`}
-                >
-                  <div className="absolute left-0 top-0 w-1 h-full bg-transparent group-hover:bg-cyan-500 transition-colors"></div>
-                  <p className="text-slate-300 text-[13px] font-light group-hover:text-cyan-50 transition-colors leading-relaxed pl-2 text-justify">{option.text}</p>
-                </button>
-              ))}
+Você acaba de ser chamado para intervir em uma rede local varejista. O dono está comemorando porque o faturamento bateu recorde e subiu 45% nos últimos 90 dias. Ele acha que encontrou a mina de ouro, mas a verdade nua e crua é que o caixa secou e a operação está em modo de sobrevivência. 
 
-              <div className="pt-6 border-t border-white/5 mt-6">
-                <button
-                  disabled={isProcessing || caixa < 50000}
-                  onClick={handleConsultoriaIA}
-                  className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-[0.2em] uppercase flex justify-center items-center gap-2 ${isProcessing || caixa < 50000 ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-amber-950/20 border-amber-800/50 text-amber-500 hover:bg-amber-900/40 hover:border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.05)] hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]'}`}
-                >
-                  {isProcessing ? '🤖 PROCESSANDO PARECER TÉCNICO...' : '🤖 ACIONAR IA MENTORIA PEDRO MONTE (DEBITA R$ 50K)'}
-                </button>
-              </div>
-            </div>
-          </main>
-        ) : (
-          /* TELA DE FEEDBACK TÉCNICO E IMPACTO NO HUD */
-          <div className="bg-[#0f172a]/60 backdrop-blur-2xl p-8 md:p-12 rounded-2xl border border-white/5 shadow-2xl relative text-center">
-            <div className={`absolute top-0 left-0 w-full h-1 ${lastXpChange && lastXpChange > 0 ? 'bg-cyan-500' : 'bg-red-500'}`}></div>
-            <h2 className={`text-[10px] font-mono uppercase tracking-[0.4em] mb-4 mt-2 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-500' : 'text-red-400'}`}>
-              {lastXpChange && lastXpChange > 0 ? 'Parecer Técnico Homologado' : 'Alerta de Irregularidade de Risco'}
-            </h2>
-            <div className="text-4xl md:text-5xl font-light text-slate-100 tracking-wider mb-6 font-mono">
-              {lastXpChange && lastXpChange > 0 ? '+' : ''}{lastXpChange} <span className="text-xl text-slate-600">XP</span>
-            </div>
+O diagnóstico dos sinais vitais mostra o seguinte:
 
-            {lastImpacts && (
-              <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-12 mb-8 border-y border-white/5 py-6 bg-[#020617]/30">
-                 <div className="text-center">
-                   <p className="text-[9px] uppercase font-mono text-slate-500 mb-1">Impacto Caixa (Liquidez)</p>
-                   <p className={`font-mono text-lg md:text-xl font-bold ${lastImpacts.caixa >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{lastImpacts.caixa >= 0 ? '+' : ''}{formatBRL(lastImpacts.caixa)}</p>
-                 </div>
-                 <div className="text-center">
-                   <p className="text-[9px] uppercase font-mono text-slate-500 mb-1">Impacto Margem (Ebitda)</p>
-                   <p className={`font-mono text-lg md:text-xl font-bold ${lastImpacts.margem >= 0 ? 'text-blue-400' : 'text-red-400'}`}>{lastImpacts.margem >= 0 ? '+' : ''}{formatPct(lastImpacts.margem)}</p>
-                 </div>
-                 <div className="text-center">
-                   <p className="text-[9px] uppercase font-mono text-slate-500 mb-1">Impacto Governança</p>
-                   <p className={`font-mono text-lg md:text-xl font-bold ${lastImpacts.compliance >= 0 ? 'text-purple-400' : 'text-red-400'}`}>{lastImpacts.compliance >= 0 ? '+' : ''}{lastImpacts.compliance}%</p>
-                 </div>
-              </div>
-            )}
+*   **Ciclo Financeiro Estrangulado:** Para bater a meta de faturamento, a equipe comercial afrouxou as regras e o Prazo Médio de Recebimento (PMR) saltou de 30 para 65 dias. 
+*   **Fornecedores no Gargalo:** Devido ao alto volume repentino de pedidos, o principal fornecedor dos produtos de "Curva A" (responsáveis por 60% do giro) reduziu o Prazo Médio de Pagamento (PMP) de 28 para 10 dias.
+*   **A Bomba-Relógio:** Faltam exatos 12 dias para fechar a folha de pagamento e quitar os impostos em atraso. O buraco projetado no caixa para o dia 5 é de R$ 145.000,00.
+*   **A Armadilha:** O gerente do banco está na linha agora. Ele já deixou um contrato pronto oferecendo um empréstimo de capital de giro de R$ 150.000,00 a uma taxa letal de 4,9% ao mês, exigindo alienação do veículo do dono como garantia. 
 
-            <div className="bg-[#020617]/50 p-6 md:p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative whitespace-pre-wrap">
-               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Feedback Consolidado:</span>
-              <p className="text-slate-300 text-sm font-light leading-relaxed mt-2 text-justify">{feedback}</p>
-            </div>
+### A Decisão (De Dono para Dono)
 
-            <button onClick={handleNextStageOrPromotion} className="bg-transparent border border-slate-600 hover:border-cyan-400 text-cyan-600 hover:text-cyan-400 text-[10px] font-mono tracking-[0.3em] py-3.5 px-10 rounded-xl transition-all uppercase hover:bg-cyan-950/20">
-              {promotionPending ? "Acessar Avaliação de Patente" : "Proceder ao Próximo Arquivo"}
-            </button>
-          </div>
-        )}
+O dono atual está em pânico absoluto, com o "tempo fechando", e quer assinar o empréstimo em 1 hora para conseguir dormir à noite. 
 
-        <div className="flex flex-wrap items-center justify-center gap-6 pb-6 pt-2 font-mono">
-          <button onClick={handleManualSave} className="text-[9px] text-cyan-600/60 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">{saveStatus || "Gravar Data Center (Nuvem)"}</button>
-          <span className="text-slate-800">/</span><button onClick={handleLogout} className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-[0.2em]">Desconectar (Logout)</button>
-          <span className="text-slate-800">/</span><button onClick={handleResetCareer} className="text-[9px] text-slate-600 hover:text-red-400 transition-colors uppercase tracking-[0.2em]">Liquidacao Total (Reset)</button>
-        </div>
-
-      </div>
-    </div>
-  );
-}
+Como o estrategista assumindo o controle dessa operação, como você desarma essa bomba-relógio nas próximas 48 horas de forma cirúrgica? Qual é a sequência exata de alavancas que você puxa para salvar a operação sem jogar a empresa em um buraco de dívidas impagável?
