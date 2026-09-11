@@ -18,6 +18,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// --- CHAVE DE API DO GOOGLE GEMINI ---
+const GEMINI_API_KEY = "AQ.Ab8RN6IlD5wf8Me0nDtLf1TJ_krl6vU760sU0yjFpfiSu3bMyw";
+
 // --- FORMATADORES FINANCEIROS ---
 const formatBRL = (value: number) => {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -68,8 +71,8 @@ const allScenarios = [
   {
     id: 1, tier: 1, criticality: "Baixa", points: 20, sector: "Tesouraria / Gestão de Caixa",
     title: "O Descasamento do Ciclo Operacional (Overtrading)",
-    theory: "Segundo as diretrizes de solvência do BCB, lucros contábeis não garantem liquidez. O Ciclo de Conversão de Caixa (CCC) é vital. Crescer vendas financiando clientes em prazos longos enquanto se paga fornecedores à vista consome o capital de giro exponencialmente, gerando o chamado Efeito Tesoura.",
-    context: "O faturamento saltou 35% neste trimestre e a DRE mostra 15% de margem líquida. Contudo, o caixa amanheceu descoberto antes do fechamento bancário. Os fornecedores exigem liquidação em 15 dias, mas o setor comercial alongou os recebimentos para 60 dias para bater a meta agressiva.", character: "Supervisão de Tesouraria",
+    theory: "Segundo as diretrizes de solvência do BCB, lucros contábeis não garantem liquidez. O Ciclo de Conversão de Caixa (CCC) é vital. Crescer vendas financiando clientes em prazos longos enquanto se paga fornecedores à vista consome o capital de giro exponencialmente.",
+    context: "O faturamento saltou 35% neste trimestre. Contudo, o caixa amanheceu descoberto antes do fechamento bancário. Os fornecedores exigem liquidação em 15 dias, mas o setor comercial alongou os recebimentos para 60 dias para bater a meta agressiva.", character: "Supervisão de Tesouraria",
     options: [
       { text: "Captar limite de cheque especial corporativo ou linha de curto prazo para cobrir os boletos e sustentar a concessão de crédito comercial irrestrita.", xp: -15, impacts: { caixa: 500000, margem: -2.5, compliance: -5 }, feedback: "INVIÁVEL. Financiar um ciclo financeiro estruturalmente deficitário com dívida bancária cara mascara o problema hoje, mas as taxas de rotativo destroem a margem da empresa rapidamente." },
       { text: "Travar imediatamente as vendas a prazo para novos clientes, antecipar parte dos recebíveis com trava de spread e realinhar os prazos a 30 dias.", xp: 20, impacts: { caixa: 1200000, margem: -0.5, compliance: 10 }, feedback: "CIRÚRGICO. Você estancou a hemorragia de liquidez trazendo R$ 1.2M para o caixa com sacrifício mínimo de margem, realinhando a governança comercial." }
@@ -78,7 +81,7 @@ const allScenarios = [
   {
     id: 2, tier: 1, criticality: "Baixa", points: 22, sector: "Contas a Pagar / Custo de Oportunidade",
     title: "A Arbitragem do Desconto de Duplicatas",
-    theory: "O desconto concedido por um fornecedor para quitação à vista deve ser comparado matematicamente ao custo de oportunidade das aplicações de liquidez imediata (CDI/Selic). Deixar de capturar um desconto mercantil que supera amplamente o CDI é uma perda direta e silenciosa de margem.",
+    theory: "O desconto concedido por um fornecedor para quitação à vista deve ser comparado matematicamente ao custo de oportunidade das aplicações de liquidez imediata (CDI/Selic).",
     context: "Um fornecedor homologado oferece 2,5% de abatimento para o pagamento à vista de uma fatura de R$ 2 Milhões hoje. Caso contrário, o prazo padrão será de 30 dias. A empresa mantém um caixa volumoso investido em aplicações rendendo 0,85% ao mês.", character: "Mesa de Pagamentos",
     options: [
       { text: "Recusar o desconto ofertado para manter o saldo intocado na aplicação bancária rendendo os juros até o trigésimo dia do vencimento.", xp: -10, impacts: { caixa: 0, margem: -1.2, compliance: 0 }, feedback: "EQUÍVOCO FINANCEIRO. Você sacrificou um ganho financeiro líquido superior ao rendimento bancário do período, espremendo a margem do negócio." },
@@ -88,8 +91,8 @@ const allScenarios = [
   {
     id: 3, tier: 2, criticality: "Média", points: 30, sector: "Controladoria / CPC 16",
     title: "Custeio ABC e o Subsídio Cruzado",
-    theory: "O rateio linear de custos indiretos por volume (absorção simples) mascara a ineficiência de produtos de nicho que exigem setup complexo. O Custeio Baseado em Atividades (ABC) aloca despesas conforme a demanda real de processos, evitando o 'subsídio cruzado', onde produtos lucrativos pagam a conta de produtos ineficientes.",
-    context: "A linha tradicional tem alta tiragem e o balanço aponta margem contábil de 18%. A linha sob medida também registra 18%, mas a fábrica reclama que ela exige 4x mais horas de manutenção, inspeções e retrabalho fabril, secando o caixa invisivelmente.", character: "Controladoria Operacional",
+    theory: "O rateio linear de custos indiretos por volume (absorção simples) mascara a ineficiência de produtos de nicho que exigem setup complexo. O Custeio Baseado em Atividades (ABC) aloca despesas conforme a demanda real de processos.",
+    context: "A linha tradicional tem alta tiragem e o balanço aponta margem contábil de 18%. A linha sob medida também registra 18%, mas a fábrica reclama que ela exige 4x mais horas de manutenção, secando o caixa invisivelmente.", character: "Controladoria Operacional",
     options: [
       { text: "Reajustar linearmente os preços de ambas as linhas de produção em 10% para recompor a margem global exigida pelo conselho de administração.", xp: -20, impacts: { caixa: -300000, margem: -2.0, compliance: 0 }, feedback: "FALHA ESTRATÉGICA. O aumento cego encarece o produto que te sustenta no mercado (perdendo vendas) e perpetua o subsídio do produto deficitário que drena a operação." },
       { text: "Rastrear os geradores de custo via ABC, elevar rigorosamente a precificação apenas da linha sob medida e incentivar as vendas da linha padrão.", xp: 30, impacts: { caixa: 650000, margem: 3.5, compliance: 10 }, feedback: "VISÃO ESTRATÉGICA ATIVADA. Você isolou a ineficiência fabril e destravou a rentabilidade real, engordando o fluxo de caixa sustentável." }
@@ -98,7 +101,7 @@ const allScenarios = [
   {
     id: 4, tier: 2, criticality: "Média", points: 35, sector: "Gestão de Risco / PDD",
     title: "Provisão de Perdas Esperadas (PECLD / IFRS 9)",
-    theory: "O modelo de perdas incorridas foi superado pela mensuração de perdas esperadas. O IFRS 9 exige que a empresa provisione a inadimplência com base no histórico de rolagem de dívidas e variáveis macroeconômicas, e não apenas aguardando o atraso se consumar.",
+    theory: "O modelo de perdas incorridas foi superado pela mensuração de perdas esperadas. O IFRS 9 exige que a empresa provisione a inadimplência com base no histórico de rolagem de dívidas e variáveis macroeconômicas.",
     context: "O setor comercial atingiu um recorde histórico vendendo fortemente a prazo para redes varejistas que estão em processo de reestruturação. A diretoria recusa-se a lançar provisões de perda (PDD) para não estragar a comemoração do Ebitda mensal.", character: "Risco e Crédito Corporativo",
     options: [
       { text: "Adiar o reconhecimento da provisão até que os títulos comerciais completem 90 dias de inadimplência efetiva e inquestionável no cartório.", xp: -25, impacts: { caixa: -800000, margem: 2.0, compliance: -40 }, feedback: "DESCOMPLIANCE POR OMISSÃO. A margem pareceu subir artificialmente, mas o caixa foi surpreendido por calotes sucessivos. O balanço foi maquiado." },
@@ -108,8 +111,8 @@ const allScenarios = [
   {
     id: 5, tier: 3, criticality: "Alta", points: 45, sector: "Tributário / Reforma Tributária (EC 132)",
     title: "IVA Dual: Precificação e Não Cumulatividade Plena",
-    theory: "A Reforma Tributária extinguiu impostos em cascata, substituindo-os pelo IVA Dual (CBS e IBS). A grande mudança é a 'não cumulatividade plena': a empresa credita-se do imposto sobre os insumos, mas as alíquotas nominais finais são significativamente maiores. Precificar produtos usando lógicas antigas destrói a rentabilidade.",
-    context: "Sua indústria compra insumos pesados. No sistema antigo, não havia crédito de PIS/COFINS sobre várias despesas. Agora, com o IBS/CBS operando, o Diretor Comercial quer reduzir o preço de venda em 10% alegando que 'teremos mais créditos tributários para abater', sem repassar a nova alíquota nominal.", character: "Comitê de Transição Tributária",
+    theory: "A Reforma Tributária extinguiu impostos em cascata, substituindo-os pelo IVA Dual (CBS e IBS). A grande mudança é a 'não cumulatividade plena': a empresa credita-se do imposto sobre os insumos, mas as alíquotas nominais finais são significativamente maiores.",
+    context: "Sua indústria compra insumos pesados. No sistema antigo, não havia crédito de PIS/COFINS sobre várias despesas. Agora, com o IBS/CBS operando, o Diretor Comercial quer reduzir o preço de venda em 10% alegando que 'teremos mais créditos tributários para abater'.", character: "Comitê de Transição Tributária",
     options: [
       { text: "Aprovar a redução de preço sugerida. A promessa da reforma é baratear a carga, e a abundância de créditos do IBS/CBS compensará a queda da receita bruta.", xp: -45, impacts: { caixa: -1500000, margem: -5.5, compliance: 0 }, feedback: "RUÍNA DE PRECIFICAÇÃO. Você ignorou que a alíquota de saída do IBS/CBS é superior à soma dos tributos antigos. Os créditos não compensaram o imposto final, sangrando a margem brutalmente." },
       { text: "Vetar a redução. Exigir o recálculo do Markup deduzindo os novos créditos da base de custo, mas aplicando a nova alíquota cheia (IVA) na formação do preço.", xp: 45, impacts: { caixa: 800000, margem: 2.5, compliance: 30 }, feedback: "MAESTRIA TRIBUTÁRIA. Você adaptou o DRE gerencial à nova realidade do IVA. O preço foi formado corretamente sobre o custo líquido, garantindo a proteção da margem." }
@@ -160,7 +163,7 @@ export default function CodigoAzulGame() {
   
   const [needsCompanySetup, setNeedsCompanySetup] = useState(false);
   const [companyNameInput, setCompanyNameInput] = useState("");
-  const [playerNameInput, setPlayerNameInput] = useState(""); // Novo estado para o Nome do Operador
+  const [playerNameInput, setPlayerNameInput] = useState("");
 
   // --- ESTADOS CORE DO JOGO ---
   const [playerName, setPlayerName] = useState("");
@@ -289,7 +292,7 @@ export default function CodigoAzulGame() {
           setCurrentStage(0); setSessionScenarios(initialPool);
           setSessionStartStats({ caixa: 5000000, margem: 20.0 });
           
-          setPlayerNameInput(nome.trim()); // Pré-preenche com o nome de cadastro
+          setPlayerNameInput(nome.trim());
           setNeedsCompanySetup(true);
         }
       }
@@ -306,7 +309,7 @@ export default function CodigoAzulGame() {
     if (!companyNameInput.trim() || !playerNameInput.trim()) return;
     
     setCompanyName(companyNameInput.trim());
-    setPlayerName(playerNameInput.trim()); // Salva o nome de crachá escolhido
+    setPlayerName(playerNameInput.trim());
     setNeedsCompanySetup(false);
     setTimeLeft(60); 
     setGameStarted(true); 
@@ -332,10 +335,9 @@ export default function CodigoAzulGame() {
       setCurrentStage(0); setSessionScenarios(initialPool);
       setSessionStartStats({ caixa: 5000000, margem: 20.0 });
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); setCurrentBlackSwan(null);
-      
       setGameStarted(false);
       setCompanyNameInput("");
-      setPlayerNameInput(playerName); // Mantém o crachá atual sugerido
+      setPlayerNameInput(playerName);
       setNeedsCompanySetup(true);
     }
   };
@@ -359,20 +361,56 @@ export default function CodigoAzulGame() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, gameStarted, currentLevel.hasTimer]);
 
-  const handleConsultoria = () => {
+  // --- MENTORIA IA (INTEGRAÇÃO GEMINI API) ---
+  const handleConsultoriaIA = async () => {
     if (caixa < 50000 || isProcessing || isGameOver) return;
     setIsProcessing(true);
     
     const scenario = sessionScenarios[currentStage];
+    // Identifica a opção correta nativa para pontuar o jogador mesmo com a resposta da IA
     const correctOption = scenario.options.reduce((prev: any, curr: any) => (prev.xp > curr.xp) ? prev : curr);
     
     const combinedImpacts = {
-      caixa: (correctOption.impacts?.caixa || 0) - 50000,
+      caixa: (correctOption.impacts?.caixa || 0) - 50000, // Custo da consultoria debitado
       margem: correctOption.impacts?.margem || 0,
       compliance: correctOption.impacts?.compliance || 0,
     };
 
-    handleChoice(correctOption.xp, `🤖 IA MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados): ${correctOption.feedback}`, false, combinedImpacts);
+    try {
+      // PROMPT ENGINEERING DA IA (IDENTIDADE PEDRO MONTE)
+      const prompt = `Você é Pedro Monte, o melhor estrategista de negócios e mentor financeiro do Brasil. Sua linguagem é de 'Dono para Dono', técnica, firme e focada em dar um 'choque de realidade' sobre a dor do caixa e margem. O jogador pagou R$ 50.000 virtuais pela sua consultoria.
+      
+      CENÁRIO DA EMPRESA:
+      - Setor do Desafio: ${scenario.sector}
+      - Problema Atual: ${scenario.context}
+      
+      OPÇÕES QUE O JOGADOR TEM NA TELA:
+      1) ${scenario.options[0].text}
+      2) ${scenario.options[1].text}
+      
+      Sua missão: Dê um parecer executivo rápido (máximo 3 parágrafos curtos). Seja implacável. Diga qual opção é a correta (sem mencionar o número da opção, explique a ação) e o porquê financeiramente. Use termos como Ebitda, Covenants, FCF se aplicável. Finalize com a frase de comando: "CÓDIGO AZUL."`;
+
+      // Chamada direta para a API do Google Gemini
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
+
+      if (!response.ok) throw new Error("Falha na API da IA");
+
+      const data = await response.json();
+      const aiFeedback = data.candidates[0].content.parts[0].text;
+
+      handleChoice(correctOption.xp, `🤖 MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados):\n\n${aiFeedback}`, false, combinedImpacts);
+
+    } catch (error) {
+      console.error(error);
+      // Fallback para a resposta estática caso a API falhe (ex: limite de cota)
+      handleChoice(correctOption.xp, `💡 PARECER TÉCNICO (Fallback Seguro - R$ 50k): ${correctOption.feedback}`, false, combinedImpacts);
+    }
   };
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false, impacts: any = null) => {
@@ -604,7 +642,7 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DRE GAMIFICADO (FECHAMENTO DE TRIMESTRE) ---
+  // --- TELA DRE GAMIFICADO ---
   if (showDRE) {
     const deltaCaixa = caixa - sessionStartStats.caixa;
     const deltaMargem = margem - sessionStartStats.margem;
@@ -705,7 +743,7 @@ export default function CodigoAzulGame() {
       
       <div className="max-w-5xl mx-auto space-y-4 relative z-10">
         
-        {/* HUD FINANCEIRO: SINAIS VITAIS */}
+        {/* HUD FINANCEIRO */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 bg-[#0f172a]/80 backdrop-blur-md p-5 rounded-xl border border-white/5 shadow-lg">
           <div className="flex flex-col">
             <div className="flex justify-between items-baseline mb-1">
@@ -813,14 +851,14 @@ export default function CodigoAzulGame() {
                 </button>
               ))}
 
-              {/* BOTÃO LIFELINE: CONSULTORIA PREMIUM COM IA */}
+              {/* BOTÃO LIFELINE: CONSULTORIA PREMIUM (GEMINI API) */}
               <div className="pt-6 border-t border-white/5 mt-6">
                 <button
                   disabled={isProcessing || caixa < 50000}
-                  onClick={handleConsultoria}
-                  className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-[0.2em] uppercase ${isProcessing || caixa < 50000 ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-amber-950/20 border-amber-800/50 text-amber-500 hover:bg-amber-900/40 hover:border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.05)] hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]'}`}
+                  onClick={handleConsultoriaIA}
+                  className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-[0.2em] uppercase flex justify-center items-center gap-2 ${isProcessing || caixa < 50000 ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-amber-950/20 border-amber-800/50 text-amber-500 hover:bg-amber-900/40 hover:border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.05)] hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]'}`}
                 >
-                  🤖 Acionar Consultoria Pedro Monte (Debita R$ 50.000 do Caixa)
+                  {isProcessing ? '🤖 PROCESSANDO CÁLCULO ESTRATÉGICO DA IA...' : '🤖 ACIONAR IA MENTORIA PEDRO MONTE (DEBITA R$ 50K)'}
                 </button>
               </div>
             </div>
@@ -853,8 +891,8 @@ export default function CodigoAzulGame() {
               </div>
             )}
 
-            <div className="bg-[#020617]/50 p-6 md:p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative">
-               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer Técnico:</span>
+            <div className="bg-[#020617]/50 p-6 md:p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative whitespace-pre-wrap">
+               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Feedback Consolidado:</span>
               <p className="text-slate-300 text-sm font-light leading-relaxed mt-2 text-justify">{feedback}</p>
             </div>
 
