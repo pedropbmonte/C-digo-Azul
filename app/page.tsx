@@ -85,7 +85,7 @@ export default function CodigoAzulGame() {
   // --- MOTOR IA ESCOLA DE ESTRATEGISTAS ---
   const [currentScenario, setCurrentScenario] = useState<any>(null);
   const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
-  const [supplementaryComment, setSupplementaryComment] = useState(""); // Novo campo de comentário complementar
+  const [supplementaryComment, setSupplementaryComment] = useState(""); 
   const [isEvaluatingChoice, setIsEvaluatingChoice] = useState(false);
 
   const [currentStage, setCurrentStage] = useState(0);
@@ -95,7 +95,6 @@ export default function CodigoAzulGame() {
   const [timeLeft, setTimeLeft] = useState(90);
   const [promotionPending, setPromotionPending] = useState(false);
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const saveToDB = async () => {
@@ -124,56 +123,57 @@ export default function CodigoAzulGame() {
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- GERAÇÃO DE CASO DE ENSINO COM ALEATORIEDADE EXTREMA PELA IA ---
+  // --- GERAÇÃO DE CASO DE ENSINO COM PROFUNDIDADE EXTREMA ---
   const fetchScenarioFromAI = async () => {
+    if (isGeneratingScenario) return;
     setIsGeneratingScenario(true);
     setCurrentScenario(null);
     setFeedback(null);
     setSupplementaryComment("");
-    setIsProcessing(false);
     setTimeLeft(90);
 
-    const prompt = `Você é o reitor da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático altamente técnico, aleatório e complexo em formato JSON estrito.
+    const prompt = `Você é o reitor sênior da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático de altíssimo nível acadêmico e técnico em formato JSON estrito.
     Nível do aluno: ${currentLevel.title} (Tier ${currentLevel.tier}).
     Indicadores da empresa (${companyName}): Caixa R$ ${caixa}, Margem ${margem}%, Compliance ${compliance}%.
+    Estágio atual da jornada: Questão ${currentStage + 1} de 10. Garanta total inovação e aleatoriedade temática em relação a cenários anteriores comuns (explore temas como CPC 27 Imobilizado, CPC 06 Arrendamentos, IFRS 9 Perdas Esperadas, IVA Dual/Reforma Tributária, Custo de Capital WACC ou Governança SoD).
 
     Requisitos obrigatórios:
-    1. A teoria deve ser profunda, densa, citando normas específicas (CPC 00, CPC 16, IFRS 9, IFRS 15, Reforma Tributária EC 132/IVA Dual, Governança COSO).
-    2. Crie 3 opções de respostas objetivas estratégicas muito bem fundamentadas (uma correta/ótima, uma neutra/mediana e uma armadilha desastrosa).
-    3. Garanta aleatoriedade absoluta nos temas (varie entre tesouraria, contabilidade societária, compliance fiscal, M&A ou precificação baseada em custos).
+    1. A teoria deve ser extremamente densa, aprofundada, explicando o raciocínio contábil/financeiro, leis e normas aplicáveis (mínimo de 4 linhas conceituais sólidas).
+    2. O contexto deve simular uma crise real e tensa no CNPJ, com números, prazos e pressões mercadológicas.
+    3. Crie 3 opções de respostas objetivas estratégicas (uma excelente, uma mediana/paliativa e uma desastrosa).
 
     Retorne APENAS um JSON válido nesta estrutura exata, sem formatação markdown:
     {
       "sector": "Setor do Desafio",
       "criticality": "Alta",
       "title": "Título do Caso Prático",
-      "theory": "Fundamentação teórica rigorosa, explicando conceitos normativos e a lógica contábil envolvida...",
-      "context": "Situação simulando o dia a dia real no CNPJ, detalhando a pressão e os números...",
-      "character": "Autoridade cobrando a decisão (ex: Auditoria Externa, Conselho de Administração)",
+      "theory": "Fundamentação teórica rigorosa, detalhando princípios contábeis, normativos e econômicos...",
+      "context": "Situação simulando o dia a dia real no CNPJ, detalhando a pressão e os indicadores financeiros...",
+      "character": "Autoridade cobrando a decisão (ex: Auditoria Externa, Conselho, Banco)",
       "options": [
         {
           "id": "A",
-          "text": "Estratégia objetiva de alta gestão número 1...",
+          "text": "Estratégia objetiva de alta gestão...",
           "xp": 35,
           "isBest": true,
-          "impacts": { "caixa": 1200000, "margem": 2.0, "compliance": 15 },
-          "feedback": "Parecer técnico explicando o acerto sob a ótica da alta gestão."
+          "impacts": { "caixa": 1000000, "margem": 1.5, "compliance": 10 },
+          "feedback": "Parecer técnico explicando o acerto sob a ótica da alta gestão e da norma aplicável."
         },
         {
           "id": "B",
-          "text": "Estratégia objetiva intermediária número 2...",
+          "text": "Estratégia intermediária ou paliativa...",
           "xp": 10,
           "isBest": false,
           "impacts": { "caixa": 0, "margem": -0.5, "compliance": 0 },
-          "feedback": "Parecer técnico explicando que a medida foi paliativa e ineficiente."
+          "feedback": "Parecer técnico explicando que a medida foi paliativa e gerou passivos ocultos."
         },
         {
           "id": "C",
-          "text": "Estratégia desastrosa número 3...",
+          "text": "Estratégia desastrosa ou especulativa...",
           "xp": -40,
           "isBest": false,
           "impacts": { "caixa": -2000000, "margem": -4.0, "compliance": -25 },
-          "feedback": "Parecer técnico explicando a ruína financeira gerada por essa escolha."
+          "feedback": "Parecer técnico explicando a ruína financeira gerada por essa escolha equivocada."
         }
       ]
     }`;
@@ -190,21 +190,20 @@ export default function CodigoAzulGame() {
       aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
       
       const parsedScenario = JSON.parse(aiText);
-      // Embaralha as opções para que a resposta certa nunca fique na mesma posição (aleatoriedade total)
       parsedScenario.options = shuffleArray(parsedScenario.options);
       
       setCurrentScenario(parsedScenario);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao gerar cenário da IA:", error);
       setCurrentScenario({
-        sector: "Tesouraria Operacional", criticality: "Alta", title: "Descasamento de Fluxo de Caixa",
-        theory: "O descasamento entre o Ciclo Operacional e o Ciclo de Caixa pressiona a necessidade de capital de giro.",
-        context: "Os recebíveis estão demorando 60 dias, mas os fornecedores exigem pagamento à vista.",
-        character: "Diretoria Financeira",
+        sector: "Controladoria Estratégica", criticality: "Alta", title: "Otimização de Capital de Giro",
+        theory: "Segundo as premissas do CPC 00 e a gestão de solvência, o descasamento de prazos corrói o Ebitda livre.",
+        context: "O caixa reduziu e as duplicatas a receber estão longas.",
+        character: "Diretoria Executiva",
         options: shuffleArray([
-          { id: "A", text: "Travar crédito comercial e antecipar recebíveis com trava de spread.", xp: 30, isBest: true, impacts: { caixa: 800000, margem: -0.5, compliance: 10 }, feedback: "Correto. Protegeu a liquidez com baixo custo." },
-          { id: "B", text: "Cobrir o buraco com cheque especial rotativo de curto prazo.", xp: -20, isBest: false, impacts: { caixa: 500000, margem: -3.0, compliance: -5 }, feedback: "Incorreto. Juros compostos altos corroerão a margem." },
-          { id: "C", text: "Ignorar o alerta e aguardar os clientes pagarem espontaneamente.", xp: -40, isBest: false, impacts: { caixa: -1000000, margem: -5.0, compliance: -20 }, feedback: "Desastroso. Levou a insolvência de curto prazo." }
+          { id: "A", text: "Travar crédito e antecipar recebíveis com trava de spread.", xp: 30, isBest: true, impacts: { caixa: 800000, margem: -0.5, compliance: 10 }, feedback: "Correto. Protegeu a liquidez." },
+          { id: "B", text: "Manter a operação sem mudanças e aguardar.", xp: -20, isBest: false, impacts: { caixa: -500000, margem: -2.0, compliance: -5 }, feedback: "Incorreto. Gerou colapso de caixa." },
+          { id: "C", text: "Tomar empréstimo bancário a juros rotativos altos.", xp: -40, isBest: false, impacts: { caixa: 200000, margem: -5.0, compliance: -15 }, feedback: "Desastroso. Dívida cara." }
         ])
       });
     } finally {
@@ -212,12 +211,13 @@ export default function CodigoAzulGame() {
     }
   };
 
+  // Disparo seguro do gerador quando o estágio muda ou o cenário é limpo
   useEffect(() => {
     if (gameStarted && !isGameOver && !showDRE && !feedback && !promotionPending && !currentScenario && !isGeneratingScenario) {
       fetchScenarioFromAI();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentScenario, isGeneratingScenario]);
+  }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentScenario]);
 
 
   // --- AVALIAÇÃO DO COMENTÁRIO COMPLEMENTAR PELA IA ---
@@ -229,19 +229,16 @@ export default function CodigoAzulGame() {
     let finalImpacts = { ...selectedOption.impacts };
     let bonusMessage = "";
 
-    // Se o usuário digitou um comentário complementar, a IA audita se é assertivo para dar bônus
     if (supplementaryComment.trim()) {
       try {
-        const prompt = `Você é o reitor do 'Código Azul'. O aluno escolheu a opção estratégica "${selectedOption.text}" para o caso: "${currentScenario.context}".
-        Além disso, o aluno escreveu o seguinte COMENTÁRIO COMPLEMENTAR DE DEFESA DA TESE:
-        "${supplementaryComment}"
-
-        Avalie se este comentário é tecnicamente ASSERTIVO, profundo e traz uma visão complementar de alto valor (como CFO ou estrategista sênior).
-        Retorne APENAS um JSON estrito no formato:
+        const prompt = `Você é o reitor do 'Código Azul'. O aluno escolheu a opção "${selectedOption.text}" para o caso: "${currentScenario.context}".
+        Comentário complementar do aluno: "${supplementaryComment}"
+        Avalie se este comentário é tecnicamente ASSERTIVO e traz visão de CFO.
+        Retorne APENAS um JSON estrito:
         {
           "isAssertive": [true/false],
-          "bonusXp": [número entre 10 e 20 se for true, ou 0 se for false],
-          "commentEvaluation": "Feedback de 1 parágrafo elogiando ou corrigindo o argumento complementar do aluno."
+          "bonusXp": [número entre 10 e 20 se true, 0 se false],
+          "commentEvaluation": "Feedback de 1 parágrafo sobre o argumento."
         }`;
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -257,12 +254,12 @@ export default function CodigoAzulGame() {
 
         if (evaluation.isAssertive) {
           finalXp += evaluation.bonusXp;
-          bonusMessage = `\n\n⭐ BÔNUS DO ESTRATEGISTA: Sua argumentação complementar foi auditada e julgada ALTAMENTE ASSERTIVA pela banca (+${evaluation.bonusXp} XP).\nAnálise da Tese: ${evaluation.commentEvaluation}`;
+          bonusMessage = `\n\n⭐ BÔNUS DO ESTRATEGISTA: Sua tese complementar foi julgada ASSERTIVA pela banca (+${evaluation.bonusXp} XP).\nAnálise: ${evaluation.commentEvaluation}`;
         } else {
-          bonusMessage = `\n\n💡 NOTA DA BANCA SOBRE SEU COMENTÁRIO: ${evaluation.commentEvaluation}`;
+          bonusMessage = `\n\n💡 NOTA DA BANCA SOBRE O COMENTÁRIO: ${evaluation.commentEvaluation}`;
         }
       } catch (e) {
-        console.error("Erro ao avaliar comentário:", e);
+        console.error("Erro ao avaliar bônus:", e);
       }
     }
 
@@ -275,7 +272,6 @@ export default function CodigoAzulGame() {
     e.preventDefault();
     const cleanEmail = email.trim().toLowerCase();
     const cleanPassword = password.trim();
-    
     if (!cleanEmail || !cleanPassword) { setAuthError("Preencha todos os campos."); return; }
     
     setIsAuthenticating(true); setAuthError(""); setAuthSuccess("");
@@ -303,9 +299,9 @@ export default function CodigoAzulGame() {
         } else { setAuthError("E-mail ou senha incorretos."); }
       } else if (authMode === 'register') {
         if (!nome.trim() || !telefone.trim()) { setAuthError("Preencha Nome e WhatsApp."); setIsAuthenticating(false); return; }
-        if (docSnap.exists()) { setAuthError("E-mail já cadastrado. Faça login."); } 
+        if (docSnap.exists()) { setAuthError("E-mail já cadastrado."); } 
         else {
-          await setDoc(docRef, {
+          await docRef.type ? null : setDoc(docRef, {
             password: cleanPassword,
             data: { 
               playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail,
@@ -320,9 +316,9 @@ export default function CodigoAzulGame() {
       } else if (authMode === 'forgot') {
         if (docSnap.exists()) {
           await setDoc(docRef, { password: cleanPassword }, { merge: true });
-          setAuthSuccess("Senha redefinida com sucesso! Alterne para a aba Acessar.");
+          setAuthSuccess("Senha redefinida com sucesso! Alterne para Acessar.");
         } else {
-          setAuthError("E-mail não encontrado na base de dados.");
+          setAuthError("E-mail não encontrado.");
         }
       }
     } catch (e) {
@@ -370,8 +366,7 @@ export default function CodigoAzulGame() {
   }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentScenario, gameStarted, currentLevel.hasTimer, isEvaluatingChoice]);
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false, impacts: any = null) => {
-    if (isProcessing || isGameOver) return;
-    setIsProcessing(true);
+    if (isEvaluatingChoice || isGameOver) return;
 
     let bonus = 0;
     if (baseXpGained > 0 && !isTimeout && currentLevel.hasTimer) {
@@ -406,14 +401,25 @@ export default function CodigoAzulGame() {
     setFeedback(feedbackText);
   };
 
+  // Correção crítica do avanço de estágio
   const proceedToNextQuestion = () => {
-    setPromotionPending(false); setPromotedLevel(null); setFeedback(null); 
-    setLastXpChange(null); setLastImpacts(null); setIsProcessing(false); setCurrentScenario(null); 
-    if (currentStage < 9) { setCurrentStage(prev => prev + 1); } else { setShowDRE(true); }
+    setPromotionPending(false); 
+    setPromotedLevel(null); 
+    setFeedback(null); 
+    setLastXpChange(null); 
+    setLastImpacts(null); 
+    setSupplementaryComment("");
+    
+    if (currentStage < 9) { 
+      setCurrentStage(prev => prev + 1); 
+      setCurrentScenario(null); // Força o useEffect a puxar novo caso prático
+    } else { 
+      setShowDRE(true); 
+    }
   };
 
   const handleNextStageOrPromotion = () => {
-    if (promotionPending) { setFeedback(null); playPromotionSound(); setIsProcessing(false); return; }
+    if (promotionPending) { setFeedback(null); playPromotionSound(); return; }
     proceedToNextQuestion();
   };
 
@@ -444,7 +450,7 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DE LOGIN / REGISTRO / REDEFINIÇÃO DE SENHA ---
+  // --- TELA DE LOGIN / REGISTRO / REDEFINIÇÃO ---
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
@@ -503,7 +509,7 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELAS DE GAME OVER, DRE, PROMOÇÃO, LOADING ---
+  // --- TELA DE GAME OVER ---
   if (isGameOver) {
     return (
       <div className="min-h-screen bg-[#060202] flex items-center justify-center p-4 relative font-sans">
@@ -536,7 +542,7 @@ export default function CodigoAzulGame() {
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative">
         <div className="z-10 bg-[#0f172a]/80 p-8 md:p-12 rounded-3xl border border-white/5 max-w-2xl w-full text-center">
           <h1 className="text-2xl md:text-4xl font-light text-slate-100 mb-8 uppercase">Promoção Acadêmica Homologada</h1>
-          <div className="bg-[#020617]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left"><span className="text-cyan-400 text-xl font-semibold">{promotedLevel?.title}</span></div>
+          <div className="bg-[#0f172a]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left"><span className="text-cyan-400 text-xl font-semibold">{promotedLevel?.title}</span></div>
           <button onClick={proceedToNextQuestion} className="bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-mono py-3.5 px-10 rounded-xl uppercase">Continuar Jornada</button>
         </div>
       </div>
@@ -547,14 +553,14 @@ export default function CodigoAzulGame() {
     return (
       <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4 relative">
         <div className="w-16 h-16 border-4 border-cyan-900 border-t-cyan-500 rounded-full animate-spin mb-6"></div>
-        <h2 className="text-cyan-400 font-mono text-[10px] tracking-[0.3em] uppercase animate-pulse">A Banca da Escola Está Elaborando Seu Estudo de Caso...</h2>
+        <h2 className="text-cyan-400 font-mono text-[10px] tracking-[0.3em] uppercase animate-pulse">A Banca da Escola Está Elaborando Seu Estudo de Caso (Questão {currentStage + 1}/10)...</h2>
       </div>
     );
   }
 
   const timerColor = timeLeft > 45 ? 'bg-cyan-500' : timeLeft > 20 ? 'bg-amber-500' : 'bg-red-500';
 
-  // --- PAINEL PRINCIPAL DA ESCOLA (OPÇÕES OBJETIVAS + COMENTÁRIO COMPLEMENTAR COM BÔNUS) ---
+  // --- PAINEL PRINCIPAL DA ESCOLA ---
   return (
     <div className="min-h-screen bg-[#020617] text-slate-300 p-4 md:p-8 font-sans relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"></div>
@@ -574,7 +580,7 @@ export default function CodigoAzulGame() {
             <div><h1 className="text-base font-light text-slate-100 uppercase"><span className="font-semibold text-cyan-400">{companyName}</span></h1><p className="text-slate-500 text-[10px] font-mono uppercase">Estudante / CFO: <span className="text-slate-300">{playerName}</span></p></div>
           </div>
           <div className="w-full md:w-80">
-            <div className="flex justify-between items-baseline mb-2"><p className="text-[10px] font-mono text-slate-400 uppercase">{currentLevel.title}</p></div>
+            <div className="flex justify-between items-baseline mb-2"><p className="text-[10px] font-mono text-slate-400 uppercase">{currentLevel.title} — Questão {currentStage + 1}/10</p></div>
             <div className="h-1 w-full bg-[#020617] rounded-full overflow-hidden border border-white/5"><div className="h-full bg-cyan-500" style={{ width: `${progressToNext}%` }}></div></div>
           </div>
         </header>
