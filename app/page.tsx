@@ -25,6 +25,15 @@ const GEMINI_API_KEY = "AQ.Ab8RN6IlD5wf8Me0nDtLf1TJ_krl6vU760sU0yjFpfiSu3bMyw";
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 const formatPct = (value: number) => value.toFixed(1).replace('.', ',') + '%';
 
+const shuffleArray = (array: any[]) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 const playPromotionSound = () => {
   try {
     const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3");
@@ -49,7 +58,7 @@ export default function CodigoAzulGame() {
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Novo estado para ver a senha
+  const [showPassword, setShowPassword] = useState(false);
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   
@@ -76,14 +85,14 @@ export default function CodigoAzulGame() {
   // --- MOTOR IA ESCOLA DE ESTRATEGISTAS ---
   const [currentScenario, setCurrentScenario] = useState<any>(null);
   const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
-  const [customDecisionText, setCustomDecisionText] = useState(""); 
-  const [isEvaluatingCustom, setIsEvaluatingCustom] = useState(false);
+  const [supplementaryComment, setSupplementaryComment] = useState(""); // Novo campo de comentário complementar
+  const [isEvaluatingChoice, setIsEvaluatingChoice] = useState(false);
 
   const [currentStage, setCurrentStage] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
   
-  const [timeLeft, setTimeLeft] = useState(90); // Mais tempo para o aluno ler a teoria e formular a tese
+  const [timeLeft, setTimeLeft] = useState(90);
   const [promotionPending, setPromotionPending] = useState(false);
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -115,39 +124,65 @@ export default function CodigoAzulGame() {
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- GERAÇÃO DE CASO ESCOLAR PELA IA ---
+  // --- GERAÇÃO DE CASO DE ENSINO COM ALEATORIEDADE EXTREMA PELA IA ---
   const fetchScenarioFromAI = async () => {
     setIsGeneratingScenario(true);
     setCurrentScenario(null);
     setFeedback(null);
-    setCustomDecisionText("");
+    setSupplementaryComment("");
     setIsProcessing(false);
     setTimeLeft(90);
 
-    const prompt = `Você é o reitor e professor sênior do 'Código Azul', uma escola de elite em contabilidade avançada, finanças corporativas e estratégia de negócios. 
-    Gere um Estudo de Caso Real e Imersivo em formato JSON para o aluno que ocupa o cargo de: ${currentLevel.title}.
-    Indicadores da empresa (${companyName}):
-    - Caixa: R$ ${caixa}
-    - Margem EBITDA: ${margem}%
-    - Compliance: ${compliance}%
+    const prompt = `Você é o reitor da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático altamente técnico, aleatório e complexo em formato JSON estrito.
+    Nível do aluno: ${currentLevel.title} (Tier ${currentLevel.tier}).
+    Indicadores da empresa (${companyName}): Caixa R$ ${caixa}, Margem ${margem}%, Compliance ${compliance}%.
 
-    A missão é ensinar o aluno a pensar como um CFO de verdade. O estudo de caso deve conter uma rica fundamentação teórica conectada a normas reais (como CPCs, IFRS, Reforma Tributária EC 132, Governança COSO) e uma situação crítica simulando o dia a dia de uma empresa real. O aluno NÃO terá múltipla escolha; ele precisará digitar uma tese gerencial própria.
+    Requisitos obrigatórios:
+    1. A teoria deve ser profunda, densa, citando normas específicas (CPC 00, CPC 16, IFRS 9, IFRS 15, Reforma Tributária EC 132/IVA Dual, Governança COSO).
+    2. Crie 3 opções de respostas objetivas estratégicas muito bem fundamentadas (uma correta/ótima, uma neutra/mediana e uma armadilha desastrosa).
+    3. Garanta aleatoriedade absoluta nos temas (varie entre tesouraria, contabilidade societária, compliance fiscal, M&A ou precificação baseada em custos).
 
-    Retorne APENAS um JSON válido nesta exata estrutura, sem formatação markdown:
+    Retorne APENAS um JSON válido nesta estrutura exata, sem formatação markdown:
     {
-      "sector": "Nome do Setor (ex: Controladoria & Tesouraria)",
+      "sector": "Setor do Desafio",
       "criticality": "Alta",
-      "title": "Título do Estudo de Caso",
-      "theory": "Contexto teórico profundo e conceitual de alta gestão, citando leis, normas e princípios contábeis aplicáveis ao tema...",
-      "context": "Descrição detalhada de um problema real que o CFO precisa resolver agora na empresa, detalhando números, prazos e a pressão da diretoria ou bancos...",
-      "character": "Autoridade cobrando uma diretriz (ex: Conselho de Administração, Auditoria Independente)"
+      "title": "Título do Caso Prático",
+      "theory": "Fundamentação teórica rigorosa, explicando conceitos normativos e a lógica contábil envolvida...",
+      "context": "Situação simulando o dia a dia real no CNPJ, detalhando a pressão e os números...",
+      "character": "Autoridade cobrando a decisão (ex: Auditoria Externa, Conselho de Administração)",
+      "options": [
+        {
+          "id": "A",
+          "text": "Estratégia objetiva de alta gestão número 1...",
+          "xp": 35,
+          "isBest": true,
+          "impacts": { "caixa": 1200000, "margem": 2.0, "compliance": 15 },
+          "feedback": "Parecer técnico explicando o acerto sob a ótica da alta gestão."
+        },
+        {
+          "id": "B",
+          "text": "Estratégia objetiva intermediária número 2...",
+          "xp": 10,
+          "isBest": false,
+          "impacts": { "caixa": 0, "margem": -0.5, "compliance": 0 },
+          "feedback": "Parecer técnico explicando que a medida foi paliativa e ineficiente."
+        },
+        {
+          "id": "C",
+          "text": "Estratégia desastrosa número 3...",
+          "xp": -40,
+          "isBest": false,
+          "impacts": { "caixa": -2000000, "margem": -4.0, "compliance": -25 },
+          "feedback": "Parecer técnico explicando a ruína financeira gerada por essa escolha."
+        }
+      ]
     }`;
 
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8 } })
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9 } })
       });
 
       const data = await response.json();
@@ -155,14 +190,22 @@ export default function CodigoAzulGame() {
       aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
       
       const parsedScenario = JSON.parse(aiText);
+      // Embaralha as opções para que a resposta certa nunca fique na mesma posição (aleatoriedade total)
+      parsedScenario.options = shuffleArray(parsedScenario.options);
+      
       setCurrentScenario(parsedScenario);
     } catch (error) {
       console.error(error);
       setCurrentScenario({
-        sector: "Controladoria Geral", criticality: "Alta", title: "Risco de Continuidade Operacional",
-        theory: "Conforme o CPC 26 e IFRS, a administração deve avaliar a capacidade da entidade de continuar em operação.",
-        context: "O caixa está em queda livre e os fornecedores fecharam o crédito.",
-        character: "Comitê Executivo"
+        sector: "Tesouraria Operacional", criticality: "Alta", title: "Descasamento de Fluxo de Caixa",
+        theory: "O descasamento entre o Ciclo Operacional e o Ciclo de Caixa pressiona a necessidade de capital de giro.",
+        context: "Os recebíveis estão demorando 60 dias, mas os fornecedores exigem pagamento à vista.",
+        character: "Diretoria Financeira",
+        options: shuffleArray([
+          { id: "A", text: "Travar crédito comercial e antecipar recebíveis com trava de spread.", xp: 30, isBest: true, impacts: { caixa: 800000, margem: -0.5, compliance: 10 }, feedback: "Correto. Protegeu a liquidez com baixo custo." },
+          { id: "B", text: "Cobrir o buraco com cheque especial rotativo de curto prazo.", xp: -20, isBest: false, impacts: { caixa: 500000, margem: -3.0, compliance: -5 }, feedback: "Incorreto. Juros compostos altos corroerão a margem." },
+          { id: "C", text: "Ignorar o alerta e aguardar os clientes pagarem espontaneamente.", xp: -40, isBest: false, impacts: { caixa: -1000000, margem: -5.0, compliance: -20 }, feedback: "Desastroso. Levou a insolvência de curto prazo." }
+        ])
       });
     } finally {
       setIsGeneratingScenario(false);
@@ -177,53 +220,55 @@ export default function CodigoAzulGame() {
   }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentScenario, isGeneratingScenario]);
 
 
-  // --- AVALIAÇÃO DA TESE DO ALUNO PELA IA ---
-  const handleCustomActionSubmit = async () => {
-    if (!customDecisionText.trim() || isEvaluatingCustom || isGameOver) return;
-    setIsEvaluatingCustom(true);
+  // --- AVALIAÇÃO DO COMENTÁRIO COMPLEMENTAR PELA IA ---
+  const handleOptionSelectWithComment = async (selectedOption: any) => {
+    if (isEvaluatingChoice || isGameOver) return;
+    setIsEvaluatingChoice(true);
 
-    const prompt = `Você é Pedro Monte, reitor implacável da escola de negócios 'Código Azul'. O aluno (cargo: ${currentLevel.title}) leu o seguinte estudo de caso:
-    Teoria e Contexto: ${currentScenario.theory} - ${currentScenario.context}
-    
-    O aluno DIGITOU A SEGUINTE TESE / PLANO DE AÇÃO GERENCIAL:
-    "${customDecisionText}"
-    
-    Avalie profundamente a resposta do aluno com base na técnica contábil e financeira:
-    1) O aluno demonstrou raciocínio de CFO ou falou besteira / mágica financeira?
-    2) Atribua uma pontuação de XP justa (entre -50 e +50).
-    3) Calcule os impactos numéricos reais no Caixa, Margem EBITDA e Compliance.
-    4) Dê um feedback pedagógico impecável, corrigindo falhas conceituais e elogiando acertos, no estilo 'Dono para Dono'.
+    let finalXp = selectedOption.xp;
+    let finalImpacts = { ...selectedOption.impacts };
+    let bonusMessage = "";
 
-    Retorne APENAS um JSON válido nesta estrutura:
-    {
-      "xp": [número],
-      "impacts": {
-        "caixa": [valor financeiro real, positivo ou negativo],
-        "margem": [variação em %],
-        "compliance": [pontos]
-      },
-      "feedback": "Parecer pedagógico e técnico detalhado ensinando o aluno. Termine obrigatoriamente com 'CÓDIGO AZUL.'"
-    }`;
+    // Se o usuário digitou um comentário complementar, a IA audita se é assertivo para dar bônus
+    if (supplementaryComment.trim()) {
+      try {
+        const prompt = `Você é o reitor do 'Código Azul'. O aluno escolheu a opção estratégica "${selectedOption.text}" para o caso: "${currentScenario.context}".
+        Além disso, o aluno escreveu o seguinte COMENTÁRIO COMPLEMENTAR DE DEFESA DA TESE:
+        "${supplementaryComment}"
 
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7 } })
-      });
+        Avalie se este comentário é tecnicamente ASSERTIVO, profundo e traz uma visão complementar de alto valor (como CFO ou estrategista sênior).
+        Retorne APENAS um JSON estrito no formato:
+        {
+          "isAssertive": [true/false],
+          "bonusXp": [número entre 10 e 20 se for true, ou 0 se for false],
+          "commentEvaluation": "Feedback de 1 parágrafo elogiando ou corrigindo o argumento complementar do aluno."
+        }`;
 
-      const data = await response.json();
-      let aiText = data.candidates[0].content.parts[0].text;
-      aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
-      const parsedResult = JSON.parse(aiText);
-      
-      handleChoice(parsedResult.xp, `🎓 AVALIAÇÃO DA SUA TESE GERENCIAL:\n\n${parsedResult.feedback}`, false, parsedResult.impacts);
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7 } })
+        });
 
-    } catch (error) {
-      alert("A banca examinadora (IA) não conseguiu processar sua tese. Tente reformular e enviar novamente.");
-    } finally {
-      setIsEvaluatingCustom(false);
+        const data = await response.json();
+        let aiText = data.candidates[0].content.parts[0].text;
+        aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
+        const evaluation = JSON.parse(aiText);
+
+        if (evaluation.isAssertive) {
+          finalXp += evaluation.bonusXp;
+          bonusMessage = `\n\n⭐ BÔNUS DO ESTRATEGISTA: Sua argumentação complementar foi auditada e julgada ALTAMENTE ASSERTIVA pela banca (+${evaluation.bonusXp} XP).\nAnálise da Tese: ${evaluation.commentEvaluation}`;
+        } else {
+          bonusMessage = `\n\n💡 NOTA DA BANCA SOBRE SEU COMENTÁRIO: ${evaluation.commentEvaluation}`;
+        }
+      } catch (e) {
+        console.error("Erro ao avaliar comentário:", e);
+      }
     }
+
+    const fullFeedback = `${selectedOption.feedback}${bonusMessage}\n\nCÓDIGO AZUL.`;
+    handleChoice(finalXp, fullFeedback, false, finalImpacts);
+    setIsEvaluatingChoice(false);
   };
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -273,10 +318,9 @@ export default function CodigoAzulGame() {
           setPlayerNameInput(nome.trim()); setNeedsCompanySetup(true);
         }
       } else if (authMode === 'forgot') {
-        // Redefinição de senha direto na tela
         if (docSnap.exists()) {
           await setDoc(docRef, { password: cleanPassword }, { merge: true });
-          setAuthSuccess("Senha redefinida com sucesso! Alterne para a aba de Acessar.");
+          setAuthSuccess("Senha redefinida com sucesso! Alterne para a aba Acessar.");
         } else {
           setAuthError("E-mail não encontrado na base de dados.");
         }
@@ -313,17 +357,17 @@ export default function CodigoAzulGame() {
   const progressToNext = nextLevel ? ((xp - currentLevel.minXp) / (nextLevel.minXp - currentLevel.minXp)) * 100 : 100;
 
   useEffect(() => {
-    if (!gameStarted || feedback || promotionPending || isGameOver || showDRE || !currentScenario || isGeneratingScenario || isEvaluatingCustom || !currentLevel.hasTimer || timeLeft <= 0) return;
+    if (!gameStarted || feedback || promotionPending || isGameOver || showDRE || !currentScenario || isGeneratingScenario || isEvaluatingChoice || !currentLevel.hasTimer || timeLeft <= 0) return;
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [gameStarted, feedback, promotionPending, isGameOver, showDRE, currentScenario, isGeneratingScenario, isEvaluatingCustom, timeLeft, currentLevel.hasTimer]);
+  }, [gameStarted, feedback, promotionPending, isGameOver, showDRE, currentScenario, isGeneratingScenario, isEvaluatingChoice, timeLeft, currentLevel.hasTimer]);
 
   useEffect(() => {
-    if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && currentScenario && gameStarted && currentLevel.hasTimer && !isEvaluatingCustom) {
-      handleChoice(-15, "TEMPO ESGOTADO. O conselho rejeitou a inércia por falta de entrega de tese no prazo.", true, { caixa: -500000, margem: -1.5, compliance: -10 });
+    if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && currentScenario && gameStarted && currentLevel.hasTimer && !isEvaluatingChoice) {
+      handleChoice(-15, "TEMPO ESGOTADO. O conselho rejeitou a inércia por falta de decisão no prazo.", true, { caixa: -500000, margem: -1.5, compliance: -10 });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentScenario, gameStarted, currentLevel.hasTimer, isEvaluatingCustom]);
+  }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentScenario, gameStarted, currentLevel.hasTimer, isEvaluatingChoice]);
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false, impacts: any = null) => {
     if (isProcessing || isGameOver) return;
@@ -510,7 +554,7 @@ export default function CodigoAzulGame() {
 
   const timerColor = timeLeft > 45 ? 'bg-cyan-500' : timeLeft > 20 ? 'bg-amber-500' : 'bg-red-500';
 
-  // --- PAINEL PRINCIPAL DA ESCOLA DE ESTRATEGISTAS ---
+  // --- PAINEL PRINCIPAL DA ESCOLA (OPÇÕES OBJETIVAS + COMENTÁRIO COMPLEMENTAR COM BÔNUS) ---
   return (
     <div className="min-h-screen bg-[#020617] text-slate-300 p-4 md:p-8 font-sans relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"></div>
@@ -565,30 +609,38 @@ export default function CodigoAzulGame() {
               </div>
             </div>
 
-            {/* CAMPO DE RESPOSTA ABERTA (O CFO CRIA A SAÍDA) */}
-            <div className="space-y-4 pt-2">
-              <div className="flex justify-between items-baseline">
-                <h3 className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.2em]">3. Sua Tese / Plano de Ação Gerencial (Resposta Aberta)</h3>
-                <span className="text-[9px] font-mono text-slate-500">Sem respostas prontas. Pense como estrategista.</span>
-              </div>
+            {/* QUADRO DE COMENTÁRIO COMPLEMENTAR (OPCIONAL PARA BÔNUS) */}
+            <div className="mb-6 bg-[#020617]/30 p-5 rounded-xl border border-slate-800">
+              <label className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block mb-2">
+                ⭐ Quadro de Comentário Complementar (Opcional — Justifique sua tese e ganhe BÔNUS em XP se a banca julgar assertivo):
+              </label>
               <textarea
-                disabled={isEvaluatingCustom}
-                value={customDecisionText}
-                onChange={(e) => setCustomDecisionText(e.target.value)}
-                placeholder="Escreva sua tese detalhada para resolver este caso. Explique quais contas você vai mexer, como protegerá o caixa, quais normas considerou e qual a estratégia de execução..."
-                className="w-full bg-[#020617]/70 border border-slate-700/60 rounded-xl p-5 text-sm text-cyan-50 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-sans transition-all resize-none h-36"
+                disabled={isEvaluatingChoice}
+                value={supplementaryComment}
+                onChange={(e) => setSupplementaryComment(e.target.value)}
+                placeholder="Adicione sua justificativa técnica ou observação gerencial sobre a escolha que vai fazer..."
+                className="w-full bg-[#020617]/70 border border-slate-700/60 rounded-lg p-3 text-xs text-cyan-50 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-sans transition-all resize-none h-20"
               />
-              <button
-                disabled={isEvaluatingCustom || !customDecisionText.trim()}
-                onClick={handleCustomActionSubmit}
-                className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-widest uppercase flex justify-center items-center gap-2 ${isEvaluatingCustom || !customDecisionText.trim() ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-cyan-950/40 border-cyan-800 text-cyan-400 hover:bg-cyan-900/60 hover:border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.15)]'}`}
-              >
-                {isEvaluatingCustom ? '🎓 BANCA EXAMINADORA (IA) AUDITANDO SUA TESE...' : 'SUBMETER TESE GERENCIAL AO MERCADO'}
-              </button>
+            </div>
+
+            {/* OPÇÕES OBJETIVAS DE RESPOSTA (ALEATÓRIAS) */}
+            <div className="space-y-4 pt-2">
+              <h3 className="text-[10px] font-mono text-slate-400 uppercase tracking-[0.3em] mb-3 text-center">Selecione a Alternativa Estratégica Adequada:</h3>
+              {currentScenario.options.map((option: any, index: number) => (
+                <button
+                  key={index}
+                  disabled={isEvaluatingChoice}
+                  onClick={() => handleOptionSelectWithComment(option)}
+                  className="w-full text-left p-5 rounded-xl bg-[#020617]/50 border border-slate-700/50 hover:border-cyan-500/50 hover:bg-[#081229] transition-all group relative overflow-hidden"
+                >
+                  <div className="absolute left-0 top-0 w-1 h-full bg-transparent group-hover:bg-cyan-500 transition-colors"></div>
+                  <p className="text-slate-300 text-[13px] font-light group-hover:text-cyan-50 transition-colors leading-relaxed pl-2 text-justify">{option.text}</p>
+                </button>
+              ))}
             </div>
           </main>
         ) : (
-          /* FEEDBACK PEDAGÓGICO DA TESE */
+          /* FEEDBACK PEDAGÓGICO DA TESE E BÔNUS */
           <div className="bg-[#0f172a]/60 p-8 md:p-12 rounded-2xl border border-white/5 text-center shadow-2xl">
             <h2 className={`text-[10px] font-mono uppercase tracking-[0.3em] mb-4 mt-2 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-400' : 'text-red-400'}`}>
               {lastXpChange && lastXpChange > 0 ? 'Parecer Acadêmico Aprovado' : 'Reprovação Parcial de Tese'}
