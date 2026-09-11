@@ -114,6 +114,7 @@ export default function CodigoAzulGame() {
   }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE]);
 
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
+  const nextLevel = levels.find(l => l.minXp > xp); // Declarado corretamente para sumir com o erro
 
   // --- IA CONTEXTUAL: GERAÇÃO DO PROBLEMA ---
   const fetchScenarioFromAI = async () => {
@@ -207,7 +208,7 @@ export default function CodigoAzulGame() {
     O jogador DIGITOU A PRÓPRIA ESTRATÉGIA:
     "${customDecisionText}"
     
-    Avalie como um Mentor de Negócios rígido. Foi inteligente (dê XP e impactos positivos) ou loucura impensada (dê XP negativo e puna o caixa/margem)?
+    Avalie como um Mentor de Negócios rígido. Foi inteligente ou loucura impensada?
 
     Retorne APENAS um JSON válido nesta estrutura:
     {
@@ -371,13 +372,27 @@ export default function CodigoAzulGame() {
     setFeedback(feedbackText);
   };
 
+  // Função declarada corretamente para sumir com o erro de compilação
+  const proceedToNextQuestion = () => {
+    setPromotionPending(false); 
+    setPromotedLevel(null); 
+    setFeedback(null); 
+    setLastXpChange(null); 
+    setTimeBonus(0); 
+    setLastImpacts(null);
+    setIsProcessing(false); 
+    setCurrentScenario(null); 
+
+    if (currentStage < 9) { 
+      setCurrentStage(prev => prev + 1); 
+    } else { 
+      setShowDRE(true); 
+    }
+  };
+
   const handleNextStageOrPromotion = () => {
     if (promotionPending) { setFeedback(null); playPromotionSound(); setIsProcessing(false); return; }
-    setPromotionPending(false); setPromotedLevel(null); setFeedback(null); setLastXpChange(null); setTimeBonus(0); setLastImpacts(null);
-    setIsProcessing(false); setCurrentScenario(null); 
-
-    if (currentStage < 9) { setCurrentStage(prev => prev + 1); } 
-    else { setShowDRE(true); }
+    proceedToNextQuestion();
   };
 
   const handleStartNewQuarter = () => {
