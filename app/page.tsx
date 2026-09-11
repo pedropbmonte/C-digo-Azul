@@ -38,12 +38,12 @@ const playPromotionSound = () => {
 const levels = [
   { tier: 1, title: "Estagiário", minXp: 0, hasTimer: false, feedback: null },
   { tier: 1, title: "Assistente Financeiro", minXp: 120, hasTimer: false, feedback: { forca: "Execução metódica de conciliações e rotinas de contas a pagar/receber.", vulnerabilidade: "Sua leitura ainda é de curto prazo (regime de caixa). É preciso absorver o impacto das obrigações futuras e da competência contábil." } },
-  { tier: 2, title: "Analista Financeiro Jr.", minXp: 280, hasTimer: false, feedback: { forca: "Domínio dos fluxos de tesouraria e identificação ágil de descasamentos.", vulnerabilidade: "Falta visão de estrutura de custos indiretos e provisões trabalhistas/previdenciárias." } },
-  { tier: 2, title: "Analista Financeiro Pleno", minXp: 500, hasTimer: true, feedback: { forca: "Análise consistente de margem de contribuição, Custeio ABC e sensibilidade de caixa.", vulnerabilidade: "Planejamento orçamentário plurianual e projeção de encargos atuariais corporativos." } },
-  { tier: 3, title: "Business Partner / Analista Sr.", minXp: 800, hasTimer: true, feedback: { forca: "Ponte estratégica entre comercial, RH corporativo e diretoria financeira.", vulnerabilidade: "Conhecimento avançado de CPC 33, compliance com a PREVIC e proteção cambial." } },
-  { tier: 3, title: "Controller", minXp: 1200, hasTimer: true, feedback: { forca: "Blindagem de compliance, controle interno (SoD), auditoria externa e mitigação fiscal.", vulnerabilidade: "Alocação de capital em M&A e otimização de custo médio ponderado de capital (WACC)." } },
-  { tier: 4, title: "CFO", minXp: 1800, hasTimer: true, feedback: { forca: "Engenharia de capital de elite, escudos fiscais, gestão de covenants e funding estruturado.", vulnerabilidade: "Governança executiva máxima, política sucessória e relacionamento com o conselho." } },
-  { tier: 4, title: "CEO / Board Member", minXp: 2600, hasTimer: true, feedback: { forca: "Visão sistêmica institucional plena e liderança sobre o valor de mercado (Market Cap).", vulnerabilidade: "O desafio é a perpetuidade institucional diante de transformações regulatórias e macroeconômicas." } }
+  { tier: 2, title: "Analista Financeiro Jr.", minXp: 280, hasTimer: false, feedback: { forca: "Domínio dos fluxos de tesouraria e identificação ágil de descasamentos.", vulnerabilidade: "Falta visão de estrutura de custos indiretos, provisões e impacto tributário na precificação." } },
+  { tier: 2, title: "Analista Financeiro Pleno", minXp: 500, hasTimer: true, feedback: { forca: "Análise consistente de margem de contribuição, Custeio ABC e sensibilidade de caixa.", vulnerabilidade: "Planejamento orçamentário plurianual e projeção de impactos macroeconômicos (como a transição tributária)." } },
+  { tier: 3, title: "Business Partner / Analista Sr.", minXp: 800, hasTimer: true, feedback: { forca: "Ponte estratégica entre comercial, RH corporativo e diretoria financeira.", vulnerabilidade: "Conhecimento avançado de CPCs complexos, auditoria atuária e proteção cambial estrutural." } },
+  { tier: 3, title: "Controller", minXp: 1200, hasTimer: true, feedback: { forca: "Blindagem de compliance, controle interno (SoD), auditoria externa e mitigação fiscal agressiva.", vulnerabilidade: "Alocação de capital em M&A e otimização de custo médio ponderado de capital (WACC)." } },
+  { tier: 4, title: "CFO", minXp: 1800, hasTimer: true, feedback: { forca: "Engenharia de capital de elite, escudos fiscais, gestão de covenants e funding estruturado.", vulnerabilidade: "Governança executiva máxima, política sucessória e relacionamento direto com o conselho e acionistas." } },
+  { tier: 4, title: "CEO / Board Member", minXp: 2600, hasTimer: true, feedback: { forca: "Visão sistêmica institucional plena e liderança sobre o valor de mercado (Market Cap).", vulnerabilidade: "O desafio é a perpetuidade institucional diante de transformações regulatórias seculares e crises geopolíticas." } }
 ];
 
 // --- EVENTOS CISNE NEGRO (CHOQUES MACROECONÔMICOS) ---
@@ -54,13 +54,14 @@ const blackSwans = [
   { title: "PASSIVO TRABALHISTA OCULTO", text: "O STF alterou a jurisprudência sobre a base de cálculo de um encargo da folha de pagamento. Um passivo retroativo de 5 anos atingiu o balanço da companhia de surpresa.", impacts: { caixa: -400000, margem: 0, compliance: -15 } }
 ];
 
-// --- BANCO DE DADOS DINÂMICO (ALTA DENSIDADE TÉCNICA E IMPACTOS REAIS) ---
+// --- BANCO DE DADOS DINÂMICO (COM REFORMA TRIBUTÁRIA E ALTA DENSIDADE) ---
 const allScenarios = [
+  // TIER 1 & 2
   {
     id: 1, tier: 1, criticality: "Baixa", points: 20, sector: "Tesouraria / Gestão de Caixa",
     title: "O Descasamento do Ciclo Operacional (Overtrading)",
     theory: "Segundo as diretrizes de solvência do BCB, lucros contábeis não garantem liquidez. O Ciclo de Conversão de Caixa (CCC) é vital. Crescer vendas financiando clientes em prazos longos enquanto se paga fornecedores à vista consome o capital de giro exponencialmente, gerando o chamado Efeito Tesoura.",
-    context: "O faturamento saltou 35% neste trimestre e a DRE mostra 15% de margem líquida. Contudo, o caixa amanheceu descoberto antes do fechamento bancário. Os fornecedores exigem liquidação em 15 dias, mas o setor comercial alongou os recebimentos dos clientes para 60 dias para bater a meta agressiva.", character: "Supervisão de Tesouraria",
+    context: "O faturamento saltou 35% neste trimestre e a DRE mostra 15% de margem líquida. Contudo, o caixa amanheceu descoberto antes do fechamento bancário. Os fornecedores exigem liquidação em 15 dias, mas o setor comercial alongou os recebimentos para 60 dias para bater a meta agressiva.", character: "Supervisão de Tesouraria",
     options: [
       { text: "Captar limite de cheque especial corporativo ou linha de curto prazo para cobrir os boletos e sustentar a concessão de crédito comercial irrestrita.", xp: -15, impacts: { caixa: 500000, margem: -2.5, compliance: -5 }, feedback: "INVIÁVEL. Financiar um ciclo financeiro estruturalmente deficitário com dívida bancária cara mascara o problema hoje, mas as taxas de rotativo destroem a margem da empresa rapidamente." },
       { text: "Travar imediatamente as vendas a prazo para novos clientes, antecipar parte dos recebíveis com trava de spread e realinhar os prazos a 30 dias.", xp: 20, impacts: { caixa: 1200000, margem: -0.5, compliance: 10 }, feedback: "CIRÚRGICO. Você estancou a hemorragia de liquidez trazendo R$ 1.2M para o caixa com sacrifício mínimo de margem, realinhando a governança comercial." }
@@ -77,17 +78,7 @@ const allScenarios = [
     ]
   },
   {
-    id: 3, tier: 1, criticality: "Baixa", points: 25, sector: "Folha e Encargos / Reforma da Previdência",
-    title: "Ajuste na Tabela Progressiva de Retenção (EC 103)",
-    theory: "A Emenda Constitucional nº 103/2019 unificou e escalonou as alíquotas do INSS para empregados de forma progressiva (7,5% a 14%), incidindo faixa por faixa até o teto do RGPS. Erros no cálculo progressivo do eSocial geram autos de infração severos pela Receita Federal e distorções na contabilidade.",
-    context: "Durante a auditoria mensal, você percebe que o setor de RH fechou a folha aplicando a alíquota cheia de 14% direto sobre o salário bruto total de um profissional sênior, em vez de fatiar o cálculo progressivamente por faixas, gerando um desconto indevido.", character: "Auditoria Interna de Folha",
-    options: [
-      { text: "Manter a retenção no sistema e orientar informalmente o colaborador a solicitar a compensação no ajuste do IRPF anual do próximo ano.", xp: -15, impacts: { caixa: 0, margem: 0, compliance: -35 }, feedback: "IRREGULARIDADE GRAVE. A retenção indevida na fonte gera um passivo trabalhista imediato e multas federais pesadas por erro nas obrigações acessórias." },
-      { text: "Retificar imediatamente a parametrização do software de folha para o cálculo progressivo por faixas e processar o estorno da diferença na conta do colaborador.", xp: 25, impacts: { caixa: -85000, margem: 0, compliance: 20 }, feedback: "COMPLIANCE GARANTIDO. Você gastou caixa para fazer os estornos corretivos, mas blindou a companhia contra a fiscalização da Receita Federal e da Justiça do Trabalho." }
-    ]
-  },
-  {
-    id: 4, tier: 2, criticality: "Média", points: 30, sector: "Controladoria / CPC 16",
+    id: 3, tier: 2, criticality: "Média", points: 30, sector: "Controladoria / CPC 16",
     title: "Custeio ABC e o Subsídio Cruzado",
     theory: "O rateio linear de custos indiretos por volume (absorção simples) mascara a ineficiência de produtos de nicho que exigem setup complexo. O Custeio Baseado em Atividades (ABC) aloca despesas conforme a demanda real de processos, evitando o 'subsídio cruzado', onde produtos lucrativos pagam a conta de produtos ineficientes.",
     context: "A linha tradicional tem alta tiragem e o balanço aponta margem contábil de 18%. A linha sob medida também registra 18%, mas a fábrica reclama que ela exige 4x mais horas de manutenção, inspeções e retrabalho fabril, secando o caixa invisivelmente.", character: "Controladoria Operacional",
@@ -97,17 +88,7 @@ const allScenarios = [
     ]
   },
   {
-    id: 5, tier: 2, criticality: "Média", points: 32, sector: "RH Corporativo / Previdência Complementar",
-    title: "Retenção de Talentos com Cláusula de Vesting",
-    theory: "Após a Reforma da Previdência (EC 103), planos corporativos ganharam papel central na atração de talentos de alta renda. O desenho previdenciário com cláusula de Vesting protege a companhia ao condicionar a liberação do aporte patronal ao tempo de casa, reduzindo o custo de turnover.",
-    context: "A diretoria pretende lançar um plano de previdência corporativa com aporte paritário (empresa coloca R$ 1 para cada R$ 1 do diretor). O CEO, porém, teme financiar a aposentadoria de executivos mercenários que saem da companhia logo após 18 meses.", character: "Comitê de Remuneração e Pessoas",
-    options: [
-      { text: "Liberar o resgate total dos aportes da empresa imediatamente no ato de qualquer desligamento, para garantir máxima atratividade na contratação.", xp: -20, impacts: { caixa: -1200000, margem: -1.5, compliance: 0 }, feedback: "PREJUÍZO CORPORATIVO ESTRUTURAL. Executivos sacaram R$ 1.2M da empresa ao sair precocemente. A companhia financiou a formação e o caixa da concorrência." },
-      { text: "Instituir contratualmente a cláusula de Vesting progressivo (ex: o executivo só tem direito a 100% da parte da empresa após 5 anos de casa).", xp: 32, impacts: { caixa: 450000, margem: 1.0, compliance: 15 }, feedback: "DESIGN DE INCENTIVOS PERFEITO. Alinhou a política de RH à sustentabilidade, reteve talentos a longo prazo e recuperou o caixa deixado por quem saiu cedo." }
-    ]
-  },
-  {
-    id: 6, tier: 2, criticality: "Média", points: 35, sector: "Gestão de Risco / PDD",
+    id: 4, tier: 2, criticality: "Média", points: 35, sector: "Gestão de Risco / PDD",
     title: "Provisão de Perdas Esperadas (PECLD / IFRS 9)",
     theory: "O modelo de perdas incorridas foi superado pela mensuração de perdas esperadas. O IFRS 9 exige que a empresa provisione a inadimplência com base no histórico de rolagem de dívidas e variáveis macroeconômicas, e não apenas aguardando o atraso se consumar.",
     context: "O setor comercial atingiu um recorde histórico vendendo fortemente a prazo para redes varejistas que estão em processo de reestruturação. A diretoria recusa-se a lançar provisões de perda (PDD) para não estragar a comemoração do Ebitda mensal.", character: "Risco e Crédito Corporativo",
@@ -116,18 +97,50 @@ const allScenarios = [
       { text: "Calcular e lançar imediatamente a PECLD ponderando o risco histórico do novo cluster, aceitando o impacto negativo no lucro do trimestre atual.", xp: 35, impacts: { caixa: 0, margem: -3.0, compliance: 40 }, feedback: "RIGOR TÉCNICO INEGOCIÁVEL. Você aceitou o golpe contábil na margem para manter a transparência absoluta perante as normas IFRS e os acionistas." }
     ]
   },
+
+  // NOVOS CENÁRIOS: REFORMA TRIBUTÁRIA E ALTA GESTÃO (TIERS 3 & 4)
   {
-    id: 7, tier: 3, criticality: "Alta", points: 40, sector: "Contabilidade Societária / CPC 33",
-    title: "Déficit Atuarial em Plano de Benefício Definido (BD)",
-    theory: "O CPC 33 (Benefícios a Empregados) determina que déficits atuariais em fundos de pensão fechados patrocinados pela empresa devem ser reconhecidos no Balanço Patrimonial da holding como passivo. Com o aumento expressivo da expectativa de vida, planos legados de BD geram rombos bilionários ocultos.",
-    context: "O conselho fiscal do fundo de pensão patrocinado pela empresa apurou um déficit atuarial estrutural de R$ 18 Milhões. A diretoria executiva pressiona para excluir essa obrigação do balanço da holding alegando que a entidade previdenciária é apartada.", character: "Auditoria Externa (Big 4)",
+    id: 5, tier: 3, criticality: "Alta", points: 45, sector: "Tributário / Reforma Tributária (EC 132)",
+    title: "IVA Dual: Precificação e Não Cumulatividade Plena",
+    theory: "A Reforma Tributária extinguiu PIS, COFINS, IPI, ICMS e ISS, substituindo-os pelo IVA Dual (CBS federal e IBS subnacional). A grande mudança estrutural é a 'não cumulatividade plena': a empresa passa a creditar-se do imposto sobre praticamente todos os insumos adquiridos, mas as alíquotas nominais finais são significativamente maiores (estimadas acima de 26%). Precificar produtos usando lógicas antigas destrói a rentabilidade instantaneamente.",
+    context: "Sua indústria compra insumos pesados. No sistema antigo, você não tomava crédito de PIS/COFINS sobre várias despesas operacionais. Agora, com o IBS/CBS operando, o Diretor Comercial quer reduzir o preço de venda em 10% alegando que 'teremos mais créditos tributários para abater', sem repassar a nova alíquota nominal ao mercado.", character: "Comitê de Transição Tributária",
     options: [
-      { text: "Acatar a pressão da diretoria, omitindo o déficit do balanço e apenas mencionando-o de forma genérica no rodapé das notas explicativas.", xp: -35, impacts: { caixa: 0, margem: 0, compliance: -60 }, feedback: "RESSALVA DA AUDITORIA (FRAUDE). A responsabilidade subsidiária é da patrocinadora. Omitir um rombo atuarial de R$ 18M destrói a credibilidade com o mercado." },
-      { text: "Reconhecer imediatamente o passivo atuarial pelo valor justo e provisionar o plano de equacionamento homologado pela PREVIC no resultado.", xp: 40, impacts: { caixa: -2500000, margem: -4.0, compliance: 50 }, feedback: "GOVERNANÇA PLENA. A dor de iniciar a amortização do rombo (R$ 2.5M) foi severa, mas você garantiu a lisura técnica e o compliance da holding." }
+      { text: "Aprovar a redução de preço sugerida pelo Comercial. Afinal, a promessa da reforma é baratear a carga, e a abundância de créditos do IBS/CBS compensará a queda da receita bruta.", xp: -45, impacts: { caixa: -1500000, margem: -5.5, compliance: 0 }, feedback: "RUÍNA DE PRECIFICAÇÃO. Você ignorou que a alíquota de saída do IBS/CBS é muito superior à soma do ICMS/PIS/COFINS antigos. Os créditos novos não compensaram o imposto final devido, sangrando a margem brutalmente." },
+      { text: "Vetar a redução. Exigir o recálculo do Markup (Mark-up Múltiplo) deduzindo os novos créditos da base de custo, mas aplicando a nova alíquota cheia (IVA) na formação do preço de venda final.", xp: 45, impacts: { caixa: 800000, margem: 2.5, compliance: 30 }, feedback: "MAESTRIA TRIBUTÁRIA. Você adaptou o DRE gerencial à nova realidade do IVA. O preço foi formado corretamente sobre o custo líquido, garantindo a proteção da margem e a neutralidade fiscal da operação." }
     ]
   },
   {
-    id: 8, tier: 3, criticality: "Alta", points: 42, sector: "Compliance / Controles Internos",
+    id: 6, tier: 3, criticality: "Alta", points: 45, sector: "Controladoria / Orçamento",
+    title: "O Custo de Compliance na Transição Tributária",
+    theory: "O artigo 125 do ADCT (Reforma Tributária) prevê um período de transição de 7 anos (2026 a 2032). Durante esse período, as empresas precisarão apurar simultaneamente os impostos do sistema antigo (ICMS, PIS, COFINS) em proporções decrescentes e os impostos do novo sistema (CBS, IBS) em proporções crescentes. O custo administrativo e sistêmico (ERP) para auditar dois mundos fiscais simultâneos é gigantesco.",
+    context: "Estamos elaborando o Orçamento Base Zero (OBZ) para o próximo biênio. O gerente de TI e o Controller solicitam a aprovação de R$ 2 Milhões em capex para a implantação de um novo módulo de motor de cálculo tributário no ERP, além da contratação de uma consultoria especialista na transição.", character: "Diretoria de Controladoria (FP&A)",
+    options: [
+      { text: "Reprovar o orçamento. Cortar o investimento em TI e exigir que o atual departamento contábil apure os dois sistemas tributários (Antigo e Novo) utilizando planilhas eletrônicas (Excel) para economizar caixa.", xp: -40, impacts: { caixa: 2000000, margem: 0, compliance: -70 }, feedback: "COLAPSO OPERACIONAL E MULTAS. Economizar 2 Milhões hoje gerou o caos. Planilhas não suportam cruzamento de alíquotas fracionadas do período de transição. As malhas finas da Receita bloquearão a empresa em meses." },
+      { text: "Aprovar integralmente o investimento (Capex). Encarar a atualização do ERP e a consultoria como custo indispensável de sobrevivência regulatória, amortizando a despesa ao longo dos anos de transição.", xp: 45, impacts: { caixa: -2000000, margem: -1.0, compliance: 60 }, feedback: "GOVERNANÇA PREVENTIVA. A dor no caixa foi pesada e imediata, mas você blindou a companhia contra o período mais caótico da história fiscal do país, garantindo continuidade dos negócios." }
+    ]
+  },
+  {
+    id: 7, tier: 4, criticality: "Extrema", points: 50, sector: "Planejamento Estratégico / Imposto Seletivo",
+    title: "A Ameaça do Imposto Seletivo (Sin Tax)",
+    theory: "A EC 132 criou o Imposto Seletivo (IS), incidindo sobre bens e serviços prejudiciais à saúde ou ao meio ambiente. Ao contrário do IVA, o IS compõe a própria base de cálculo de outros tributos (incidência 'por dentro') e não gera crédito tributário para o adquirente, configurando custo puro que destrói a competitividade do produto no mercado.",
+    context: "A sua indústria química acaba de ser notificada que seu principal produto (que representa 40% do faturamento) foi enquadrado na lista de incidência do novo Imposto Seletivo federal. O repasse integral do novo custo aumentaria o preço final na gôndola em absurdos 35%.", character: "Conselho de Administração",
+    options: [
+      { text: "Absorver o custo do Imposto Seletivo reduzindo a margem de lucro para não perder *Market Share*, mantendo os preços atuais na prateleira até a concorrência quebrar.", xp: -50, impacts: { caixa: -4500000, margem: -15.0, compliance: 0 }, feedback: "DESTRUIÇÃO DE VALOR ECONÔMICO. O Imposto Seletivo não gera crédito; é perda seca. Absorver 35% de carga eliminou o Ebitda da linha de produção. A empresa entrou em insolvência estrutural." },
+      { text: "Pivotar a estratégia: aprovar um plano imediato de *Spin-off* (separação) da linha afetada, focar o capex no desenvolvimento de um produto substituto verde (isento de IS) e realizar o *Pass-through* parcial do custo para o mercado até a transição concluir.", xp: 50, impacts: { caixa: -1000000, margem: 5.0, compliance: 20 }, feedback: "RESILIÊNCIA DE CEO. Você entendeu que tributação comportamental não se combate absorvendo margem, mas inovando o portfólio. A rápida readaptação salvou o Market Cap da empresa." }
+    ]
+  },
+  {
+    id: 8, tier: 4, criticality: "Extrema", points: 50, sector: "M&A / Engenharia Financeira",
+    title: "Alavancagem Ótima (WACC) em Leveraged Buyout",
+    theory: "Em finanças corporativas, fugir de dívidas a qualquer custo destrói valor. O capital próprio (Ke) exige prêmio de risco superior. A dívida bancária (Kd) gera escudo fiscal (dedutibilidade dos juros). O Leveraged Buyout (LBO) estrutura aquisições usando dívida atrelada ao próprio ativo comprado para maximizar o ROE.",
+    context: "O conselho aprovou a aquisição de um concorrente vital por R$ 30 Milhões. A matriz possui liquidez livre e poderia pagar à vista. A taxa exigida pelos acionistas da holding é de 19% a.a. Um sindicato de bancos oferece o financiamento a 11% a.a.", character: "Diretoria de Estratégia M&A",
+    options: [
+      { text: "Liquidar a aquisição 100% à vista utilizando o caixa próprio, publicando na imprensa a solidez da empresa por não precisar de financiamentos.", xp: -40, impacts: { caixa: -30000000, margem: -4.0, compliance: 0 }, feedback: "MIOPIA DE ALOCAÇÃO DE CAPITAL. Você sangrou R$ 30M do balanço usando o capital mais caro da firma (19%). O Custo Médio Ponderado (WACC) subiu e o ROE despencou." },
+      { text: "Estruturar a transação em LBO: usar 30% do caixa como entrada e alavancar os 70% restantes no banco, travando os ativos da adquirida como garantia.", xp: 50, impacts: { caixa: -9000000, margem: 5.5, compliance: 10 }, feedback: "DOMÍNIO ABSOLUTO DE FINANÇAS. A aquisição custou apenas R$ 9M em caixa. Você capturou o escudo fiscal dos juros a 11% e explodiu o retorno sobre o capital investido." }
+    ]
+  },
+  {
+    id: 9, tier: 3, criticality: "Alta", points: 42, sector: "Compliance / Controles Internos",
     title: "Matriz SoD e o Conflito de Acesso Bancário",
     theory: "No framework do COSO, a Segregação de Funções (SoD) é a espinha dorsal da prevenção. Quem cadastra e agenda ordens de pagamento no ERP não pode possuir privilégios de liberação de token bancário. Falhas nesse ponto viabilizam a criação de empresas fantasmas e sangrias indetectáveis.",
     context: "Para acelerar a expansão, o gerente de uma filial longínqua recebeu perfil de 'cadastro' no ERP e 'autorizador master' no banco corporativo para destravar fretes noturnos e pagar fornecedores sem depender do fuso da matriz.", character: "Inspetoria de Governança",
@@ -137,43 +150,13 @@ const allScenarios = [
     ]
   },
   {
-    id: 9, tier: 3, criticality: "Alta", points: 45, sector: "Planejamento Tributário / Lucro Real",
-    title: "Dedutibilidade de Contribuição Previdenciária Patronal",
-    theory: "No regime de tributação pelo Lucro Real, as contribuições da empresa para planos de previdência complementar dos seus empregados são legalmente dedutíveis da base de cálculo do IRPJ e da CSLL até o limite de 20% do total dos salários dos participantes (Lei nº 9.532/97).",
-    context: "A companhia encerrou o ano com lucros extraordinários. O conselho decidiu distribuir R$ 3 Milhões de premiação aos executivos, mas quer blindar esse valor para não disparar uma cascata letal de encargos trabalhistas (INSS patronal e FGTS).", character: "Comitê de Planejamento Tributário",
-    options: [
-      { text: "Processar a premiação como bônus tradicional em dinheiro no contracheque de dezembro, contabilizando como PLR irrestrita.", xp: -30, impacts: { caixa: -3800000, margem: -2.5, compliance: -10 }, feedback: "ONERAÇÃO FISCAL MÁXIMA. A falta de planejamento elevou os encargos associados. O repasse de R$ 3M custou quase R$ 4M reais, sem gerar um escudo estrutural." },
-      { text: "Estruturar o repasse sob a forma de aporte patronal em um fundo de previdência fechada corporativo, dentro do limite normativo de 20%.", xp: 45, impacts: { caixa: 1500000, margem: 3.5, compliance: 15 }, feedback: "ELISÃO FISCAL DE ELITE. A estruturação previdenciária garantiu a isenção de encargos de folha e a dedutibilidade abateu milhões do imposto devido, salvando o caixa." }
-    ]
-  },
-  {
-    id: 10, tier: 4, criticality: "Extrema", points: 50, sector: "M&A / Engenharia Financeira",
-    title: "Alavancagem Ótima (WACC) em Leveraged Buyout",
-    theory: "Em finanças corporativas, fugir de dívidas a qualquer custo destrói valor. O capital próprio (Ke) exige prêmio de risco superior. A dívida bancária (Kd) gera escudo fiscal (dedutibilidade dos juros). O Leveraged Buyout (LBO) estrutura aquisições usando dívida atrelada ao próprio ativo comprado para maximizar o ROE.",
-    context: "O conselho aprovou a aquisição de um concorrente vital por R$ 25 Milhões. A matriz possui R$ 40M em caixa livre e poderia pagar à vista. A taxa exigida pelos acionistas da holding é de 19% a.a. Um sindicato de bancos oferece o financiamento total a 11% a.a.", character: "Diretoria de Estratégia M&A",
-    options: [
-      { text: "Liquidar a aquisição 100% à vista utilizando o caixa próprio, publicando na imprensa a solidez da empresa por não precisar de dívidas.", xp: -40, impacts: { caixa: -25000000, margem: -4.0, compliance: 0 }, feedback: "MIOPIA DE ALOCAÇÃO DE CAPITAL. Você sangrou R$ 25M do balanço usando o capital mais caro da firma (19%). O Custo Médio Ponderado (WACC) subiu e o ROE despencou." },
-      { text: "Estruturar a transação em LBO: usar 30% do caixa como entrada e alavancar os 70% restantes no banco, travando os ativos da empresa adquirida como garantia.", xp: 50, impacts: { caixa: -7500000, margem: 4.5, compliance: 10 }, feedback: "DOMÍNIO ABSOLUTO DE FINANÇAS (CFO). A aquisição custou apenas R$ 7.5M em caixa. Você capturou o escudo fiscal do juros a 11% e explodiu o retorno dos acionistas." }
-    ]
-  },
-  {
-    id: 11, tier: 4, criticality: "Extrema", points: 50, sector: "Finanças Estruturadas / Mercado de Capitais",
+    id: 10, tier: 4, criticality: "Extrema", points: 50, sector: "Finanças Estruturadas",
     title: "Covenants Financeiros e Risco de Cross Default",
     theory: "Debêntures e linhas de crédito internacionais exigem conformidade contínua de travas financeiras (Covenants). Romper a relação 'Dívida Líquida / Ebitda' aciona a quebra de contrato, permitindo aos credores declarar o vencimento antecipado e imediato de todo o passivo da empresa.",
-    context: "A holding emitiu debêntures com um teto de Covenant estrito de 2,5x. O balanço trimestral fechou com o índice batendo 2,42x. Ignorando isso, a diretoria exige aprovar hoje uma campanha massiva de aquisição de mercado que queimará R$ 8 Milhões à vista.", character: "Comitê de Relações com Investidores",
+    context: "A holding emitiu debêntures com um teto de Covenant estrito de 2,5x. O balanço trimestral fechou com o índice batendo 2,42x. Ignorando isso, a diretoria exige aprovar hoje uma campanha massiva de aquisição de mercado que queimará R$ 12 Milhões à vista.", character: "Comitê de Relações com Investidores",
     options: [
-      { text: "Aprovar a verba de marketing para não travar o crescimento da receita, operando na esperança de que os bancos não executem a dívida em caso de leve estouro.", xp: -50, impacts: { caixa: -8000000, margem: -2.0, compliance: -60 }, feedback: "RISCO DE RUÍNA CONCRETIZADO. A queima de R$ 8M elevou a Dívida Líquida. O covenant de 2.5x estourou e os credores bloquearam as contas para execução sumária." },
-      { text: "Vetar a campanha categoricamente. Instituir um regime de retenção de liquidez e contenção de OPEX até que o indicador recue para uma margem de segurança de 2,0x.", xp: 50, impacts: { caixa: 4500000, margem: 1.5, compliance: 40 }, feedback: "PROTEÇÃO FIDUCIÁRIA. Você enfrentou a diretoria, protegeu a solidez contratual perante o mercado e garantiu a sobrevivência do CNPJ. O risco zero não existe, mas a imprudência foi evitada." }
-    ]
-  },
-  {
-    id: 12, tier: 4, criticality: "Extrema", points: 50, sector: "Previdência Complementar / Governança",
-    title: "Transição de Risco Atuarial: BD para CD",
-    theory: "Com a inversão da pirâmide etária e juros reais mais baixos, a manutenção de planos previdenciários de Benefício Definido (BD) tornou-se inviável para corporações privadas, gerando passivos imprevisíveis. Migrar a carteira para modelos de Contribuição Definida (CD) repassa o risco de mercado ao participante e trava a sangria atuarial da patrocinadora.",
-    context: "O plano de pensão BD histórico da companhia vem apurando déficits assustadores pela alta longevidade dos inativos, e as projeções mostram que o rombo consumirá 25% do fluxo de caixa livre da empresa por mais uma década inteira.", character: "Conselho de Administração",
-    options: [
-      { text: "Respeitar a tradição da empresa e aportar o capital extraordinário bilionário necessário anualmente, apostando que a bolsa de valores recuperará os investimentos do fundo no futuro.", xp: -45, impacts: { caixa: -6500000, margem: -5.0, compliance: 0 }, feedback: "SANGRAMENTO INSTITUCIONAL LENTO. O plano BD não tem teto de responsabilidade. Foram injetados R$ 6.5M e o rombo atuarial continua a consumir as fundações financeiras da empresa." },
-      { text: "Articular legalmente o saldamento do plano BD (congelando direitos futuros) e promover uma campanha agressiva de migração voluntária, auditada pela PREVIC, para um novo modelo CD.", xp: 50, impacts: { caixa: 3000000, margem: 4.0, compliance: 25 }, feedback: "LEMBRANÇA PERPÉTUA NO BOARD. Uma decisão técnica complexa e politicamente difícil que encerrou definitivamente a exposição ao risco de longevidade, salvando o balanço corporativo pelas próximas décadas." }
+      { text: "Aprovar a verba de marketing para não travar o crescimento da receita, operando na esperança de que os bancos não executem a dívida em caso de leve estouro.", xp: -50, impacts: { caixa: -12000000, margem: -2.0, compliance: -60 }, feedback: "RISCO DE RUÍNA CONCRETIZADO. A queima de R$ 12M elevou a Dívida Líquida. O covenant de 2.5x estourou e os credores bloquearam as contas para execução sumária." },
+      { text: "Vetar a campanha categoricamente. Instituir um regime de retenção de liquidez e contenção de OPEX até que o indicador recue para uma margem de segurança de 2,0x.", xp: 50, impacts: { caixa: 5500000, margem: 1.5, compliance: 40 }, feedback: "PROTEÇÃO FIDUCIÁRIA. Você enfrentou a diretoria, protegeu a solidez contratual perante o mercado e garantiu a sobrevivência do CNPJ. A imprudência foi evitada." }
     ]
   }
 ];
@@ -182,12 +165,12 @@ export default function CodigoAzulGame() {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [forgotPasswordMsg, setForgotPasswordMsg] = useState("");
 
   const [playerName, setPlayerName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
   
-  // STATUS CORE (Cifras Reais)
   const [xp, setXp] = useState(0);
   const [caixa, setCaixa] = useState(5000000);
   const [margem, setMargem] = useState(20.0);
@@ -195,7 +178,6 @@ export default function CodigoAzulGame() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [lastImpacts, setLastImpacts] = useState<any>(null);
 
-  // NOVOS ESTADOS (Consultoria, Cisne Negro, DRE)
   const [showDRE, setShowDRE] = useState(false);
   const [sessionStartStats, setSessionStartStats] = useState({ caixa: 5000000, margem: 20.0 });
   const [currentBlackSwan, setCurrentBlackSwan] = useState<any>(null);
@@ -214,15 +196,16 @@ export default function CodigoAzulGame() {
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // V11: Novo DB para integrar os novos cenários de Reforma Tributária
   const saveToDB = () => {
     if (!nickname) return;
-    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v10') || '{}');
+    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v11') || '{}');
     if (db[nickname]) {
       db[nickname].data = { 
         playerName, companyName, xp, caixa, margem, compliance, 
         currentStage, sessionScenarios, sessionStartStats, showDRE 
       };
-      localStorage.setItem('codigoAzul_Corp_v10', JSON.stringify(db));
+      localStorage.setItem('codigoAzul_Corp_v11', JSON.stringify(db));
     }
   };
 
@@ -239,7 +222,7 @@ export default function CodigoAzulGame() {
     const eligibleScenarios = allScenarios.filter(s => 
       s.tier === currentTier || (currentTier > 1 && s.tier === currentTier - 1) || (currentTier < 4 && s.tier === currentTier + 1)
     );
-    return shuffleArray(eligibleScenarios.length > 0 ? eligibleScenarios : allScenarios).slice(0, 10);
+    return shuffleArray(eligibleScenarios.length > 0 ? eligibleScenarios : allScenarios).slice(0, 10); // Lotes de 10
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -248,7 +231,7 @@ export default function CodigoAzulGame() {
     const cleanPassword = password.trim();
     if (!cleanNickname || !cleanPassword) { setLoginError("Credenciais inválidas."); return; }
 
-    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v10') || '{}');
+    const db = JSON.parse(localStorage.getItem('codigoAzul_Corp_v11') || '{}');
 
     if (db[cleanNickname]) {
       if (db[cleanNickname].password === cleanPassword) {
@@ -261,7 +244,7 @@ export default function CodigoAzulGame() {
         setShowDRE(d.showDRE || false);
         
         if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
-        setLoginError(""); setGameStarted(true);
+        setLoginError(""); setForgotPasswordMsg(""); setGameStarted(true);
       } else {
         setLoginError("Acesso negado. Senha incorreta.");
       }
@@ -277,14 +260,18 @@ export default function CodigoAzulGame() {
           sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
         }
       };
-      localStorage.setItem('codigoAzul_Corp_v10', JSON.stringify(db));
+      localStorage.setItem('codigoAzul_Corp_v11', JSON.stringify(db));
       
       setPlayerName(cleanNickname); setCompanyName(newCompany); 
       setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
       setCurrentStage(0); setSessionScenarios(initialPool);
       setSessionStartStats({ caixa: 5000000, margem: 20.0 });
-      setLoginError(""); setTimeLeft(60); setGameStarted(true); setIsGameOver(false); setShowDRE(false);
+      setLoginError(""); setForgotPasswordMsg(""); setTimeLeft(60); setGameStarted(true); setIsGameOver(false); setShowDRE(false);
     }
+  };
+
+  const handleForgotPassword = () => {
+    setForgotPasswordMsg("A recuperação de senha via e-mail exige conexão com nosso Cloud Database. O recurso será ativado no próximo update de infraestrutura.");
   };
 
   const handleLogout = () => {
@@ -335,12 +322,12 @@ export default function CodigoAzulGame() {
     const correctOption = scenario.options.reduce((prev: any, curr: any) => (prev.xp > curr.xp) ? prev : curr);
     
     const combinedImpacts = {
-      caixa: (correctOption.impacts?.caixa || 0) - 50000, // Custo da consultoria deduzido
+      caixa: (correctOption.impacts?.caixa || 0) - 50000,
       margem: correctOption.impacts?.margem || 0,
       compliance: correctOption.impacts?.compliance || 0,
     };
 
-    handleChoice(correctOption.xp, `💡 PARECER DA CONSULTORIA (Honorários: R$ 50k debitados): ${correctOption.feedback}`, false, combinedImpacts);
+    handleChoice(correctOption.xp, `🤖 IA MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados): ${correctOption.feedback}`, false, combinedImpacts);
   };
 
   const handleChoice = (baseXpGained: number, feedbackText: string, isTimeout: boolean = false, impacts: any = null) => {
@@ -366,10 +353,10 @@ export default function CodigoAzulGame() {
     setXp(newXp); setLastXpChange(totalXpGained); setTimeBonus(bonus); setLastImpacts(impacts);
 
     if (newCaixa <= 0) {
-      setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi aniquilado sumariamente. Sem liquidez imediata para honrar a folha de pagamento e fornecedores críticos, os credores pediram a recuperação judicial da holding."); return;
+      setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi aniquilado sumariamente. Sem liquidez imediata para honrar a folha de pagamento e impostos, os credores pediram a recuperação judicial da holding."); return;
     }
     if (newCompliance <= 0) {
-      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. O nível de compliance atingiu margens inaceitáveis. O acúmulo de sonegações, infrações na matriz SoD e violações do IFRS desencadearam bloqueio cautelar das contas pela justiça."); return;
+      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. O nível de compliance atingiu margens inaceitáveis. O acúmulo de sonegações, infrações na matriz SoD e violações do IFRS desencadearam bloqueio cautelar das contas."); return;
     }
 
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
@@ -393,7 +380,6 @@ export default function CodigoAzulGame() {
     setIsProcessing(false);
 
     if (currentStage < sessionScenarios.length - 1) {
-      // 20% de chance de Cisne Negro entre rodadas (A partir do Tier 2)
       if (Math.random() < 0.20 && currentLevel.tier >= 2) {
         const randomSwan = blackSwans[Math.floor(Math.random() * blackSwans.length)];
         setCurrentBlackSwan(randomSwan);
@@ -401,7 +387,7 @@ export default function CodigoAzulGame() {
         setCurrentStage(prev => prev + 1);
       }
     } else {
-      setShowDRE(true); // Fim da bateria de 10 questoes, apresenta DRE
+      setShowDRE(true);
     }
   };
 
@@ -418,7 +404,7 @@ export default function CodigoAzulGame() {
       setIsGameOver(true); setFeedback("FALÊNCIA POR CHOQUE EXTERNO (Cisne Negro). Seu colchão de liquidez era insuficiente para absorver a crise sistêmica no mercado."); return;
     }
     if (newCompliance <= 0) {
-      setIsGameOver(true); setFeedback("COLAPSO INSTITUCIONAL. A tempestade externa encontrou uma empresa com controles internos inexistentes, levando à intervenção."); return;
+      setIsGameOver(true); setFeedback("COLAPSO INSTITUCIONAL. A tempestade externa encontrou uma empresa com controles internos fragilizados, levando à intervenção."); return;
     }
 
     setCurrentStage(prev => prev + 1);
@@ -459,10 +445,16 @@ export default function CodigoAzulGame() {
               <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="diretoria.corp" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Chave de Segurança</label>
+              <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono flex justify-between">
+                <span>Chave de Segurança</span>
+                <button type="button" onClick={handleForgotPassword} className="text-cyan-600 hover:text-cyan-400 underline">Esqueci a Senha</button>
+              </label>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500/50 font-mono transition-all" required />
             </div>
-            {loginError && <div className="text-amber-400 text-[11px] font-mono text-center p-2 rounded bg-amber-500/10 border border-amber-500/20">{loginError}</div>}
+            
+            {loginError && <div className="text-red-400 text-[11px] font-mono text-center p-2 rounded bg-red-500/10 border border-red-500/20">{loginError}</div>}
+            {forgotPasswordMsg && <div className="text-amber-400 text-[10px] text-justify p-3 rounded bg-amber-500/10 border border-amber-500/20 leading-relaxed">{forgotPasswordMsg}</div>}
+
             <button type="submit" className="w-full bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800 hover:border-cyan-500 text-cyan-400 text-xs font-mono tracking-widest py-3.5 px-4 rounded-lg transition-all mt-4 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]">CONECTAR SISTEMA ERP</button>
           </form>
         </div>
@@ -701,14 +693,14 @@ export default function CodigoAzulGame() {
                 </button>
               ))}
 
-              {/* BOTÃO LIFELINE: CONSULTORIA PREMIUM */}
+              {/* BOTÃO LIFELINE: CONSULTORIA PREMIUM COM IA */}
               <div className="pt-6 border-t border-white/5 mt-6">
                 <button
                   disabled={isProcessing || caixa < 50000}
                   onClick={handleConsultoria}
                   className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-[0.2em] uppercase ${isProcessing || caixa < 50000 ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-amber-950/20 border-amber-800/50 text-amber-500 hover:bg-amber-900/40 hover:border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.05)] hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]'}`}
                 >
-                  📞 Acionar Consultoria Pedro Monte (Debita R$ 50.000 do Caixa)
+                  🤖 Acionar Consultoria Pedro Monte (Debita R$ 50.000 do Caixa)
                 </button>
               </div>
             </div>
@@ -742,7 +734,7 @@ export default function CodigoAzulGame() {
             )}
 
             <div className="bg-[#020617]/50 p-6 md:p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative">
-               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer: {scenario.character}</span>
+               <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer Técnico:</span>
               <p className="text-slate-300 text-sm font-light leading-relaxed mt-2 text-justify">{feedback}</p>
             </div>
 
@@ -754,7 +746,7 @@ export default function CodigoAzulGame() {
 
         <div className="flex flex-wrap items-center justify-center gap-6 pb-6 pt-2 font-mono">
           <button onClick={handleManualSave} className="text-[9px] text-cyan-600/60 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">{saveStatus || "Gravar Data Center"}</button>
-          <span className="text-slate-800">/</span><button onClick={handleLogout} className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-[0.2em]">Logout</button>
+          <span className="text-slate-800">/</span><button onClick={handleLogout} className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-[0.2em]">Desconectar (Logout)</button>
           <span className="text-slate-800">/</span><button onClick={handleResetCareer} className="text-[9px] text-slate-600 hover:text-red-400 transition-colors uppercase tracking-[0.2em]">Liquidacao Total (Reset)</button>
         </div>
 
