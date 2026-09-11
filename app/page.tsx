@@ -123,9 +123,8 @@ export default function CodigoAzulGame() {
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- GERAÇÃO DE CASO COM CONTROLE RIGOROSO DE ESTÁGIO ---
+  // --- FUNÇÃO DE BUSCA EXPLÍCITA DE CASOS PRÁTICOS ---
   const fetchScenarioFromAI = async (stageNum: number) => {
-    if (isGeneratingScenario) return;
     setIsGeneratingScenario(true);
     setFeedback(null);
     setSupplementaryComment("");
@@ -211,13 +210,12 @@ export default function CodigoAzulGame() {
     }
   };
 
-  // Disparo manual controlado assim que o jogo inicia ou muda de estágio
+  // Disparo inicial único quando o jogo arranca
   useEffect(() => {
-    if (gameStarted && !isGameOver && !showDRE && !feedback && !promotionPending && !currentScenario && !isGeneratingScenario) {
+    if (gameStarted && !isGameOver && !showDRE && !currentScenario && !isGeneratingScenario) {
       fetchScenarioFromAI(currentStage);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameStarted, currentStage, feedback, promotionPending, showDRE]);
+  }, [gameStarted]);
 
 
   // --- AVALIAÇÃO DE BÔNUS DO COMENTÁRIO COMPLEMENTAR ---
