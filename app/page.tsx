@@ -123,14 +123,15 @@ export default function CodigoAzulGame() {
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- GERAÇÃO DE CASO COM PROFUNDIDADE E GARANTIA DE NOVIDADE ---
-  const fetchScenarioFromAI = async (stageIndex: number) => {
+  // --- GERAÇÃO DE CASO COM CONTROLE RIGOROSO DE ESTÁGIO ---
+  const fetchScenarioFromAI = async (stageNum: number) => {
+    if (isGeneratingScenario) return;
     setIsGeneratingScenario(true);
     setFeedback(null);
     setSupplementaryComment("");
     setTimeLeft(120);
 
-    const prompt = `Você é o reitor sênior da escola de negócios de alta performance 'Código Azul'. Gere um Estudo de Caso Prático inédito (Questão ${stageIndex + 1} de 10) com PROFUNDIDADE TEÓRICA EXTREMA, rigor acadêmico implacável e formatação em JSON estrito.
+    const prompt = `Você é o reitor sênior da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático inédito (Fase ${stageNum + 1} de 10) com PROFUNDIDADE TEÓRICA EXTREMA, rigor acadêmico implacável e formatação em JSON estrito.
     Nível do aluno: ${currentLevel.title} (Tier ${currentLevel.tier}).
     Indicadores da empresa (${companyName}): Caixa R$ ${caixa}, Margem EBITDA ${margem}%, Compliance ${compliance}%.
     
@@ -195,9 +196,9 @@ export default function CodigoAzulGame() {
       setCurrentScenario({
         sector: "Controladoria & Solvência",
         criticality: "Extrema",
-        title: `Gestão de Caixa — Caso ${stageIndex + 1}`,
+        title: `Gestão Estratégica de Caixa — Módulo ${stageNum + 1}`,
         theory: "O Ciclo de Conversão de Caixa (CCC) regula a solvência patrimonial conforme o CPC 00. Descasamentos de prazos exigem capital de giro estressado que corrói o FCF livre.",
-        context: `Na fase ${stageIndex + 1}, sua empresa apresentou desalinhamento nas contas a pagar e receber, exigindo intervenção direta do CFO.`,
+        context: `Na fase ${stageNum + 1}, sua empresa apresentou desalinhamento nas contas a pagar e receber, exigindo intervenção direta do CFO.`,
         character: "Comitê de Tesouraria",
         options: shuffleArray([
           { id: "A", text: "Travar crédito e antecipar recebíveis seletivos.", xp: 35, isBest: true, impacts: { caixa: 1000000, margem: 1.0, compliance: 10 }, feedback: "Correto. Protegeu a liquidez com inteligência de spread." },
@@ -210,13 +211,13 @@ export default function CodigoAzulGame() {
     }
   };
 
-  // Disparo do gerador vinculado estritamente ao estágio atual
+  // Disparo manual controlado assim que o jogo inicia ou muda de estágio
   useEffect(() => {
     if (gameStarted && !isGameOver && !showDRE && !feedback && !promotionPending && !currentScenario && !isGeneratingScenario) {
       fetchScenarioFromAI(currentStage);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentScenario]);
+  }, [gameStarted, currentStage, feedback, promotionPending, showDRE]);
 
 
   // --- AVALIAÇÃO DE BÔNUS DO COMENTÁRIO COMPLEMENTAR ---
