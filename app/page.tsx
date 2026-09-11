@@ -66,90 +66,6 @@ const blackSwans = [
   { title: "PASSIVO TRABALHISTA OCULTO", text: "O STF alterou a jurisprudência sobre a base de cálculo de um encargo da folha de pagamento. Um passivo retroativo de 5 anos atingiu o balanço da companhia de surpresa.", impacts: { caixa: -400000, margem: 0, compliance: -15 } }
 ];
 
-// --- BANCO DE DADOS DINÂMICO ---
-const allScenarios = [
-  {
-    id: 1, tier: 1, criticality: "Baixa", points: 20, sector: "Tesouraria / Gestão de Caixa",
-    title: "O Descasamento do Ciclo Operacional (Overtrading)",
-    theory: "Segundo as diretrizes de solvência do BCB, lucros contábeis não garantem liquidez. O Ciclo de Conversão de Caixa (CCC) é vital. Crescer vendas financiando clientes em prazos longos enquanto se paga fornecedores à vista consome o capital de giro exponencialmente.",
-    context: "O faturamento saltou 35% neste trimestre. Contudo, o caixa amanheceu descoberto antes do fechamento bancário. Os fornecedores exigem liquidação em 15 dias, mas o setor comercial alongou os recebimentos para 60 dias para bater a meta agressiva.", character: "Supervisão de Tesouraria",
-    options: [
-      { text: "Captar limite de cheque especial corporativo ou linha de curto prazo para cobrir os boletos e sustentar a concessão de crédito comercial irrestrita.", xp: -15, impacts: { caixa: 500000, margem: -2.5, compliance: -5 }, feedback: "INVIÁVEL. Financiar um ciclo financeiro estruturalmente deficitário com dívida bancária cara mascara o problema hoje, mas as taxas de rotativo destroem a margem da empresa rapidamente." },
-      { text: "Travar imediatamente as vendas a prazo para novos clientes, antecipar parte dos recebíveis com trava de spread e realinhar os prazos a 30 dias.", xp: 20, impacts: { caixa: 1200000, margem: -0.5, compliance: 10 }, feedback: "CIRÚRGICO. Você estancou a hemorragia de liquidez trazendo R$ 1.2M para o caixa com sacrifício mínimo de margem, realinhando a governança comercial." }
-    ]
-  },
-  {
-    id: 2, tier: 1, criticality: "Baixa", points: 22, sector: "Contas a Pagar / Custo de Oportunidade",
-    title: "A Arbitragem do Desconto de Duplicatas",
-    theory: "O desconto concedido por um fornecedor para quitação à vista deve ser comparado matematicamente ao custo de oportunidade das aplicações de liquidez imediata (CDI/Selic).",
-    context: "Um fornecedor homologado oferece 2,5% de abatimento para o pagamento à vista de uma fatura de R$ 2 Milhões hoje. Caso contrário, o prazo padrão será de 30 dias. A empresa mantém um caixa volumoso investido em aplicações rendendo 0,85% ao mês.", character: "Mesa de Pagamentos",
-    options: [
-      { text: "Recusar o desconto ofertado para manter o saldo intocado na aplicação bancária rendendo os juros até o trigésimo dia do vencimento.", xp: -10, impacts: { caixa: 0, margem: -1.2, compliance: 0 }, feedback: "EQUÍVOCO FINANCEIRO. Você sacrificou um ganho financeiro líquido superior ao rendimento bancário do período, espremendo a margem do negócio." },
-      { text: "Resgatar o saldo necessário da aplicação e liquidar a fatura à vista, capturando integralmente o desconto financeiro de 2,5%.", xp: 22, impacts: { caixa: -1950000, margem: 1.6, compliance: 0 }, feedback: "EFICIÊNCIA DE ALOCAÇÃO. A saída antecipada gerou um spread financeiro positivo direto e seguro, convertendo o setor de AP em um gerador de lucro." }
-    ]
-  },
-  {
-    id: 3, tier: 2, criticality: "Média", points: 30, sector: "Controladoria / CPC 16",
-    title: "Custeio ABC e o Subsídio Cruzado",
-    theory: "O rateio linear de custos indiretos por volume (absorção simples) mascara a ineficiência de produtos de nicho que exigem setup complexo. O Custeio Baseado em Atividades (ABC) aloca despesas conforme a demanda real de processos.",
-    context: "A linha tradicional tem alta tiragem e o balanço aponta margem contábil de 18%. A linha sob medida também registra 18%, mas a fábrica reclama que ela exige 4x mais horas de manutenção, secando o caixa invisivelmente.", character: "Controladoria Operacional",
-    options: [
-      { text: "Reajustar linearmente os preços de ambas as linhas de produção em 10% para recompor a margem global exigida pelo conselho de administração.", xp: -20, impacts: { caixa: -300000, margem: -2.0, compliance: 0 }, feedback: "FALHA ESTRATÉGICA. O aumento cego encarece o produto que te sustenta no mercado (perdendo vendas) e perpetua o subsídio do produto deficitário que drena a operação." },
-      { text: "Rastrear os geradores de custo via ABC, elevar rigorosamente a precificação apenas da linha sob medida e incentivar as vendas da linha padrão.", xp: 30, impacts: { caixa: 650000, margem: 3.5, compliance: 10 }, feedback: "VISÃO ESTRATÉGICA ATIVADA. Você isolou a ineficiência fabril e destravou a rentabilidade real, engordando o fluxo de caixa sustentável." }
-    ]
-  },
-  {
-    id: 4, tier: 2, criticality: "Média", points: 35, sector: "Gestão de Risco / PDD",
-    title: "Provisão de Perdas Esperadas (PECLD / IFRS 9)",
-    theory: "O modelo de perdas incorridas foi superado pela mensuração de perdas esperadas. O IFRS 9 exige que a empresa provisione a inadimplência com base no histórico de rolagem de dívidas e variáveis macroeconômicas.",
-    context: "O setor comercial atingiu um recorde histórico vendendo fortemente a prazo para redes varejistas que estão em processo de reestruturação. A diretoria recusa-se a lançar provisões de perda (PDD) para não estragar a comemoração do Ebitda mensal.", character: "Risco e Crédito Corporativo",
-    options: [
-      { text: "Adiar o reconhecimento da provisão até que os títulos comerciais completem 90 dias de inadimplência efetiva e inquestionável no cartório.", xp: -25, impacts: { caixa: -800000, margem: 2.0, compliance: -40 }, feedback: "DESCOMPLIANCE POR OMISSÃO. A margem pareceu subir artificialmente, mas o caixa foi surpreendido por calotes sucessivos. O balanço foi maquiado." },
-      { text: "Calcular e lançar imediatamente a PECLD ponderando o risco histórico do novo cluster, aceitando o impacto negativo no lucro do trimestre atual.", xp: 35, impacts: { caixa: 0, margem: -3.0, compliance: 40 }, feedback: "RIGOR TÉCNICO INEGOCIÁVEL. Você aceitou o golpe contábil na margem para manter a transparência absoluta perante as normas IFRS e os acionistas." }
-    ]
-  },
-  {
-    id: 5, tier: 3, criticality: "Alta", points: 45, sector: "Tributário / Reforma Tributária (EC 132)",
-    title: "IVA Dual: Precificação e Não Cumulatividade Plena",
-    theory: "A Reforma Tributária extinguiu impostos em cascata, substituindo-os pelo IVA Dual (CBS e IBS). A grande mudança é a 'não cumulatividade plena': a empresa credita-se do imposto sobre os insumos, mas as alíquotas nominais finais são significativamente maiores.",
-    context: "Sua indústria compra insumos pesados. No sistema antigo, não havia crédito de PIS/COFINS sobre várias despesas. Agora, com o IBS/CBS operando, o Diretor Comercial quer reduzir o preço de venda em 10% alegando que 'teremos mais créditos tributários para abater'.", character: "Comitê de Transição Tributária",
-    options: [
-      { text: "Aprovar a redução de preço sugerida. A promessa da reforma é baratear a carga, e a abundância de créditos do IBS/CBS compensará a queda da receita bruta.", xp: -45, impacts: { caixa: -1500000, margem: -5.5, compliance: 0 }, feedback: "RUÍNA DE PRECIFICAÇÃO. Você ignorou que a alíquota de saída do IBS/CBS é superior à soma dos tributos antigos. Os créditos não compensaram o imposto final, sangrando a margem brutalmente." },
-      { text: "Vetar a redução. Exigir o recálculo do Markup deduzindo os novos créditos da base de custo, mas aplicando a nova alíquota cheia (IVA) na formação do preço.", xp: 45, impacts: { caixa: 800000, margem: 2.5, compliance: 30 }, feedback: "MAESTRIA TRIBUTÁRIA. Você adaptou o DRE gerencial à nova realidade do IVA. O preço foi formado corretamente sobre o custo líquido, garantindo a proteção da margem." }
-    ]
-  },
-  {
-    id: 6, tier: 3, criticality: "Alta", points: 45, sector: "Controladoria / Orçamento",
-    title: "O Custo de Compliance na Transição Tributária",
-    theory: "O ADCT prevê um período de transição de 7 anos (2026 a 2032). As empresas apurarão simultaneamente os impostos antigos em proporções decrescentes e os novos em proporções crescentes. O custo sistêmico (ERP) para auditar dois mundos fiscais simultâneos é gigantesco.",
-    context: "Estamos elaborando o Orçamento Base Zero (OBZ). O gerente de TI solicita R$ 2 Milhões em capex para a implantação de um novo módulo de motor de cálculo tributário no ERP, além da contratação de uma consultoria especialista na transição.", character: "Diretoria de FP&A",
-    options: [
-      { text: "Reprovar o orçamento. Cortar o investimento e exigir que a contabilidade apure os dois sistemas utilizando planilhas eletrônicas (Excel) para economizar caixa.", xp: -40, impacts: { caixa: 2000000, margem: 0, compliance: -70 }, feedback: "COLAPSO OPERACIONAL E MULTAS. Economizar 2 Milhões hoje gerou o caos. Planilhas não suportam cruzamento de alíquotas fracionadas. As malhas finas bloquearão a empresa em meses." },
-      { text: "Aprovar integralmente o investimento. Encarar a atualização do ERP como custo indispensável de sobrevivência regulatória, amortizando a despesa ao longo da transição.", xp: 45, impacts: { caixa: -2000000, margem: -1.0, compliance: 60 }, feedback: "GOVERNANÇA PREVENTIVA. A dor no caixa foi pesada e imediata, mas você blindou a companhia contra o período mais caótico da história fiscal do país." }
-    ]
-  },
-  {
-    id: 7, tier: 4, criticality: "Extrema", points: 50, sector: "M&A / Engenharia Financeira",
-    title: "Alavancagem Ótima (WACC) em Leveraged Buyout",
-    theory: "O capital próprio (Ke) exige prêmio de risco superior. A dívida bancária (Kd) gera escudo fiscal (dedutibilidade dos juros). O Leveraged Buyout (LBO) estrutura aquisições usando dívida atrelada ao próprio ativo comprado para maximizar o ROE.",
-    context: "O conselho aprovou a aquisição de um concorrente vital por R$ 30 Milhões. A matriz possui liquidez livre. A taxa exigida pelos acionistas é de 19% a.a. Um sindicato de bancos oferece o financiamento a 11% a.a.", character: "Diretoria de Estratégia M&A",
-    options: [
-      { text: "Liquidar a aquisição 100% à vista utilizando o caixa próprio, publicando na imprensa a solidez da empresa por não precisar de financiamentos.", xp: -40, impacts: { caixa: -30000000, margem: -4.0, compliance: 0 }, feedback: "MIOPIA DE ALOCAÇÃO DE CAPITAL. Sangrou R$ 30M do balanço usando o capital mais caro da firma. O WACC subiu e o ROE despencou." },
-      { text: "Estruturar a transação em LBO: usar 30% do caixa como entrada e alavancar os 70% restantes no banco, travando os ativos da adquirida como garantia.", xp: 50, impacts: { caixa: -9000000, margem: 5.5, compliance: 10 }, feedback: "DOMÍNIO ABSOLUTO DE FINANÇAS. A aquisição custou apenas R$ 9M em caixa. Você capturou o escudo fiscal dos juros e explodiu o retorno sobre o capital investido." }
-    ]
-  },
-  {
-    id: 8, tier: 4, criticality: "Extrema", points: 50, sector: "Finanças Estruturadas",
-    title: "Covenants Financeiros e Risco de Cross Default",
-    theory: "Linhas de crédito internacionais exigem conformidade contínua de travas financeiras (Covenants). Romper a relação 'Dívida Líquida / Ebitda' aciona a quebra de contrato, permitindo aos credores declarar o vencimento antecipado e imediato do passivo.",
-    context: "A holding emitiu debêntures com um teto de Covenant estrito de 2,5x. O balanço trimestral fechou em 2,42x. Ignorando isso, a diretoria exige aprovar hoje uma campanha de aquisição de mercado que queimará R$ 12 Milhões à vista.", character: "Comitê de Relações com Investidores",
-    options: [
-      { text: "Aprovar a verba de marketing para não travar o crescimento, operando na esperança de que os bancos não executem a dívida em caso de leve estouro.", xp: -50, impacts: { caixa: -12000000, margem: -2.0, compliance: -60 }, feedback: "RISCO DE RUÍNA CONCRETIZADO. A queima de R$ 12M elevou a Dívida Líquida. O covenant estourou e os credores bloquearam as contas para execução sumária." },
-      { text: "Vetar a campanha categoricamente. Instituir um regime de retenção de liquidez até que o indicador recue para uma margem de segurança de 2,0x.", xp: 50, impacts: { caixa: 5500000, margem: 1.5, compliance: 40 }, feedback: "PROTEÇÃO FIDUCIÁRIA. Você enfrentou a diretoria, protegeu a solidez contratual perante o mercado e garantiu a sobrevivência do CNPJ." }
-    ]
-  }
-];
-
 export default function CodigoAzulGame() {
   // --- ESTADOS DE AUTENTICAÇÃO E ONBOARDING ---
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -181,10 +97,12 @@ export default function CodigoAzulGame() {
   const [sessionStartStats, setSessionStartStats] = useState({ caixa: 5000000, margem: 20.0 });
   const [currentBlackSwan, setCurrentBlackSwan] = useState<any>(null);
 
+  // --- MOTOR IA DINÂMICO ---
+  const [currentScenario, setCurrentScenario] = useState<any>(null);
+  const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
   const [currentStage, setCurrentStage] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
-  const [sessionScenarios, setSessionScenarios] = useState<any[]>([]);
   
   const [timeLeft, setTimeLeft] = useState(60);
   const [timeBonus, setTimeBonus] = useState(0);
@@ -204,7 +122,7 @@ export default function CodigoAzulGame() {
         data: { 
           playerName, phone: telefone, email: email.toLowerCase(),
           companyName, xp, caixa, margem, compliance, 
-          currentStage, sessionScenarios, sessionStartStats, showDRE 
+          currentStage, sessionStartStats, showDRE 
         }
       });
     } catch (e) {
@@ -216,19 +134,118 @@ export default function CodigoAzulGame() {
     setIsLoading(false);
   }, []);
 
+  // Salva no banco sempre que um turno termina
   useEffect(() => {
-    if (gameStarted && sessionScenarios.length > 0 && !isGameOver && !currentBlackSwan) {
+    if (gameStarted && !isGameOver && !currentBlackSwan) {
       saveToDB();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xp, caixa, margem, compliance, currentStage, gameStarted, sessionScenarios, isGameOver, showDRE, currentBlackSwan]);
+  }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE, currentBlackSwan]);
 
-  const generateSessionPool = (currentTier: number) => {
-    const eligibleScenarios = allScenarios.filter(s => 
-      s.tier === currentTier || (currentTier > 1 && s.tier === currentTier - 1) || (currentTier < 4 && s.tier === currentTier + 1)
-    );
-    return shuffleArray(eligibleScenarios.length > 0 ? eligibleScenarios : allScenarios).slice(0, 10);
+  const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
+
+  // --- MOTOR GERADOR DE CENÁRIOS IA ---
+  const fetchScenarioFromAI = async () => {
+    setIsGeneratingScenario(true);
+    setCurrentScenario(null);
+    setFeedback(null);
+    setIsProcessing(false);
+    setTimeLeft(60); // Reseta o timer enquanto gera
+
+    const temasPorTier: any = {
+      1: "Tesouraria, Contas a Pagar/Receber, Capital de Giro, Retenções Simples (EC 103), Conciliação.",
+      2: "Custeio ABC, Margem de Contribuição, Provisões de PDD (IFRS 9), Vesting de RH, Orçamento Base Zero.",
+      3: "CPC 33 (Passivo Atuarial), Compliance SoD, IFRS 15 (Receita), Reforma Tributária (IVA Dual, IBS/CBS, Transição).",
+      4: "M&A, LBO (Leveraged Buyout), Covenants Restritivos, Imposto Seletivo, Migração de Risco Atuarial (BD para CD)."
+    };
+
+    const temaNivel = temasPorTier[currentLevel.tier] || temasPorTier[1];
+
+    const prompt = `Você é o arquiteto do simulador de negócios 'Código Azul'. Crie um cenário corporativo inédito, altamente técnico, complexo e realista em formato JSON ESTRITO.
+    O jogador atual atua como: ${currentLevel.title} (Tier ${currentLevel.tier}).
+    A empresa se chama: ${companyName}.
+    Temas obrigatórios para este nível: ${temaNivel}. Escolha 1 ou 2 temas para aprofundar.
+    
+    Atenção: O campo 'theory' deve ser denso, com vocabulário de 'alta gestão' e referenciar explicitamente normas (CPCs, IFRS, EC 132/Reforma Tributária, CVM, BCB).
+    
+    Você deve fornecer exatamente 2 opções de decisão. 
+    Uma opção DEVE ser ESTRATEGICAMENTE CORRETA (xp positivo, ex: 35) com impactos favoráveis de médio/longo prazo no caixa, margem ou compliance.
+    A outra opção DEVE ser UMA ARMADILHA COMUM DE GESTÃO (xp negativo, ex: -30) que resolve algo rápido mas destrói a empresa (impactos negativos drásticos no caixa, margem ou compliance).
+
+    O JSON final deve obedecer EXATAMENTE esta estrutura, sem crases Markdown (como \`\`\`json) e sem quebras de linha fora das strings:
+    {
+      "sector": "Nome do Setor Auditado",
+      "criticality": "Alta",
+      "title": "Título Dramático do Problema",
+      "theory": "Texto longo, técnico e denso com a base teórica e regulatória da situação...",
+      "context": "Contexto do problema que explodiu na empresa agora...",
+      "character": "Nome do Comitê ou Diretor cobrando a ação",
+      "options": [
+        {
+          "text": "Ação detalhada A...",
+          "xp": 40,
+          "impacts": { "caixa": 1500000, "margem": 2.5, "compliance": 10 },
+          "feedback": "Parecer longo explicando por que a decisão foi brilhante ou desastrosa."
+        },
+        {
+          "text": "Ação detalhada B...",
+          "xp": -40,
+          "impacts": { "caixa": -2500000, "margem": -4.0, "compliance": -30 },
+          "feedback": "Parecer longo explicando por que a decisão foi brilhante ou desastrosa."
+        }
+      ]
+    }`;
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7 }
+        })
+      });
+
+      if (!response.ok) throw new Error("Erro na API do Gemini");
+
+      const data = await response.json();
+      let aiText = data.candidates[0].content.parts[0].text;
+      
+      // Limpeza de Markdown indesejado que a IA possa enviar
+      aiText = aiText.replace(/```json/g, "").replace(/```/g, "").trim();
+
+      const parsedScenario = JSON.parse(aiText);
+      
+      // Embaralha as opções para não viciar a resposta (a certa nunca ficará sempre na mesma posição)
+      parsedScenario.options = shuffleArray(parsedScenario.options);
+      
+      setCurrentScenario(parsedScenario);
+    } catch (error) {
+      console.error("Falha ao gerar cenário IA:", error);
+      // Fallback seguro de emergência em caso de queda da API
+      setCurrentScenario({
+        sector: "Compliance & TI", criticality: "Extrema", title: "Falha de Conexão com Servidor CVM",
+        theory: "O fluxo contínuo de dados exige contingência constante.",
+        context: "A comunicação com o Data Center Central (IA) sofreu timeout. Tome uma decisão operacional imediata.",
+        character: "Auditoria Sistêmica",
+        options: shuffleArray([
+          { text: "Acionar os protocolos de contingência manuais e reestabelecer o ciclo.", xp: 20, impacts: { caixa: 0, margem: 0, compliance: 10 }, feedback: "Eficiência tática. Sistema restabelecido." },
+          { text: "Parar a empresa até que a TI global resolva o problema.", xp: -20, impacts: { caixa: -100000, margem: -1.0, compliance: -10 }, feedback: "Operação parada perde margem. Decisão ineficiente." }
+        ])
+      });
+    } finally {
+      setIsGeneratingScenario(false);
+    }
   };
+
+  // Aciona a IA sempre que a fase avança e precisa de uma nova questão
+  useEffect(() => {
+    if (gameStarted && !isGameOver && !showDRE && !feedback && !promotionPending && !currentBlackSwan && !currentScenario && !isGeneratingScenario) {
+      fetchScenarioFromAI();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameStarted, currentStage, isGameOver, showDRE, feedback, promotionPending, currentBlackSwan, currentScenario, isGeneratingScenario]);
+
 
   // --- CONTROLE DE AUTENTICAÇÃO ---
   const handleAuth = async (e: React.FormEvent) => {
@@ -260,9 +277,10 @@ export default function CodigoAzulGame() {
             setCompanyName(d.companyName);
             setXp(d.xp || 0); 
             setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
-            setCurrentStage(d.currentStage || 0); setSessionScenarios(d.sessionScenarios || []);
+            setCurrentStage(d.currentStage || 0); 
             setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
             setShowDRE(d.showDRE || false);
+            setCurrentScenario(null); // Vai forçar a geração de um cenário novo
             
             if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
             setGameStarted(true);
@@ -275,21 +293,20 @@ export default function CodigoAzulGame() {
         if (docSnap.exists()) {
           setAuthError("E-mail já cadastrado na base. Faça login.");
         } else {
-          const initialPool = generateSessionPool(1);
           await setDoc(docRef, {
             password: cleanPassword,
             data: { 
               playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail,
               companyName: "", xp: 0, 
               caixa: 5000000, margem: 20.0, compliance: 100, 
-              currentStage: 0, sessionScenarios: initialPool,
+              currentStage: 0,
               sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
             }
           });
           
           setPlayerName(nome.trim());
           setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-          setCurrentStage(0); setSessionScenarios(initialPool);
+          setCurrentStage(0); 
           setSessionStartStats({ caixa: 5000000, margem: 20.0 });
           
           setPlayerNameInput(nome.trim());
@@ -311,6 +328,7 @@ export default function CodigoAzulGame() {
     setCompanyName(companyNameInput.trim());
     setPlayerName(playerNameInput.trim());
     setNeedsCompanySetup(false);
+    setCurrentScenario(null);
     setTimeLeft(60); 
     setGameStarted(true); 
     setIsGameOver(false); 
@@ -321,7 +339,7 @@ export default function CodigoAzulGame() {
     if(gameStarted && !isGameOver) await saveToDB();
     setGameStarted(false); setNeedsCompanySetup(false);
     setEmail(""); setPassword(""); setAuthError(""); setNome(""); setTelefone("");
-    setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentBlackSwan(null);
+    setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentBlackSwan(null); setCurrentScenario(null);
   };
 
   const handleManualSave = async () => {
@@ -330,9 +348,8 @@ export default function CodigoAzulGame() {
 
   const handleResetCareer = () => {
     if (confirm("Confirma a liquidação da empresa? Seu histórico no Cloud Database será reiniciado.")) {
-      const initialPool = generateSessionPool(1);
       setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-      setCurrentStage(0); setSessionScenarios(initialPool);
+      setCurrentStage(0); setCurrentScenario(null);
       setSessionStartStats({ caixa: 5000000, margem: 20.0 });
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); setCurrentBlackSwan(null);
       setGameStarted(false);
@@ -342,33 +359,31 @@ export default function CodigoAzulGame() {
     }
   };
 
-  // --- MECÂNICA DE JOGO ---
-  const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
+  // --- MECÂNICA DE TEMPO ---
   const nextLevel = levels.find(l => l.minXp > xp);
   const progressToNext = nextLevel ? ((xp - currentLevel.minXp) / (nextLevel.minXp - currentLevel.minXp)) * 100 : 100;
 
   useEffect(() => {
-    if (!gameStarted || feedback || promotionPending || isGameOver || showDRE || currentBlackSwan || !currentLevel.hasTimer || timeLeft <= 0) return;
+    if (!gameStarted || feedback || promotionPending || isGameOver || showDRE || currentBlackSwan || !currentScenario || isGeneratingScenario || !currentLevel.hasTimer || timeLeft <= 0) return;
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [gameStarted, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, timeLeft, currentLevel.hasTimer]);
+  }, [gameStarted, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, currentScenario, isGeneratingScenario, timeLeft, currentLevel.hasTimer]);
 
   useEffect(() => {
-    if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && !currentBlackSwan && gameStarted && currentLevel.hasTimer) {
+    if (timeLeft === 0 && !feedback && !promotionPending && !isGameOver && !showDRE && !currentBlackSwan && currentScenario && gameStarted && currentLevel.hasTimer) {
       const timeoutImpacts = { caixa: -500000, margem: -1.5, compliance: -10 };
       handleChoice(-15, "TEMPO ESGOTADO. Hesitação corporativa sob fogo inimigo destrói liquidez e afasta investidores.", true, timeoutImpacts);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, gameStarted, currentLevel.hasTimer]);
+  }, [timeLeft, feedback, promotionPending, isGameOver, showDRE, currentBlackSwan, currentScenario, gameStarted, currentLevel.hasTimer]);
 
-  // --- MENTORIA IA (INTEGRAÇÃO GEMINI API) ---
+  // --- MENTORIA IA (CHAT INTEGRADO) ---
   const handleConsultoriaIA = async () => {
-    if (caixa < 50000 || isProcessing || isGameOver) return;
+    if (caixa < 50000 || isProcessing || isGameOver || !currentScenario) return;
     setIsProcessing(true);
     
-    const scenario = sessionScenarios[currentStage];
-    // Identifica a opção correta nativa para pontuar o jogador mesmo com a resposta da IA
-    const correctOption = scenario.options.reduce((prev: any, curr: any) => (prev.xp > curr.xp) ? prev : curr);
+    // Identifica qual é a opção correta para pontuar e aplicar o impacto
+    const correctOption = currentScenario.options.reduce((prev: any, curr: any) => (prev.xp > curr.xp) ? prev : curr);
     
     const combinedImpacts = {
       caixa: (correctOption.impacts?.caixa || 0) - 50000, // Custo da consultoria debitado
@@ -377,25 +392,18 @@ export default function CodigoAzulGame() {
     };
 
     try {
-      // PROMPT ENGINEERING DA IA (IDENTIDADE PEDRO MONTE)
-      const prompt = `Você é Pedro Monte, o melhor estrategista de negócios e mentor financeiro do Brasil. Sua linguagem é de 'Dono para Dono', técnica, firme e focada em dar um 'choque de realidade' sobre a dor do caixa e margem. O jogador pagou R$ 50.000 virtuais pela sua consultoria.
-      
-      CENÁRIO DA EMPRESA:
-      - Setor do Desafio: ${scenario.sector}
-      - Problema Atual: ${scenario.context}
-      
-      OPÇÕES QUE O JOGADOR TEM NA TELA:
-      1) ${scenario.options[0].text}
-      2) ${scenario.options[1].text}
-      
-      Sua missão: Dê um parecer executivo rápido (máximo 3 parágrafos curtos). Seja implacável. Diga qual opção é a correta (sem mencionar o número da opção, explique a ação) e o porquê financeiramente. Use termos como Ebitda, Covenants, FCF se aplicável. Finalize com a frase de comando: "CÓDIGO AZUL."`;
+      const prompt = `Você é Pedro Monte, Estrategista de Negócios. O jogador pagou R$ 50.000 virtuais pela sua consultoria no jogo 'Código Azul'.
+      Cenário: ${currentScenario.context}
+      Opção Correta que o jogador deve tomar: ${correctOption.text}
+      Feedback que você deve elaborar em cima: ${correctOption.feedback}
+      Sua missão: Escreva um conselho curto, de 'Dono para Dono', dando um choque de realidade técnico e financeiro. Diga claramente ao jogador o que ele deve fazer, referenciando a opção correta de forma indireta e termine com "CÓDIGO AZUL."`;
 
-      // Chamada direta para a API do Google Gemini
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.8 }
         })
       });
 
@@ -404,11 +412,10 @@ export default function CodigoAzulGame() {
       const data = await response.json();
       const aiFeedback = data.candidates[0].content.parts[0].text;
 
-      handleChoice(correctOption.xp, `🤖 MENTORIA PEDRO MONTE (Honorários: R$ 50k debitados):\n\n${aiFeedback}`, false, combinedImpacts);
+      handleChoice(correctOption.xp, `🤖 MENTORIA PEDRO MONTE (R$ 50k debitados via IA):\n\n${aiFeedback}`, false, combinedImpacts);
 
     } catch (error) {
       console.error(error);
-      // Fallback para a resposta estática caso a API falhe (ex: limite de cota)
       handleChoice(correctOption.xp, `💡 PARECER TÉCNICO (Fallback Seguro - R$ 50k): ${correctOption.feedback}`, false, combinedImpacts);
     }
   };
@@ -459,10 +466,11 @@ export default function CodigoAzulGame() {
 
   const proceedToNextQuestion = () => {
     setPromotionPending(false); setPromotedLevel(null); setFeedback(null);
-    setLastXpChange(null); setTimeBonus(0); setTimeLeft(60); setLastImpacts(null);
+    setLastXpChange(null); setTimeBonus(0); setLastImpacts(null);
     setIsProcessing(false);
+    setCurrentScenario(null); // Define como nulo para forçar a IA a gerar um novo
 
-    if (currentStage < sessionScenarios.length - 1) {
+    if (currentStage < 9) { // 10 rodadas por bateria (0 a 9)
       if (Math.random() < 0.20 && currentLevel.tier >= 2) {
         const randomSwan = blackSwans[Math.floor(Math.random() * blackSwans.length)];
         setCurrentBlackSwan(randomSwan);
@@ -496,9 +504,8 @@ export default function CodigoAzulGame() {
   const handleStartNewQuarter = () => {
     setShowDRE(false);
     setSessionStartStats({ caixa, margem });
-    const newPool = generateSessionPool(currentLevel.tier);
     setCurrentStage(0);
-    setSessionScenarios(newPool);
+    setCurrentScenario(null); // Força a IA a gerar novos cenários para o novo ciclo
   };
 
   const caixaBarFill = Math.min(100, (caixa / 15000000) * 100);
@@ -523,25 +530,11 @@ export default function CodigoAzulGame() {
           <form onSubmit={handleCompanySubmit} className="space-y-5">
             <div className="space-y-1 text-left">
               <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Nome da Corporação</label>
-              <input 
-                type="text" 
-                value={companyNameInput} 
-                onChange={(e) => setCompanyNameInput(e.target.value)} 
-                placeholder="Ex: Nexus Corp, Indústria Alfa..." 
-                className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" 
-                required 
-              />
+              <input type="text" value={companyNameInput} onChange={(e) => setCompanyNameInput(e.target.value)} placeholder="Ex: Nexus Corp, Indústria Alfa..." className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" required />
             </div>
             <div className="space-y-1 text-left">
               <label className="text-[10px] text-slate-400 uppercase tracking-widest font-mono pl-1">Seu Nome no Crachá</label>
-              <input 
-                type="text" 
-                value={playerNameInput} 
-                onChange={(e) => setPlayerNameInput(e.target.value)} 
-                placeholder="Ex: Pedro Monte, Sr. Diretor..." 
-                className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" 
-                required 
-              />
+              <input type="text" value={playerNameInput} onChange={(e) => setPlayerNameInput(e.target.value)} placeholder="Ex: Pedro Monte, Sr. Diretor..." className="w-full bg-[#020617]/50 border border-cyan-800/50 rounded-lg px-4 py-3 text-sm text-cyan-50 placeholder-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all" required />
             </div>
             <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-mono tracking-widest py-4 px-4 rounded-lg transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] uppercase mt-4">
               Iniciar Operação
@@ -566,22 +559,12 @@ export default function CodigoAzulGame() {
               <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
             </div>
             <h1 className="text-2xl font-light text-slate-200 tracking-[0.2em] uppercase">Código <span className="font-semibold text-cyan-400">Azul</span></h1>
-            <p className="text-slate-500 text-[9px] tracking-[0.3em] mt-1 uppercase font-mono">SaaS Fiduciário Corporativo</p>
+            <p className="text-slate-500 text-[9px] tracking-[0.3em] mt-1 uppercase font-mono">Motor Adaptativo por IA</p>
           </div>
 
           <div className="flex bg-[#020617]/50 rounded-lg p-1 mb-6 border border-white/5">
-            <button 
-              onClick={() => { setAuthMode('login'); setAuthError(""); }}
-              className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'login' ? 'bg-cyan-900/50 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}
-            >
-              Acessar
-            </button>
-            <button 
-              onClick={() => { setAuthMode('register'); setAuthError(""); }}
-              className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'register' ? 'bg-cyan-900/50 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}
-            >
-              Criar Conta
-            </button>
+            <button onClick={() => { setAuthMode('login'); setAuthError(""); }} className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'login' ? 'bg-cyan-900/50 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}>Acessar</button>
+            <button onClick={() => { setAuthMode('register'); setAuthError(""); }} className={`flex-1 py-2 text-[10px] font-mono tracking-widest uppercase rounded-md transition-all ${authMode === 'register' ? 'bg-cyan-900/50 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}>Criar Conta</button>
           </div>
 
           <form onSubmit={handleAuth} className="space-y-4">
@@ -642,7 +625,7 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DRE GAMIFICADO ---
+  // --- TELA DRE GAMIFICADO (FECHAMENTO DE TRIMESTRE) ---
   if (showDRE) {
     const deltaCaixa = caixa - sessionStartStats.caixa;
     const deltaMargem = margem - sessionStartStats.margem;
@@ -733,8 +716,17 @@ export default function CodigoAzulGame() {
     );
   }
 
-  const scenario = sessionScenarios[currentStage];
-  if (!scenario) return null;
+  // --- TELA DE CARREGAMENTO (GERAÇÃO DE IA) ---
+  if (isGeneratingScenario || !currentScenario) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        <div className="w-16 h-16 border-4 border-cyan-900 border-t-cyan-500 rounded-full animate-spin mb-6"></div>
+        <h2 className="text-cyan-400 font-mono text-[10px] tracking-[0.3em] uppercase animate-pulse">Sintetizando Cenário Técnico via Inteligência Artificial...</h2>
+        <p className="text-slate-600 font-mono text-[9px] tracking-widest mt-2 uppercase">Ajustando dificuldade para: {currentLevel.title}</p>
+      </div>
+    );
+  }
+
   const timerColor = timeLeft > 30 ? 'bg-cyan-500' : timeLeft > 15 ? 'bg-amber-500' : 'bg-red-500';
 
   return (
@@ -743,7 +735,7 @@ export default function CodigoAzulGame() {
       
       <div className="max-w-5xl mx-auto space-y-4 relative z-10">
         
-        {/* HUD FINANCEIRO */}
+        {/* HUD FINANCEIRO: SINAIS VITAIS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 bg-[#0f172a]/80 backdrop-blur-md p-5 rounded-xl border border-white/5 shadow-lg">
           <div className="flex flex-col">
             <div className="flex justify-between items-baseline mb-1">
@@ -801,7 +793,7 @@ export default function CodigoAzulGame() {
           </div>
         </header>
 
-        {/* PAINEL DE OPERAÇÕES PRINCIPAL */}
+        {/* PAINEL DE OPERAÇÕES PRINCIPAL GERADO PELA IA */}
         {!feedback ? (
           <main className="bg-[#0f172a]/40 backdrop-blur-xl p-6 md:p-10 rounded-2xl border border-white/5 shadow-2xl relative">
             {currentLevel.hasTimer ? (
@@ -813,33 +805,33 @@ export default function CodigoAzulGame() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-white/5 pb-4 mt-2">
               <div>
                 <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2">
-                  <span className="text-cyan-600 font-mono text-[10px] uppercase tracking-[0.2em] font-semibold">{scenario.sector}</span>
+                  <span className="text-cyan-600 font-mono text-[10px] uppercase tracking-[0.2em] font-semibold">{currentScenario.sector}</span>
                   <span className="hidden md:inline text-slate-600 font-mono text-[9px]">•</span>
-                  <span className={`text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border ${scenario.criticality === 'Extrema' ? 'border-red-500/40 text-red-400 bg-red-950/20' : scenario.criticality === 'Alta' ? 'border-amber-500/40 text-amber-400 bg-amber-950/20' : scenario.criticality === 'Média' ? 'border-cyan-500/40 text-cyan-400 bg-cyan-950/20' : 'border-slate-600/40 text-slate-400 bg-slate-900/30'}`}>
-                    Risco: {scenario.criticality}
+                  <span className={`text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border ${currentScenario.criticality === 'Extrema' ? 'border-red-500/40 text-red-400 bg-red-950/20' : currentScenario.criticality === 'Alta' ? 'border-amber-500/40 text-amber-400 bg-amber-950/20' : currentScenario.criticality === 'Média' ? 'border-cyan-500/40 text-cyan-400 bg-cyan-950/20' : 'border-slate-600/40 text-slate-400 bg-slate-900/30'}`}>
+                    Risco: {currentScenario.criticality}
                   </span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-light text-slate-100 tracking-wide">{scenario.title}</h2>
+                <h2 className="text-xl md:text-2xl font-light text-slate-100 tracking-wide">{currentScenario.title}</h2>
               </div>
               <span className="text-slate-500 text-[10px] font-mono tracking-widest uppercase border border-slate-700/50 bg-[#020617]/50 px-3 py-1.5 rounded-md whitespace-nowrap">
-                Fase {currentStage + 1}/{sessionScenarios.length}
+                Fase {currentStage + 1}/10
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-[#020617]/40 p-5 rounded-xl border border-white/5">
                 <h3 className="text-[10px] font-mono text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2 border-b border-white/5 pb-2"><span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span> Marco Normativo / Teoria</h3>
-                <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{scenario.theory}</p>
+                <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{currentScenario.theory}</p>
               </div>
               <div className="bg-[#020617]/40 p-5 rounded-xl border border-white/5 relative overflow-hidden">
                 <h3 className="text-[10px] font-mono text-amber-600 uppercase tracking-widest mb-3 flex items-center gap-2 border-b border-white/5 pb-2 relative z-10"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Contexto Corporativo (Field)</h3>
-                <p className="text-slate-200 text-[13px] font-light leading-relaxed text-justify relative z-10">{scenario.context}</p>
+                <p className="text-slate-200 text-[13px] font-light leading-relaxed text-justify relative z-10">{currentScenario.context}</p>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.3em] mb-3 text-center">Definição do C-Level</h3>
-              {scenario.options.map((option: any, index: number) => (
+              <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.3em] mb-3 text-center">Definição do C-Level ({currentScenario.character})</h3>
+              {currentScenario.options.map((option: any, index: number) => (
                 <button
                   key={index}
                   disabled={isProcessing}
@@ -851,14 +843,13 @@ export default function CodigoAzulGame() {
                 </button>
               ))}
 
-              {/* BOTÃO LIFELINE: CONSULTORIA PREMIUM (GEMINI API) */}
               <div className="pt-6 border-t border-white/5 mt-6">
                 <button
                   disabled={isProcessing || caixa < 50000}
                   onClick={handleConsultoriaIA}
                   className={`w-full text-center p-4 rounded-xl border transition-all font-mono text-[10px] tracking-[0.2em] uppercase flex justify-center items-center gap-2 ${isProcessing || caixa < 50000 ? 'bg-slate-900/30 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-amber-950/20 border-amber-800/50 text-amber-500 hover:bg-amber-900/40 hover:border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.05)] hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]'}`}
                 >
-                  {isProcessing ? '🤖 PROCESSANDO CÁLCULO ESTRATÉGICO DA IA...' : '🤖 ACIONAR IA MENTORIA PEDRO MONTE (DEBITA R$ 50K)'}
+                  {isProcessing ? '🤖 PROCESSANDO PARECER TÉCNICO...' : '🤖 ACIONAR IA MENTORIA PEDRO MONTE (DEBITA R$ 50K)'}
                 </button>
               </div>
             </div>
