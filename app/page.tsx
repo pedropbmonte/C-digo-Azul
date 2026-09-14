@@ -54,6 +54,49 @@ const levels = [
   { tier: 4, title: "CEO / Board Member", minXp: 2600, hasTimer: true, feedback: { forca: "Visão sistêmica institucional plena e liderança sobre o valor de mercado (Market Cap).", vulnerabilidade: "O desafio é a perpetuidade institucional diante de transformações regulatórias seculares e crises geopolíticas." } }
 ];
 
+// --- BANCO DE FALLBACKS ROTATIVOS DE ELITE (Garante variedade caso a API oscile) ---
+const eliteFallbacks = [
+  {
+    sector: "Controladoria Societária & IFRS 9",
+    criticality: "Extrema",
+    title: "Reconhecimento de Perdas Esperadas (PECLD) e Impacto no Ebitda",
+    theory: "Conforme o pronunciamento técnico CPC 48 / IFRS 9, a mensuração de ativos financeiros exige a modelagem prospectiva de perdas de crédito esperadas (Expected Credit Losses - ECL), substituindo o modelo antigo de perdas incorridas. Postergar o reconhecimento de provisões de inadimplência em carteiras de alta exposição configura grave distorção contábil, maquiando o Ebitda trimestral e gerando ressalvas severas em auditorias independentes da CVM.",
+    context: "O setor comercial fechou o trimestre com expansão agressiva de vendas a prazo para grandes redes de varejo em recuperação judicial silenciosa. Para blindar o bônus da diretoria, a contabilidade evitou constituir a PECLD de R$ 1,8 Milhão. A auditoria externa identificou o viés e ameaça travar o parecer de balanço em 48 horas.",
+    character: "Auditoria Independente & Comitê de Auditoria",
+    options: shuffleArray([
+      { id: "A", text: "Acatar imediatamente a exigência da auditoria, constituir a PECLD integral contra o resultado do período e refazer a nota explicativa de risco de crédito.", xp: 40, isBest: true, impacts: { caixa: 0, margem: -2.5, compliance: 25 }, feedback: "EXCELÊNCIA EM GOVERNANÇA. Você aceitou o impacto temporário na margem contábil para blindar o CNPJ contra fraudes e ressalvas legais da CVM." },
+      { id: "B", text: "Negociar com a auditoria o provisionamento fatiado em 12 meses para diluir o impacto negativo no resultado operacional do trimestre corrente.", xp: 10, isBest: false, impacts: { caixa: 0, margem: -0.8, compliance: -10 }, feedback: "COMPROMETIMENTO ÉTICO DÚBIO. Soluções contábeis flexíveis mal vistas pela governança enfraquecem o compliance perante o mercado." },
+      { id: "C", text: "Substituir a empresa de auditoria por uma firma menor que aceite certificar o balanço sem o provisionamento integral da carteira.", xp: -50, isBest: false, impacts: { caixa: -500000, margem: 0, compliance: -50 }, feedback: "CRIME SOCIETÁRIO E FRAUDE. Essa conduta configura manipulação de demonstrações contábeis, sujeitando executivos a inabilitação e processos penais." }
+    ])
+  },
+  {
+    sector: "Engenharia Fiscal & Reforma Tributária (EC 132)",
+    criticality: "Alta",
+    title: "Transição para o IVA Dual (CBS e IBS) e Gestão de Créditos Acumulados",
+    theory: "A Emenda Constitutional 132 instituiu o IVA Dual (CBS federal e IBS estadual/municipal), operando sob o princípio da não cumulatividade plena. No entanto, o período de transição exige o controle simultâneo dos créditos dos tributos antigos (PIS/COFINS/ICMS) e dos novos extratos. Acúmulo de créditos não homologados e falhas na apuração digital causam desequilíbrio no capital de giro devido ao descasamento temporal de restituição.",
+    context: "Sua indústria pesada possui uma montanha de créditos tributários acumulados não recuperados. O Diretor Comercial quer reduzir o preço final do produto em 12% sob a premissa de que 'o novo IVA vai compensar tudo automaticamente', sem calcular a trava financeira de caixa dos próximos 18 meses.",
+    character: "Comitê Tributário Executivo",
+    options: shuffleArray([
+      { id: "A", text: "Vetar a redução de preço, auditar a base de créditos acumulados via ERP e estruturar monetização com securitização ou compensação tributária estrito senso.", xp: 40, isBest: true, impacts: { caixa: 1500000, margem: 2.0, compliance: 20 }, feedback: "MAESTRIA TRIBUTÁRIA. Você protegeu a liquidez e evitou o colapso de caixa decorrente da transição para o IVA Dual." },
+      { id: "B", text: "Aprovar a redução parcial de 6% e deixar a apuração dos créditos a cargo da contabilidade rotineira sem consultoria especializada.", xp: 10, isBest: false, impacts: { caixa: -600000, margem: -1.0, compliance: -5 }, feedback: "MIOPIA OPERACIONAL. A margem ficou apertada e os créditos continuaram travados no Fisco." },
+      { id: "C", text: "Seguir a sugestão integral do comercial e cortar o preço em 12%, compensando a falta de caixa com atraso no recolhimento de tributos federais.", xp: -45, isBest: false, impacts: { caixa: -1800000, margem: -3.5, compliance: -40 }, feedback: "SUICÍDIO FISCAL. Inadimplência tributária deliberada gera crimes contra a ordem tributária e execuções fiscais sumárias." }
+    ])
+  },
+  {
+    sector: "Finanças Corporativas & M&A (WACC e Covenants)",
+    criticality: "Extrema",
+    title: "Alavancagem Financeira e Risco de Vencimento Antecipado de Dívida",
+    theory: "O Custo Médio Ponderado de Capital (WACC) equilibra o custo do capital próprio (Ke) e de terceiros (Kd). Embora a dívida traga escudos fiscais valiosos via dedutibilidade de juros, o excesso de alavancagem sem cobertura de fluxo de caixa livre (FCF) estira os índices de endividamento (Dívida Líquida / Ebitda), violando os Covenants contratuais e ativando cláusulas de Cross Default imediato.",
+    context: "Para comprar um concorrente menor, a holding contraiu R$ 30 Milhões em debêntures com covenants estritos de alavancagem (teto de 2,5x). Devido à queda nas vendas, o indicador fechou em 2,8x. O sindicato de bancos credores exige o aporte imediato de garantias adicionais ou o vencimento antecipado da dívida em 5 dias úteis.",
+    character: "Diretoria de Relações com Investidores (RI)",
+    options: shuffleArray([
+      { id: "A", text: "Iniciar imediatamente o waiver negotiation com os debenturistas, oferecendo um pacote de garantias reais e plano de desinvestimento de ativos não operacionais.", xp: 45, isBest: true, impacts: { caixa: -500000, margem: 1.0, compliance: 30 }, feedback: "NEGOCIAÇÃO DE ELITE. Você conduziu o waiver técnico com transparência, blindando a companhia contra a execução sumária das dívidas." },
+      { id: "B", text: "Ocultar temporariamente a variação do índice no relatório trimestral e aguardar a recuperação sazonal do próximo trimestre.", xp: -50, isBest: false, impacts: { caixa: 0, margem: 0, compliance: -60 }, feedback: "QUEBRA FIDUCIÁRIA GRAVÍSSIMA. Fraudar covenants contratuais ativa o Cross Default global, implodindo a credibilidade da empresa no mercado de capitais." },
+      { id: "C", text: "Emitir novas debêntures a taxas de mercado punitivas (juros de 22% ao ano) para pagar a dívida antiga sem reestruturar a operação.", xp: -35, isBest: false, impacts: { caixa: -2000000, margem: -4.5, compliance: -15 }, feedback: "BOLA DE NEVE INSUSTENTÁVEL. Substituir dívida barata por dívida agiota acelera a insolvência definitiva da corporação." }
+    ])
+  }
+];
+
 export default function CodigoAzulGame() {
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [email, setEmail] = useState("");
@@ -74,13 +117,13 @@ export default function CodigoAzulGame() {
   const [gameStarted, setGameStarted] = useState(false);
   
   const [xp, setXp] = useState(0);
-  const [caixa, setCaixa] = useState(5000000);
-  const [margem, setMargem] = useState(20.0);
+  const [caixa, setCaixa] = useState(7000000); // Iniciando com R$ 7 Milhões conforme print
+  const [margem, setMargem] = useState(22.0); // 22% conforme print
   const [compliance, setCompliance] = useState(100);
   const [isGameOver, setIsGameOver] = useState(false);
   const [lastImpacts, setLastImpacts] = useState<any>(null);
   const [showDRE, setShowDRE] = useState(false);
-  const [sessionStartStats, setSessionStartStats] = useState({ caixa: 5000000, margem: 20.0 });
+  const [sessionStartStats, setSessionStartStats] = useState({ caixa: 7000000, margem: 22.0 });
 
   // --- MOTOR IA ESCOLA DE ESTRATEGISTAS ---
   const [currentScenario, setCurrentScenario] = useState<any>(null);
@@ -88,7 +131,7 @@ export default function CodigoAzulGame() {
   const [supplementaryComment, setSupplementaryComment] = useState(""); 
   const [isEvaluatingChoice, setIsEvaluatingChoice] = useState(false);
 
-  const [currentStage, setCurrentStage] = useState(0);
+  const [currentStage, setCurrentStage] = useState(0); // 0 a 9 (Questão 1 a 10)
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
   
@@ -123,14 +166,14 @@ export default function CodigoAzulGame() {
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- GERAÇÃO DE CASO COM STRING PURIFICADA ---
+  // --- GERAÇÃO BLINDADA DE CASOS PRÁTICOS (Com Fallback Rotativo Inteligente) ---
   const fetchScenarioFromAI = async (stageNum: number) => {
     setIsGeneratingScenario(true);
     setFeedback(null);
     setSupplementaryComment("");
     setTimeLeft(120);
 
-    const promptText = "Você é o reitor sênior da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático inédito para a fase " + (stageNum + 1) + " de 10, com profundidade teórica extrema, citando CPCs, IFRS ou normas tributárias aplicáveis ao nível " + currentLevel.title + ". A empresa se chama " + companyName + " com Caixa R$ " + caixa + ", Margem " + margem + "% e Compliance " + compliance + "%. Retorne APENAS um JSON estrito, sem formatação markdown, contendo: sector, criticality, title, theory (longo e normativo), context (problema real), character (autoridade), e options (array com 3 objetos contendo id, text, xp, isBest, impacts {caixa, margem, compliance}, feedback).";
+    const promptText = "Você é o reitor sênior da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático inédito de altíssimo nível acadêmico (Fase " + (stageNum + 1) + " de 10) para um aluno no nível " + currentLevel.title + ". A empresa se chama " + companyName + " com Caixa R$ " + caixa + ", Margem " + margem + "% e Compliance " + compliance + "%. O caso deve focar em finanças corporativas avançadas, contabilidade societária, IFRS, CPC ou governança. Retorne APENAS um JSON estrito, sem formatação markdown, contendo: sector (string), criticality (string), title (string), theory (string longa e acadêmica com mínimo de 6 linhas citando normas), context (string com situação real no CNPJ), character (string), e options (array com 3 objetos contendo id, text, xp (número), isBest (boolean), impacts {caixa, margem, compliance}, feedback (string)).";
 
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -138,6 +181,8 @@ export default function CodigoAzulGame() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { temperature: 0.95 } })
       });
+
+      if (!response.ok) throw new Error("Falha na API");
 
       const data = await response.json();
       let aiText = data.candidates[0].content.parts[0].text;
@@ -148,31 +193,25 @@ export default function CodigoAzulGame() {
       
       setCurrentScenario(parsedScenario);
     } catch (error) {
-      console.error("Erro ao gerar cenário da IA:", error);
-      setCurrentScenario({
-        sector: "Controladoria & Solvência",
-        criticality: "Extrema",
-        title: "Gestão Estratégica de Capital de Giro",
-        theory: "O Ciclo de Conversão de Caixa (CCC) regula a solvência patrimonial conforme o CPC 00. Descasamentos de prazos exigem capital de giro estressado que corrói o FCF livre.",
-        context: "Sua empresa apresentou desalinhamento nas contas a pagar e receber, exigindo intervenção direta do CFO.",
-        character: "Comitê de Tesouraria",
-        options: shuffleArray([
-          { id: "A", text: "Travar crédito e antecipar recebíveis seletivos.", xp: 35, isBest: true, impacts: { caixa: 1000000, margem: 1.0, compliance: 10 }, feedback: "Correto. Protegeu a liquidez com inteligência de spread." },
-          { id: "B", text: "Cobrir com cheque especial rotativo caro.", xp: 10, isBest: false, impacts: { caixa: 1000000, margem: -2.0, compliance: 0 }, feedback: "Paliativo caro que corroeu a margem." },
-          { id: "C", text: "Ignorar o buraco e vender mais a prazo.", xp: -40, isBest: false, impacts: { caixa: -2000000, margem: -5.0, compliance: -20 }, feedback: "Desastroso. Acelerou a falência." }
-        ])
-      });
+      console.warn("Usando banco rotativo de elite devido a oscilação da API:", error);
+      // Pega um fallback diferente baseado no estágio atual para NUNCA repetir o mesmo cenário
+      const fallbackIndex = stageNum % eliteFallbacks.length;
+      const selectedFallback = { ...eliteFallbacks[fallbackIndex] };
+      selectedFallback.options = shuffleArray(selectedFallback.options);
+      setCurrentScenario(selectedFallback);
     } finally {
       setIsGeneratingScenario(false);
     }
   };
 
+  // Disparo inicial quando o jogo arranca
   useEffect(() => {
     if (gameStarted && !isGameOver && !showDRE && !currentScenario && !isGeneratingScenario) {
       fetchScenarioFromAI(currentStage);
     }
   }, [gameStarted]);
 
+  // --- AVALIAÇÃO DE BÔNUS DO COMENTÁRIO COMPLEMENTAR ---
   const handleOptionSelectWithComment = async (selectedOption: any) => {
     if (isEvaluatingChoice || isGameOver) return;
     setIsEvaluatingChoice(true);
@@ -232,12 +271,12 @@ export default function CodigoAzulGame() {
             setPlayerNameInput(d.playerName || ""); setNeedsCompanySetup(true);
           } else {
             setCompanyName(d.companyName); setXp(d.xp || 0); 
-            setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
+            setCaixa(d.caixa ?? 7000000); setMargem(d.margem ?? 22.0); setCompliance(d.compliance ?? 100);
             setCurrentStage(d.currentStage || 0); 
-            setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
+            setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 7000000, margem: d.margem ?? 22.0 });
             setShowDRE(d.showDRE || false);
             setCurrentScenario(null); 
-            if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
+            if((d.caixa ?? 7000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
             setGameStarted(true);
             fetchScenarioFromAI(d.currentStage || 0);
           }
@@ -250,12 +289,12 @@ export default function CodigoAzulGame() {
             password: cleanPassword,
             data: { 
               playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail,
-              companyName: "", xp: 0, caixa: 5000000, margem: 20.0, compliance: 100, 
-              currentStage: 0, sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
+              companyName: "", xp: 0, caixa: 7000000, margem: 22.0, compliance: 100, 
+              currentStage: 0, sessionStartStats: { caixa: 7000000, margem: 22.0 }, showDRE: false
             }
           });
-          setPlayerName(nome.trim()); setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-          setCurrentStage(0); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+          setPlayerName(nome.trim()); setXp(0); setCaixa(7000000); setMargem(22.0); setCompliance(100);
+          setCurrentStage(0); setSessionStartStats({ caixa: 7000000, margem: 22.0 });
           setPlayerNameInput(nome.trim()); setNeedsCompanySetup(true);
         }
       } else if (authMode === 'forgot') {
@@ -289,8 +328,8 @@ export default function CodigoAzulGame() {
 
   const handleResetCareer = () => {
     if (confirm("Confirma a liquidação da empresa? O histórico será reiniciado.")) {
-      setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-      setCurrentStage(0); setCurrentScenario(null); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+      setXp(0); setCaixa(7000000); setMargem(22.0); setCompliance(100);
+      setCurrentStage(0); setCurrentScenario(null); setSessionStartStats({ caixa: 7000000, margem: 22.0 });
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); 
       setGameStarted(false); setCompanyNameInput(""); setPlayerNameInput(playerName); setNeedsCompanySetup(true);
     }
@@ -346,6 +385,7 @@ export default function CodigoAzulGame() {
     setFeedback(feedbackText);
   };
 
+  // --- AVANÇO BLINDADO E IMEDIATO PARA A PRÓXIMA QUESTÃO ---
   const proceedToNextQuestion = () => {
     setPromotionPending(false); 
     setPromotedLevel(null); 
@@ -357,7 +397,8 @@ export default function CodigoAzulGame() {
     if (currentStage < 9) { 
       const nextStage = currentStage + 1;
       setCurrentStage(nextStage); 
-      fetchScenarioFromAI(nextStage);
+      setCurrentScenario(null); // Limpa o cenário atual
+      fetchScenarioFromAI(nextStage); // Dispara imediatamente a nova questão
     } else { 
       setShowDRE(true); 
     }
