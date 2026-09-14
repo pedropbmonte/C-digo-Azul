@@ -55,12 +55,11 @@ const levels = [
 ];
 
 // --- BANCO DE DADOS BLINDADO: AS 10 FASES DO PEQUENO NEGÓCIO ---
-// Se a IA falhar (sem internet ou limite de API), o jogo carrega estas fases em ordem.
 const fallbackScenarios = [
   {
     sector: "Sobrevivência Financeira", criticality: "Extrema", title: "A Síndrome do Caixa Único",
     theory: "O choque de realidade: Vender não é receber, e o saldo do banco hoje não é seu lucro. Misturar Pessoa Física (PF) e Pessoa Jurídica (PJ) mascara o custo fixo real. Se a empresa paga a escola do filho ou a parcela do seu carro, o CNPJ está sangrando e você não vê.",
-    context: "Sexta-feira. A conta da empresa tem R$ 4.000, mas o vale dos funcionários amanhã soma R$ 6.000. Ao olhar o extrato, você percebe que passou R$ 3.500 no cartão da empresa com compras de supermercado e farmácia para sua casa nesta semana.",
+    context: "Sexta-feira. A conta da empresa tem R$ 4.000, mas o vale dos funcionários amanhã soma R$ 6.000. Ao olhar o extrato, você percebe que passou R$ 3.500 no cartão da empresa com compras de supermercado para sua casa nesta semana.",
     character: "Painel de Sinais Vitais",
     options: [
       { id: "A", text: "Injetar dinheiro pessoal de volta na empresa hoje, pagar os funcionários e definir um pró-labore austero a partir de agora.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 1.0, compliance: 15 }, feedback: "ATITUDE DE DONO. Você separou os bolsos, honrou a equipe e cortou o câncer financeiro." },
@@ -71,100 +70,100 @@ const fallbackScenarios = [
   {
     sector: "Capital de Giro", criticality: "Alta", title: "O Vício da Maquininha",
     theory: "Antecipar recebíveis não é fluxo de caixa, é agiotagem legalizada se não for precificada. Pagar 4% a 8% ao mês para ter o SEU dinheiro amanhã destrói completamente a Margem de Contribuição. Você trabalha só para enriquecer o banco.",
-    context: "Você fechou uma venda de R$ 15.000 parcelada em 10x sem juros para um cliente. O boleto do fornecedor dessa mesma mercadoria vence na segunda-feira. Você não tem caixa livre.",
+    context: "Você fechou uma venda de R$ 15.000 parcelada em 10x sem juros. O boleto do fornecedor dessa mesma mercadoria vence na segunda-feira. Você não tem caixa livre.",
     character: "O Fluxo de Caixa",
     options: [
-      { id: "A", text: "Ligar para o fornecedor, renegociar o prazo com sinceridade e lançar uma promoção relâmpago de outro produto via PIX à vista para levantar caixa.", xp: 35, isBest: true, impacts: { caixa: 8000, margem: 1.5, compliance: 10 }, feedback: "ESTRATEGISTA. Você preservou a margem da venda e esticou o prazo do seu passivo." },
-      { id: "B", text: "Apertar o botão de antecipação da maquininha de cartão pagando 6% de taxa para ter o dinheiro na segunda.", xp: 0, isBest: false, impacts: { caixa: -1000, margem: -3.0, compliance: 0 }, feedback: "PALIATIVO CARO. O problema de sexta foi resolvido, mas a margem do mês foi pro ralo." },
-      { id: "C", text: "Pagar o fornecedor com o limite do cartão de crédito da empresa, somando a taxa da maquininha com o juros do cartão.", xp: -45, isBest: false, impacts: { caixa: -8000, margem: -5.0, compliance: -20 }, feedback: "EFEITO BOLA DE NEVE. Dívida sobre dívida sem geração de valor." }
+      { id: "A", text: "Ligar para o fornecedor, renegociar o prazo com sinceridade e lançar uma promoção relâmpago via PIX à vista para levantar caixa.", xp: 35, isBest: true, impacts: { caixa: 8000, margem: 1.5, compliance: 10 }, feedback: "ESTRATEGISTA. Você preservou a margem da venda e esticou o prazo do seu passivo." },
+      { id: "B", text: "Apertar o botão de antecipação da maquininha pagando 6% de taxa para ter o dinheiro na segunda.", xp: 0, isBest: false, impacts: { caixa: -1000, margem: -3.0, compliance: 0 }, feedback: "PALIATIVO CARO. O problema de sexta foi resolvido, mas a margem do mês foi pro ralo." },
+      { id: "C", text: "Pagar o fornecedor com o limite do cartão de crédito da empresa, somando taxa da maquininha com juros do cartão.", xp: -45, isBest: false, impacts: { caixa: -8000, margem: -5.0, compliance: -20 }, feedback: "EFEITO BOLA DE NEVE. Dívida sobre dívida sem geração de valor." }
     ]
   },
   {
     sector: "Precificação e Custos", criticality: "Extrema", title: "O Preço do 'Achismo'",
-    theory: "Copiar o preço do concorrente sem saber seu próprio custo fixo é como dirigir vendado. Se você vende por R$ 100 achando que ganha 50, mas esquece o imposto, a taxa do cartão, a embalagem e o frete grátis, você está pagando para o cliente levar o produto.",
-    context: "O seu produto mais vendido custa R$ 80. O fornecedor avisou que amanhã o custo de compra sobe 15%. O seu vizinho (concorrente) vende o mesmo produto por R$ 75 e você tem medo de aumentar o preço e perder a clientela.",
+    theory: "Copiar o preço do concorrente sem saber seu próprio custo fixo é como dirigir vendado. Se você vende por R$ 100 achando que ganha 50, mas esquece o imposto e a taxa do cartão, você está pagando para o cliente levar o produto.",
+    context: "O seu produto mais vendido custa R$ 80. O fornecedor avisou que amanhã o custo sobe 15%. O concorrente vende por R$ 75 e você tem medo de aumentar o preço e perder clientes.",
     character: "O Seu Contador",
     options: [
-      { id: "A", text: "Repassar o aumento para o preço final imediatamente, treinar a equipe para focar no valor (atendimento) e deixar os 'caçadores de preço' irem para o vizinho.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 2.0, compliance: 10 }, feedback: "VISÃO DE LUCRO. Faturamento é vaidade, lucro é sanidade. Melhor vender menos com margem do que muito com prejuízo." },
-      { id: "B", text: "Manter o preço antigo absorvendo o custo temporariamente até ver se o mercado 'aceita' o aumento do concorrente.", xp: 5, isBest: false, impacts: { caixa: -2000, margem: -2.0, compliance: 0 }, feedback: "MIOPIA. Você sangrou sua empresa por medo da reação do mercado." },
-      { id: "C", text: "Baixar o preço para R$ 70 para quebrar o vizinho, apostando que vai 'ganhar no volume'.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -6.0, compliance: -10 }, feedback: "SUICÍDIO FINANCEIRO. Vender com margem negativa em volume acelera a falência de forma irreversível." }
+      { id: "A", text: "Repassar o aumento para o preço final, treinar a equipe para focar no valor e deixar os 'caçadores de preço' irem para o vizinho.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 2.0, compliance: 10 }, feedback: "VISÃO DE LUCRO. Faturamento é vaidade, lucro é sanidade. Melhor vender menos com margem do que muito com prejuízo." },
+      { id: "B", text: "Manter o preço antigo absorvendo o custo temporariamente até ver se o mercado aceita o aumento do concorrente.", xp: 5, isBest: false, impacts: { caixa: -2000, margem: -2.0, compliance: 0 }, feedback: "MIOPIA. Você sangrou sua empresa por medo da reação do mercado." },
+      { id: "C", text: "Baixar o preço para R$ 70 para quebrar o vizinho, apostando que vai 'ganhar no volume'.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -6.0, compliance: -10 }, feedback: "SUICÍDIO FINANCEIRO. Vender com margem negativa em volume acelera a falência." }
     ]
   },
   {
     sector: "Cobrança e Inadimplência", criticality: "Média", title: "O 'Fiado' do Cliente Parceiro",
     theory: "O pequeno empresário não é banco de quem não tem crédito. O medo de cobrar e 'ficar chato' transforma o lucro no papel em perda real. Se o cliente levou e não pagou no prazo, ele te usou como linha de crédito gratuita.",
-    context: "Um dos seus clientes mais antigos, que sempre comprou muito, está devendo R$ 8.000 há 35 dias. Hoje ele ligou querendo fazer um novo pedido de R$ 5.000 para entregar na sexta-feira.",
+    context: "Um dos seus clientes mais antigos está devendo R$ 8.000 há 35 dias. Hoje ele ligou querendo fazer um novo pedido de R$ 5.000 para entregar na sexta-feira.",
     character: "O Calote",
     options: [
       { id: "A", text: "Travar o pedido com firmeza: 'Parceiro, preciso da quitação do título em aberto para faturar a nova remessa'. Assumir o risco de perder a venda.", xp: 35, isBest: true, impacts: { caixa: 8000, margem: 1.0, compliance: 15 }, feedback: "POSTURA DE DONO. Cliente que não paga não é cliente, é passivo. Você botou ordem na casa." },
-      { id: "B", text: "Entregar o novo pedido e pedir 'pelo amor de Deus' para ele tentar depositar pelo menos uma parte da dívida antiga semana que vem.", xp: -5, isBest: false, impacts: { caixa: -5000, margem: -1.0, compliance: -10 }, feedback: "FRAQUEZA. Você ensinou ao cliente que ele pode te fazer de bobo." },
-      { id: "C", text: "Descontar uma duplicata no banco para cobrir o buraco que ele deixou e entregar o novo pedido para não perder a amizade.", xp: -35, isBest: false, impacts: { caixa: -10000, margem: -3.0, compliance: -20 }, feedback: "A RECEITA DA QUEBRA. Tomou dívida com juros no seu nome para cobrir a inadimplência de um terceiro." }
+      { id: "B", text: "Entregar o novo pedido e pedir para ele tentar depositar pelo menos uma parte da dívida antiga semana que vem.", xp: -5, isBest: false, impacts: { caixa: -5000, margem: -1.0, compliance: -10 }, feedback: "FRAQUEZA. Você ensinou ao cliente que ele pode te fazer de bobo." },
+      { id: "C", text: "Descontar uma duplicata no banco para cobrir o buraco e entregar o novo pedido para não perder a amizade.", xp: -35, isBest: false, impacts: { caixa: -10000, margem: -3.0, compliance: -20 }, feedback: "A RECEITA DA QUEBRA. Tomou dívida com juros no seu nome para cobrir a inadimplência de terceiro." }
     ]
   },
   {
     sector: "Gestão de Estoque", criticality: "Alta", title: "O Cemitério na Prateleira",
     theory: "Lucro no papel é ilusão; caixa é realidade. Dinheiro imobilizado em estoque que não gira (curva C) é capital de giro que apodrece. O 'desconto de volume' que o fornecedor deu só valeria a pena se você tivesse velocidade de venda.",
-    context: "Você tem R$ 20.000 congelados no fundo da loja com uma mercadoria que comprou de impulso há 4 meses. Faltam R$ 6.000 para pagar o aluguel amanhã.",
+    context: "Você tem R$ 20.000 congelados no fundo da loja em uma mercadoria que comprou de impulso. Faltam R$ 6.000 para pagar o aluguel amanhã.",
     character: "O Boletim de Caixa",
     options: [
-      { id: "A", text: "Fazer uma ação relâmpago queimando esse estoque a preço de custo (zero margem) para transformar papelão em dinheiro vivo hoje.", xp: 35, isBest: true, impacts: { caixa: 15000, margem: -0.5, compliance: 10 }, feedback: "ESTRATEGISTA. Você assumiu o erro da compra, engoliu o orgulho e salvou o fluxo de caixa." },
+      { id: "A", text: "Fazer uma ação relâmpago queimando esse estoque a preço de custo para transformar papelão em dinheiro vivo hoje.", xp: 35, isBest: true, impacts: { caixa: 15000, margem: -0.5, compliance: 10 }, feedback: "ESTRATEGISTA. Você assumiu o erro da compra, engoliu o orgulho e salvou o fluxo de caixa." },
       { id: "B", text: "Manter o preço cheio, esperando o produto valorizar, e pegar dinheiro do seu bolso (PF) para pagar o aluguel da loja.", xp: 0, isBest: false, impacts: { caixa: -6000, margem: 0, compliance: -5 }, feedback: "A ILUSÃO. Sangrou o próprio patrimônio para sustentar um erro operacional." },
-      { id: "C", text: "Comprar mais mercadoria nova usando o limite do cheque especial, para ver se atrai clientes que comprem a velha junto.", xp: -45, isBest: false, impacts: { caixa: -12000, margem: -4.0, compliance: -15 }, feedback: "FALÊNCIA. Estoque não paga aluguel. A dívida multiplicou e a prateleira continua cheia." }
+      { id: "C", text: "Comprar mais mercadoria nova usando o limite do cheque especial, para ver se atrai clientes que comprem a velha junto.", xp: -45, isBest: false, impacts: { caixa: -12000, margem: -4.0, compliance: -15 }, feedback: "FALÊNCIA. Estoque não paga aluguel. A dívida multiplicou." }
     ]
   },
   {
     sector: "Estrutura Operacional", criticality: "Alta", title: "O Teto do Eu-preendedor",
     theory: "Se a sua empresa depende de você para atender o telefone, empacotar e cobrar, você não tem uma empresa, tem um emprego mal remunerado. Recusar-se a aumentar o custo fixo para contratar ajuda é o que trava a receita nos 50k.",
-    context: "Sua receita estagnou. Você trabalha 14h por dia e está exausto. O WhatsApp da empresa demora 4 horas para ser respondido porque você está limpando a loja, resultando na perda de 10 clientes quentes por dia.",
+    context: "Sua receita estagnou. Você trabalha 14h por dia e está exausto. O WhatsApp demora 4 horas para ser respondido porque você está limpando a loja, perdendo clientes quentes.",
     character: "A Balança de Crescimento",
     options: [
-      { id: "A", text: "Assumir o risco: Contratar imediatamente um assistente, treinar por 15 dias e se liberar para focar apenas em estratégia e fechamento de vendas.", xp: 35, isBest: true, impacts: { caixa: -2500, margem: 2.5, compliance: 10 }, feedback: "SALTO DE MATURIDADE. O custo fixo subiu um pouco, mas sua receita vai decolar porque o dono voltou a liderar." },
-      { id: "B", text: "Contratar um 'freelancer' barato e sem compromisso para responder mensagens só de noite, mantendo o controle total de dia.", xp: 5, isBest: false, impacts: { caixa: -500, margem: 0.5, compliance: -5 }, feedback: "MEIA SOLUÇÃO. Não aliviou sua carga horária e a qualidade do atendimento despencou à noite." },
-      { id: "C", text: "Continuar sozinho dizendo 'ninguém faz melhor que eu' e desligar o WhatsApp depois das 18h para conseguir dormir.", xp: -35, isBest: false, impacts: { caixa: -8000, margem: -3.0, compliance: 0 }, feedback: "A ESTAGNAÇÃO. Você aceitou que sua empresa nunca vai crescer além do seu cansaço físico." }
+      { id: "A", text: "Contratar imediatamente um assistente, treinar por 15 dias e se liberar para focar apenas em estratégia e fechamento de vendas.", xp: 35, isBest: true, impacts: { caixa: -2500, margem: 2.5, compliance: 10 }, feedback: "SALTO DE MATURIDADE. O custo fixo subiu um pouco, mas sua receita vai decolar porque o dono voltou a liderar." },
+      { id: "B", text: "Contratar um freelancer barato só para responder mensagens de noite, mantendo o controle total de dia.", xp: 5, isBest: false, impacts: { caixa: -500, margem: 0.5, compliance: -5 }, feedback: "MEIA SOLUÇÃO. Não aliviou sua carga horária estrutural." },
+      { id: "C", text: "Continuar sozinho dizendo 'ninguém faz melhor que eu' e desligar o celular depois das 18h para conseguir dormir.", xp: -35, isBest: false, impacts: { caixa: -8000, margem: -3.0, compliance: 0 }, feedback: "ESTAGNAÇÃO. Você aceitou que sua empresa nunca vai crescer." }
     ]
   },
   {
     sector: "Gestão de Vaidade", criticality: "Extrema", title: "A Ilusão do Crescimento",
-    theory: "Pico de faturamento não é consolidação. Aumentar a despesa fixa estrutural (aluguel caro, carros) baseado em um trimestre bom é o atalho número um para a morte de pequenas empresas quando a sazonalidade ataca.",
-    context: "A empresa teve lucro recorde por três meses consecutivos. Sobraram R$ 35.000 no caixa. Você sempre sonhou em reformar a fachada e comprar uma caminhonete pelo CNPJ para 'passar mais credibilidade'.",
+    theory: "Pico de faturamento não é consolidação. Aumentar a despesa fixa estrutural baseado em um trimestre bom é o atalho número um para a morte de pequenas empresas quando a sazonalidade ataca.",
+    context: "A empresa teve lucro recorde por três meses. Sobraram R$ 35.000 no caixa. Você sempre sonhou em reformar a fachada e comprar uma caminhonete pelo CNPJ para 'passar credibilidade'.",
     character: "O Seu Próprio Ego",
     options: [
-      { id: "A", text: "Travar o ego: Pegar R$ 25.000 e aplicar em liquidez diária como Fundo de Reserva, usando o resto apenas para marketing digital testado.", xp: 40, isBest: true, impacts: { caixa: 5000, margem: 1.0, compliance: 20 }, feedback: "CABEÇA DE CEO. Você entendeu que caixa forte é a única proteção contra crises futuras. O ego ficou para depois." },
-      { id: "B", text: "Gastar os R$ 35.000 na reforma da fachada à vista e adiar a formação da reserva de emergência para o ano que vem.", xp: -10, isBest: false, impacts: { caixa: -30000, margem: 0, compliance: -5 }, feedback: "PERIGO. A loja ficou linda, mas a empresa ficou completamente descapitalizada para o mês fraco." },
-      { id: "C", text: "Dar R$ 35.000 de entrada em uma caminhonete de luxo assumindo 48 parcelas fixas altas em nome do CNPJ.", xp: -50, isBest: false, impacts: { caixa: -35000, margem: -4.0, compliance: -20 }, feedback: "O ABISMO. Trocou capital de giro vital por um passivo depreciável que consome manutenção e sufoca o fluxo mensal." }
+      { id: "A", text: "Travar o ego: Aplicar R$ 25.000 em Fundo de Reserva, usando o resto apenas para marketing digital testado.", xp: 40, isBest: true, impacts: { caixa: 5000, margem: 1.0, compliance: 20 }, feedback: "CABEÇA DE CEO. Você entendeu que caixa forte é a única proteção contra crises. O ego ficou para depois." },
+      { id: "B", text: "Gastar os R$ 35.000 na reforma da fachada à vista e adiar a formação da reserva para o ano que vem.", xp: -10, isBest: false, impacts: { caixa: -30000, margem: 0, compliance: -5 }, feedback: "PERIGO. A loja ficou linda, mas a empresa descapitalizou totalmente." },
+      { id: "C", text: "Dar R$ 35.000 de entrada em uma caminhonete de luxo assumindo 48 parcelas fixas altas no CNPJ.", xp: -50, isBest: false, impacts: { caixa: -35000, margem: -4.0, compliance: -20 }, feedback: "O ABISMO. Trocou capital de giro por um passivo que sufoca o fluxo mensal." }
     ]
   },
   {
     sector: "Estratégia Tributária", criticality: "Alta", title: "O Nocaute do IVA Dual (B2B)",
-    theory: "A Reforma Tributária atinge em cheio o pequeno que fornece para os grandes. Se você está no Simples e não repassa os créditos do novo IVA (CBS/IBS), seu produto fica matematicamente mais caro para a indústria, que vai preferir comprar de empresas do Lucro Real.",
-    context: "O seu maior cliente empresarial, que representa 30% do faturamento, envia um aviso: 'Com as regras do IVA, precisamos que você recolha o imposto por fora do Simples para nos repassar o crédito, senão encerramos o contrato.'",
+    theory: "A Reforma Tributária atinge em cheio o pequeno que fornece para grandes empresas. Se você não repassa créditos do novo IVA, seu produto fica mais caro matematicamente para a indústria, que vai preferir empresas do Lucro Real.",
+    context: "Seu maior cliente (30% do faturamento) avisa: 'Com o novo IVA, precisamos que você recolha o imposto por fora do Simples para nos repassar o crédito, senão encerramos o contrato.'",
     character: "Setor de Suprimentos do Cliente",
     options: [
-      { id: "A", text: "Chamar o contador hoje. Optar pelo recolhimento por fora, repassar o crédito ao cliente e fazer uma renegociação leve do contrato para ajustar a margem.", xp: 40, isBest: true, impacts: { caixa: 10000, margem: 1.0, compliance: 20 }, feedback: "VISÃO DE MERCADO. Você não brigou com a lei, se adaptou a ela e manteve seu principal ativo (o contrato)." },
-      { id: "B", text: "Para não complicar a contabilidade, dar 10% de desconto no preço final tentando convencer o cliente a ficar sem o repasse do crédito.", xp: -15, isBest: false, impacts: { caixa: -4000, margem: -3.0, compliance: 0 }, feedback: "TIRO NO PÉ. O desconto saiu direto do seu lucro limpo. Você pagou para trabalhar." },
-      { id: "C", text: "Ignorar a exigência achando que 'o Simples protege a pequena empresa' e que o cliente está apenas blefando.", xp: -50, isBest: false, impacts: { caixa: -18000, margem: -5.0, compliance: -15 }, feedback: "A QUEDA. O cliente cumpriu a promessa e foi embora. Sua receita despencou 30% da noite para o dia." }
+      { id: "A", text: "Chamar o contador hoje, optar pelo recolhimento por fora, repassar o crédito ao cliente e renegociar o contrato para ajustar a margem.", xp: 40, isBest: true, impacts: { caixa: 10000, margem: 1.0, compliance: 20 }, feedback: "VISÃO DE MERCADO. Você não brigou com a lei, se adaptou a ela e manteve seu principal contrato." },
+      { id: "B", text: "Dar 10% de desconto no preço final tentando convencer o cliente a ficar sem o repasse do crédito.", xp: -15, isBest: false, impacts: { caixa: -4000, margem: -3.0, compliance: 0 }, feedback: "TIRO NO PÉ. O desconto saiu direto do seu lucro limpo. Você pagou para trabalhar." },
+      { id: "C", text: "Ignorar a exigência achando que 'o Simples protege o pequeno' e que é só um blefe.", xp: -50, isBest: false, impacts: { caixa: -18000, margem: -5.0, compliance: -15 }, feedback: "A QUEDA. O cliente foi embora e sua receita despencou 30% da noite para o dia." }
     ]
   },
   {
     sector: "Precificação e Custos", criticality: "Média", title: "A Cegueira do Custo Fixo",
-    theory: "Muitos empreendedores têm medo de reajustar preços. Enquanto a inflação aumenta aluguel, energia, dissídio e combustível silenciosamente, o preço congelado espreme o lucro até ele desaparecer completamente.",
-    context: "Seus custos fixos aumentaram 18% nos últimos 12 meses. Seu cardápio/tabela de serviços é o mesmo do ano passado. O balanço do mês fechou no zero a zero pelo segundo mês seguido.",
+    theory: "Muitos empreendedores têm medo de reajustar preços. Enquanto a inflação aumenta aluguel, energia e insumos silenciosamente, o preço congelado espreme o lucro até desaparecer completamente.",
+    context: "Seus custos fixos aumentaram 18% nos últimos 12 meses. Sua tabela de serviços é a mesma do ano passado. O balanço fechou no zero a zero pelo segundo mês seguido.",
     character: "Sinal de Alerta da Margem",
     options: [
-      { id: "A", text: "Mapear todos os custos, repassar o reajuste imediato de 15% na tabela, melhorar a apresentação do serviço e focar em clientes menos sensíveis a preço.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 2.5, compliance: 10 }, feedback: "CORAGEM DE DONO. Reajustar é proteger a vida da empresa. Melhor faturar o mesmo com clientes que pagam mais." },
-      { id: "B", text: "Fazer cortes drásticos na qualidade dos insumos (comprar mais barato) para tentar manter o preço de venda antigo e não assustar ninguém.", xp: -15, isBest: false, impacts: { caixa: 0, margem: -1.0, compliance: -15 }, feedback: "PERDA DE VALOR. A qualidade caiu, as reclamações aumentaram e os bons clientes foram embora." },
-      { id: "C", text: "Ignorar o problema e dobrar o investimento em anúncios (Ads) para tentar vender o dobro no volume e 'compensar' a margem menor.", xp: -40, isBest: false, impacts: { caixa: -10000, margem: -4.0, compliance: -10 }, feedback: "ACELERAR PRO BURACO. Vender mais com margem espremida só aumenta o cansaço e quebra o caixa mais rápido." }
+      { id: "A", text: "Repassar o reajuste imediato de 15% na tabela, melhorar a apresentação e focar em clientes menos sensíveis a preço.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 2.5, compliance: 10 }, feedback: "CORAGEM DE DONO. Reajustar é proteger a empresa. Melhor faturar o mesmo com clientes bons do que muito com prejuízo." },
+      { id: "B", text: "Cortar a qualidade dos insumos (comprar mais barato) para tentar manter o preço de venda antigo.", xp: -15, isBest: false, impacts: { caixa: 0, margem: -1.0, compliance: -15 }, feedback: "PERDA DE VALOR. A qualidade caiu, as reclamações aumentaram e os clientes foram embora." },
+      { id: "C", text: "Ignorar o problema e dobrar o investimento em anúncios para tentar vender o dobro no volume.", xp: -40, isBest: false, impacts: { caixa: -10000, margem: -4.0, compliance: -10 }, feedback: "ACELERAR PRO BURACO. Vender mais com margem espremida só aumenta o cansaço e quebra o caixa." }
     ]
   },
   {
-    sector: "Planejamento Tributário", criticality: "Alta", title: "O Salto Tributário (A Trava do MEI/Simples)",
+    sector: "Planejamento Tributário", criticality: "Alta", title: "O Salto Tributário (A Trava do Limite)",
     theory: "O medo de desenquadrar a empresa de faixa tributária faz o empreendedor se boicotar. Segurar o faturamento ou emitir nota 'fria' para não sair do limite é pensar pequeno e arriscar processo criminal.",
-    context: "Novembro. A sua empresa atingiu 98% do limite de faturamento anual do MEI (ou da 1ª faixa do Simples). Há pedidos grandes engatilhados para o fim do ano que fariam a empresa dobrar de tamanho.",
+    context: "Novembro. A sua empresa atingiu 98% do limite de faturamento anual da sua faixa do Simples. Há pedidos grandes engatilhados para o fim do ano que fariam a empresa dobrar.",
     character: "O Limite da Receita Federal",
     options: [
-      { id: "A", text: "Aceitar os pedidos, oficializar o desenquadramento com o contador de cabeça erguida, precificar a nova carga tributária e abraçar o crescimento.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 1.5, compliance: 25 }, feedback: "O PASSAPORTE DO CRESCIMENTO. Pagar mais imposto sobre muito lucro é infinitamente melhor do que não crescer para economizar trocados." },
-      { id: "B", text: "Parar de vender em novembro, dar férias coletivas e só voltar a operar em janeiro para não estourar o limite do ano.", xp: -20, isBest: false, impacts: { caixa: -12000, margem: -2.0, compliance: 0 }, feedback: "MENTALIDADE DE ESCASSEZ. Travou o CNPJ, frustrou clientes e perdeu o melhor mês de vendas do ano." },
-      { id: "C", text: "Vender os pedidos grandes aceitando pagamento apenas em dinheiro vivo (sem nota fiscal) para maquiar o faturamento oficial.", xp: -50, isBest: false, impacts: { caixa: 10000, margem: -3.0, compliance: -50 }, feedback: "CRIME DE SONEGAÇÃO FISCAL. Cruzamento de dados bancários acusa a fraude e gera multas que fecham a empresa." }
+      { id: "A", text: "Aceitar os pedidos, oficializar o desenquadramento com o contador, precificar a nova carga tributária e abraçar o crescimento.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 1.5, compliance: 25 }, feedback: "O PASSAPORTE DO CRESCIMENTO. Pagar mais imposto sobre muito lucro é melhor do que não crescer." },
+      { id: "B", text: "Parar de vender em novembro, dar férias coletivas e só voltar a operar em janeiro para não estourar o limite.", xp: -20, isBest: false, impacts: { caixa: -12000, margem: -2.0, compliance: 0 }, feedback: "MENTALIDADE DE ESCASSEZ. Travou o CNPJ, frustrou clientes e perdeu o melhor mês." },
+      { id: "C", text: "Vender os pedidos aceitando pagamento apenas em dinheiro vivo (sem nota) para maquiar o faturamento.", xp: -50, isBest: false, impacts: { caixa: 10000, margem: -3.0, compliance: -50 }, feedback: "CRIME FISCAL. Cruzamento de dados bancários acusa a fraude e fecha a empresa." }
     ]
   }
 ];
@@ -211,6 +210,11 @@ export default function CodigoAzulGame() {
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // --- ESTADOS DO DRE INTERATIVO ---
+  const [dreProLabore, setDreProLabore] = useState(5000);
+  const [dreMarketing, setDreMarketing] = useState(1000);
+  const [dreTaxas, setDreTaxas] = useState(1900); // Maquininha + Antecipação
+
   const saveToDB = async () => {
     if (!email) return;
     try {
@@ -229,19 +233,21 @@ export default function CodigoAzulGame() {
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- BUSCA DO CENÁRIO FOCADA NAS 10 FASES BLINDADAS ---
+  // --- BUSCA DO CENÁRIO (IA + CONCATENAÇÃO SEGURA) ---
   const fetchScenarioFromAI = async (stageNum: number) => {
+    if (isGeneratingScenario) return;
     setIsGeneratingScenario(true);
     setFeedback(null);
     setSupplementaryComment("");
     setTimeLeft(120);
 
-    const promptText = `Você é Pedro Monte, mentor implacável de pequenos negócios. Gere um Estudo de Caso Prático INÉDITO para a Fase ${stageNum + 1} de 10. A empresa ${companyName} tem Caixa R$ ${caixa}. Nível do aluno: ${currentLevel.title}. 
-    MUITO IMPORTANTE: Não use jargões financeiros (sem WACC, IFRS, etc). Fale de fluxo de caixa, estoque, precificação ou mistura de contas (PFxPJ). Dê um 'choque de realidade' no texto teórico.
-    Retorne APENAS JSON sem formatação markdown: { "sector": "Problema", "criticality": "Alta", "title": "Título", "theory": "Choque de realidade do mentor (min 5 linhas)...", "context": "Problema tenso na empresa hoje...", "character": "Quem cobra", "options": [ { "id": "A", "text": "Atitude de Dono...", "xp": 35, "isBest": true, "impacts": { "caixa": 5000, "margem": 1.5, "compliance": 10 }, "feedback": "Elogio..." }, { "id": "B", "text": "Ação fraca...", "xp": 5, "isBest": false, "impacts": { "caixa": -1000, "margem": -0.5, "compliance": 0 }, "feedback": "Crítica leve..." }, { "id": "C", "text": "Decisão que acelera a quebra...", "xp": -40, "isBest": false, "impacts": { "caixa": -8000, "margem": -4.0, "compliance": -25 }, "feedback": "Crítica dura..." } ] }`;
+    const promptText = "Você é Pedro Monte, mentor implacável de pequenos negócios. Gere um Estudo de Caso Prático INÉDITO para a Fase " + (stageNum + 1) + " de 10. A empresa " + companyName + " tem Caixa R$ " + caixa + ". Nível do aluno: " + currentLevel.title + ". " +
+    "MUITO IMPORTANTE: Não use jargões financeiros. Fale de fluxo de caixa, estoque, precificação ou mistura de contas. Dê um choque de realidade. " +
+    "Retorne APENAS um JSON estrito, sem markdown, com esta estrutura: " +
+    "{ \"sector\": \"Tema\", \"criticality\": \"Alta\", \"title\": \"Título\", \"theory\": \"Explicação do erro de dono (min 5 linhas)...\", \"context\": \"O problema estourando hoje...\", \"character\": \"Quem cobra\", \"options\": [ { \"id\": \"A\", \"text\": \"Atitude de Dono...\", \"xp\": 35, \"isBest\": true, \"impacts\": { \"caixa\": 5000, \"margem\": 1.5, \"compliance\": 10 }, \"feedback\": \"Parecer do mentor...\" }, { \"id\": \"B\", \"text\": \"Decisão paliativa...\", \"xp\": 5, \"isBest\": false, \"impacts\": { \"caixa\": -1000, \"margem\": -0.5, \"compliance\": 0 }, \"feedback\": \"Parecer do mentor...\" }, { \"id\": \"C\", \"text\": \"Decisão de quebra...\", \"xp\": -40, \"isBest\": false, \"impacts\": { \"caixa\": -8000, \"margem\": -4.0, \"compliance\": -25 }, \"feedback\": \"Parecer do mentor...\" } ] }";
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { temperature: 0.95 } })
@@ -252,8 +258,6 @@ export default function CodigoAzulGame() {
       const data = await response.json();
       let aiText = data.candidates[0].content.parts[0].text;
       
-      // EXTRATOR SEGURO
-      aiText = aiText.replace(new RegExp("```json", "g"), "").replace(new RegExp("```", "g"), "").trim();
       const jsonMatch = aiText.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error("Sem JSON");
       
@@ -262,11 +266,10 @@ export default function CodigoAzulGame() {
       setCurrentScenario(parsedScenario);
       
     } catch (error) {
-      console.warn("API Offline. Carregando Fallback Blindado das 10 Dores.");
-      // Mapeia o banco fixo para GARANTIR a evolução nas 10 fases sem loop!
+      console.warn("API Offline. Carregando Fallback das 10 Fases.");
       const fallbackIndex = stageNum % fallbackScenarios.length;
       const selectedFallback = JSON.parse(JSON.stringify(fallbackScenarios[fallbackIndex])); 
-      selectedFallback.title = `${selectedFallback.title} — Fase ${stageNum + 1}`; 
+      selectedFallback.title = selectedFallback.title + " — Fase " + (stageNum + 1); 
       selectedFallback.options = shuffleArray(selectedFallback.options);
       setCurrentScenario(selectedFallback);
     } finally {
@@ -293,7 +296,7 @@ export default function CodigoAzulGame() {
       try {
         const promptEval = "O dono escolheu a ação '" + selectedOption.text + "'. Comentário dele: '" + supplementaryComment + "'. Avalie a postura de dono. Retorne APENAS JSON: { \"isAssertive\": true/false, \"bonusXp\": 15, \"commentEvaluation\": \"Feedback reto de dono para dono.\" }";
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ contents: [{ parts: [{ text: promptEval }] }], generationConfig: { temperature: 0.7 } })
@@ -301,22 +304,21 @@ export default function CodigoAzulGame() {
 
         const data = await response.json();
         let aiText = data.candidates[0].content.parts[0].text;
-        aiText = aiText.replace(new RegExp("```json", "g"), "").replace(new RegExp("```", "g"), "").trim();
         const jsonMatch = aiText.match(/\{[\s\S]*\}/);
         
         if(jsonMatch){
            const evaluation = JSON.parse(jsonMatch[0]);
            if (evaluation.isAssertive) {
              finalXp += evaluation.bonusXp;
-             bonusMessage = `\n\n⭐ BÔNUS DO MENTOR: Visão validada (+${evaluation.bonusXp} XP).\nAnálise: ${evaluation.commentEvaluation}`;
+             bonusMessage = "\n\n⭐ BÔNUS DO MENTOR: Visão validada (+" + evaluation.bonusXp + " XP).\nAnálise: " + evaluation.commentEvaluation;
            } else {
-             bonusMessage = `\n\n💡 ALERTA DO MENTOR: ${evaluation.commentEvaluation}`;
+             bonusMessage = "\n\n💡 ALERTA DO MENTOR: " + evaluation.commentEvaluation;
            }
         }
       } catch (e) {}
     }
 
-    const fullFeedback = `${selectedOption.feedback}${bonusMessage}\n\nCÓDIGO AZUL.`;
+    const fullFeedback = selectedOption.feedback + bonusMessage + "\n\nCÓDIGO AZUL.";
     handleChoice(finalXp, fullFeedback, false, finalImpacts);
     setIsEvaluatingChoice(false);
   };
@@ -389,6 +391,8 @@ export default function CodigoAzulGame() {
       setCurrentStage(0); setCurrentScenario(null);
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); 
       setGameStarted(false); setCompanyNameInput(""); setPlayerNameInput(playerName); setNeedsCompanySetup(true);
+      // Reset sliders
+      setDreProLabore(5000); setDreMarketing(1000); setDreTaxas(1900);
     }
   };
 
@@ -444,7 +448,11 @@ export default function CodigoAzulGame() {
       setCurrentStage(nextStage); 
       setCurrentScenario(null); 
       fetchScenarioFromAI(nextStage);
-    } else { setShowDRE(true); }
+    } else { 
+      setShowDRE(true); 
+      // Reset sliders ao abrir o DRE
+      setDreProLabore(5000); setDreMarketing(1000); setDreTaxas(1900);
+    }
   };
 
   const handleNextStageOrPromotion = () => {
@@ -452,7 +460,24 @@ export default function CodigoAzulGame() {
     proceedToNextQuestion();
   };
 
-  const handleStartNewQuarter = () => { setShowDRE(false); setCurrentStage(0); fetchScenarioFromAI(0); };
+  // --- CÁLCULOS DO DRE INTERATIVO ---
+  const dreReceita = 50000;
+  const dreImpostos = 3800; // 7.6%
+  const dreCMV = 18000; // 36%
+  const dreCustoFixoBase = 8850; // Aluguel, folha base, luz, etc.
+  
+  const dreTotalDespesas = dreImpostos + dreCMV + dreCustoFixoBase + dreProLabore + dreMarketing + dreTaxas;
+  const dreLucroLiquido = dreReceita - dreTotalDespesas;
+  const dreNovaMargem = (dreLucroLiquido / dreReceita) * 100;
+
+  const handleAplicarDRE = () => {
+    // Injeta o lucro líquido no caixa real e atualiza a margem do jogo
+    setCaixa(prev => prev + dreLucroLiquido);
+    setMargem(dreNovaMargem);
+    setShowDRE(false); 
+    setCurrentStage(0); 
+    fetchScenarioFromAI(0); 
+  };
 
   const caixaBarFill = Math.min(100, (caixa / 100000) * 100);
   const margemBarFill = Math.min(100, Math.max(0, (margem / 40.0) * 100));
@@ -534,16 +559,78 @@ export default function CodigoAzulGame() {
     );
   }
 
+  // --- TELA DO DRE INTERATIVO ---
   if (showDRE) {
     return (
-      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative font-sans">
-        <div className="z-10 bg-[#0f172a]/90 p-8 md:p-12 rounded-3xl border border-white/5 max-w-2xl w-full text-center">
-          <h1 className="text-2xl md:text-3xl font-light text-slate-100 mb-8 uppercase">Fechamento do Mês</h1>
-          <div className="bg-[#020617]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left space-y-4 font-mono">
-            <div className="flex justify-between border-b border-slate-800/80 pb-2"><span className="text-slate-500 text-xs">Saldo do Caixa:</span><span className="text-slate-300 text-xs">{formatBRL(caixa)}</span></div>
-            <div className="flex justify-between pt-2"><span className="text-slate-500 text-xs">Evolução do Dono:</span><span className="text-cyan-400 text-xs font-bold">{xp} Pontos de XP</span></div>
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 md:p-8 relative font-sans overflow-y-auto">
+        <div className="z-10 bg-[#0f172a]/95 p-6 md:p-10 rounded-3xl border border-cyan-900/50 max-w-3xl w-full shadow-2xl my-auto">
+          
+          <div className="text-center mb-6">
+            <h1 className="text-2xl md:text-3xl font-light text-slate-100 uppercase tracking-widest">Painel de <span className="font-semibold text-cyan-400">Controle DRE</span></h1>
+            <p className="text-slate-400 text-[10px] font-mono mt-2 uppercase">Ajuste as alavancas antes de fechar o mês e veja o impacto real.</p>
           </div>
-          <button onClick={handleStartNewQuarter} className="bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-mono py-4 px-10 rounded-xl uppercase">Virar o Mês</button>
+
+          <div className="bg-[#020617]/50 rounded-xl border border-slate-800 overflow-hidden mb-6">
+            <div className="grid grid-cols-2 text-[10px] font-mono uppercase text-slate-500 bg-slate-900/50 p-3 border-b border-slate-800">
+               <div>Estrutura Financeira</div>
+               <div className="text-right">Valor (R$)</div>
+            </div>
+            
+            <div className="p-4 space-y-3 font-mono text-xs text-slate-300">
+               <div className="flex justify-between items-center"><span className="text-cyan-400 font-bold">1. RECEITA BRUTA (Faturamento)</span><span className="font-bold">{formatBRL(dreReceita)}</span></div>
+               <div className="flex justify-between items-center pl-4 text-slate-500"><span>(-) Impostos (Simples Nacional)</span><span>{formatBRL(dreImpostos)}</span></div>
+               <div className="flex justify-between items-center pl-4 text-slate-500"><span>(-) CMV (Custo da Mercadoria)</span><span>{formatBRL(dreCMV)}</span></div>
+               <div className="flex justify-between items-center pt-2 border-t border-slate-800/50 text-amber-400 font-semibold"><span>3. MARGEM DE CONTRIBUIÇÃO</span><span>{formatBRL(dreReceita - dreImpostos - dreCMV)}</span></div>
+               <div className="flex justify-between items-center pl-4 text-slate-500 mt-2"><span>(-) Custos Fixos Base (Aluguel, Folha, Luz)</span><span>{formatBRL(dreCustoFixoBase)}</span></div>
+               
+               {/* LINHAS CONTROLADAS PELOS SLIDERS */}
+               <div className="flex justify-between items-center pl-4 text-emerald-400/80 bg-emerald-900/10 p-1 rounded"><span>(-) Seu Pró-labore (Retirada)</span><span>{formatBRL(dreProLabore)}</span></div>
+               <div className="flex justify-between items-center pl-4 text-blue-400/80 bg-blue-900/10 p-1 rounded"><span>(-) Marketing e Anúncios</span><span>{formatBRL(dreMarketing)}</span></div>
+               <div className="flex justify-between items-center pl-4 text-red-400/80 bg-red-900/10 p-1 rounded"><span>(-) Agiotagem Bancária (Taxas/Maquininha)</span><span>{formatBRL(dreTaxas)}</span></div>
+
+               <div className={`flex justify-between items-center pt-4 border-t border-slate-700 text-sm font-bold ${dreLucroLiquido >= 0 ? 'text-emerald-400' : 'text-red-500'}`}>
+                 <span className="uppercase">5. LUCRO LÍQUIDO (Caixa Gerado)</span>
+                 <span>{dreLucroLiquido >= 0 ? '+' : ''}{formatBRL(dreLucroLiquido)}</span>
+               </div>
+            </div>
+          </div>
+
+          <div className="space-y-6 mb-8 bg-[#020617]/30 p-5 rounded-xl border border-white/5">
+             {/* Slider Pró-Labore */}
+             <div>
+               <div className="flex justify-between text-[10px] font-mono uppercase mb-2">
+                 <span className="text-emerald-400">Cortar/Aumentar Pró-Labore</span>
+                 <span className="text-slate-400">{formatBRL(dreProLabore)}</span>
+               </div>
+               <input type="range" min="0" max="15000" step="500" value={dreProLabore} onChange={(e) => setDreProLabore(Number(e.target.value))} className="w-full accent-emerald-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+               {dreProLabore < 2000 && <p className="text-[9px] text-amber-500 mt-1 uppercase font-mono">⚠️ Alerta do Mentor: Pró-labore muito baixo. Você vai acabar misturando as contas para sobreviver na PF.</p>}
+               {dreProLabore > 8000 && <p className="text-[9px] text-red-400 mt-1 uppercase font-mono">⚠️ Alerta do Mentor: Retirada de sócio muito alta. A empresa pode descapitalizar.</p>}
+             </div>
+
+             {/* Slider Marketing */}
+             <div>
+               <div className="flex justify-between text-[10px] font-mono uppercase mb-2">
+                 <span className="text-blue-400">Verba de Marketing (Ads)</span>
+                 <span className="text-slate-400">{formatBRL(dreMarketing)}</span>
+               </div>
+               <input type="range" min="0" max="5000" step="100" value={dreMarketing} onChange={(e) => setDreMarketing(Number(e.target.value))} className="w-full accent-blue-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+               {dreMarketing === 0 && <p className="text-[9px] text-amber-500 mt-1 uppercase font-mono">⚠️ Alerta do Mentor: Cortou o marketing a zero? O mês que vem não terá cliente novo.</p>}
+             </div>
+
+             {/* Slider Taxas */}
+             <div>
+               <div className="flex justify-between text-[10px] font-mono uppercase mb-2">
+                 <span className="text-red-400">Taxas e Antecipação Bancária</span>
+                 <span className="text-slate-400">{formatBRL(dreTaxas)}</span>
+               </div>
+               <input type="range" min="0" max="4000" step="100" value={dreTaxas} onChange={(e) => setDreTaxas(Number(e.target.value))} className="w-full accent-red-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+               {dreTaxas < 500 && <p className="text-[9px] text-emerald-400 mt-1 uppercase font-mono">✅ Excelente: Você parou de antecipar e protegeu sua margem de lucro.</p>}
+             </div>
+          </div>
+
+          <button onClick={handleAplicarDRE} className="w-full bg-cyan-950/50 border border-cyan-800 text-cyan-400 hover:bg-cyan-900/50 hover:text-cyan-300 text-xs font-mono py-4 rounded-xl transition-all uppercase tracking-widest shadow-lg">
+            Aplicar Estratégia e Virar o Mês
+          </button>
         </div>
       </div>
     );
@@ -618,7 +705,7 @@ export default function CodigoAzulGame() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-[#020617]/50 p-6 rounded-xl border border-cyan-900/40">
                 <h3 className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> 1. O Choque de Realidade (Mentoria)
+                  <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> 1. O Choque de Realidade (Teoria)
                 </h3>
                 <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{currentScenario.theory}</p>
               </div>
