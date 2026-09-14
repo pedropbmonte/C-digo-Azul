@@ -391,7 +391,6 @@ export default function CodigoAzulGame() {
       setCurrentStage(0); setCurrentScenario(null);
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); 
       setGameStarted(false); setCompanyNameInput(""); setPlayerNameInput(playerName); setNeedsCompanySetup(true);
-      // Reset sliders
       setDreProLabore(5000); setDreMarketing(1000); setDreTaxas(1900);
     }
   };
@@ -476,6 +475,7 @@ export default function CodigoAzulGame() {
     setMargem(dreNovaMargem);
     setShowDRE(false); 
     setCurrentStage(0); 
+    setCurrentScenario(null);
     fetchScenarioFromAI(0); 
   };
 
