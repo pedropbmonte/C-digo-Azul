@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // IMPORTAÇÕES DO FIREBASE
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
@@ -42,54 +42,82 @@ const playPromotionSound = () => {
   } catch (err) {}
 };
 
-// --- CURVA DE MATURIDADE DO EMPREENDEDOR (Dono para Dono) ---
+// --- CURVA DE MATURIDADE (Dono para Dono) ---
 const levels = [
-  { tier: 1, title: "Empreendedor Operacional", minXp: 0, hasTimer: false, feedback: null },
-  { tier: 1, title: "Apagador de Incêndios", minXp: 120, hasTimer: false, feedback: { forca: "Você tem muita garra e trabalha 14h por dia.", vulnerabilidade: "Sua empresa não funciona sem você. Zero previsibilidade financeira." } },
-  { tier: 2, title: "Chefe de Equipe", minXp: 280, hasTimer: false, feedback: { forca: "Começou a entender que faturamento não é lucro.", vulnerabilidade: "Ainda confunde a conta da Pessoa Física com a Jurídica (PF x PJ)." } },
-  { tier: 2, title: "Gestor de Sobrevivência", minXp: 500, hasTimer: true, feedback: { forca: "O caixa parou de sangrar por besteira e a precificação melhorou.", vulnerabilidade: "Falta blindagem tributária e visão de capital de giro estruturado." } },
-  { tier: 3, title: "Dono de Negócio", minXp: 800, hasTimer: true, feedback: { forca: "Você finalmente saiu da operação e olha para o painel de controle.", vulnerabilidade: "A dependência de poucos clientes B2B ou fornecedores chave." } },
-  { tier: 3, title: "Estrategista de Caixa", minXp: 1200, hasTimer: true, feedback: { forca: "Entende o Efeito Tesoura, domina prazos médios e parou de antecipar recebíveis.", vulnerabilidade: "Transição tributária e aumento abrupto de custo fixo." } },
-  { tier: 4, title: "Diretor Executivo", minXp: 1800, hasTimer: true, feedback: { forca: "A empresa gera caixa livre, tem reserva de emergência e processos delegados.", vulnerabilidade: "O ego do crescimento acelerado sem base operacional sólida." } },
-  { tier: 4, title: "Empresário de Elite", minXp: 2600, hasTimer: true, feedback: { forca: "O negócio é um ativo escalável. O dinheiro trabalha, a equipe roda.", vulnerabilidade: "Manter a inovação sem perder a disciplina financeira." } }
+  { tier: 1, title: "Apagador de Incêndios", minXp: 0, hasTimer: false, feedback: null },
+  { tier: 1, title: "Sobrevivente do Mês", minXp: 120, hasTimer: false, feedback: { forca: "Você tem garra e a empresa gira.", vulnerabilidade: "Mas a empresa não roda um dia sem você e o dinheiro some rápido." } },
+  { tier: 2, title: "Chefe de Equipe", minXp: 280, hasTimer: false, feedback: { forca: "Começou a entender que faturamento não é lucro no bolso.", vulnerabilidade: "Ainda confunde a conta da Pessoa Física com a Jurídica (PF x PJ)." } },
+  { tier: 2, title: "Gestor de Sobrevivência", minXp: 500, hasTimer: true, feedback: { forca: "O caixa parou de sangrar por besteira e o preço está mais real.", vulnerabilidade: "Falta capital de giro estruturado para parar de antecipar maquininha." } },
+  { tier: 3, title: "Dono de Negócio", minXp: 800, hasTimer: true, feedback: { forca: "Você finalmente saiu do balcão e olha para o painel de controle.", vulnerabilidade: "Dependência perigosa de poucos clientes grandes." } },
+  { tier: 3, title: "Estrategista de Caixa", minXp: 1200, hasTimer: true, feedback: { forca: "Entende o Efeito Tesoura, domina prazos e tem fôlego financeiro.", vulnerabilidade: "A transição tributária pode comer a sua margem se não repassar." } },
+  { tier: 4, title: "Diretor Executivo", minXp: 1800, hasTimer: true, feedback: { forca: "A empresa gera caixa livre, tem reserva e processos delegados.", vulnerabilidade: "O ego do crescimento rápido pode estourar o custo fixo." } },
+  { tier: 4, title: "Empresário de Elite", minXp: 2600, hasTimer: true, feedback: { forca: "O negócio é um ativo. O dinheiro trabalha e a equipe roda sozinha.", vulnerabilidade: "Manter a inovação e a disciplina financeira blindada." } }
 ];
 
-// --- BANCO DE EMERGÊNCIA (OS 8 PILARES DO PEQUENO NEGÓCIO) ---
-const eliteFallbacks = [
-  {
-    sector: "Precificação & Sobrevivência", criticality: "Extrema", title: "O Câncer do Caixa Único",
-    theory: "O maior erro de quem fatura até 50k é achar que o saldo bancário do dia é lucro. Misturar Pessoa Física (PF) e Pessoa Jurídica (PJ) destrói a capacidade de medir a margem real. Se a empresa paga a escola do seu filho, o custo fixo do negócio fica mascarado e o CNPJ morre de inanição.",
-    context: "Sua empresa faturou R$ 40 mil e fechou o mês no azul. Mas você precisa pagar os funcionários amanhã e o caixa secou. Ao olhar o extrato, você retirou R$ 12 mil picados ao longo do mês passado em transferências para seu gasto pessoal.",
-    character: "Painel de Sinais Vitais",
-    options: [
-      { id: "A", text: "Definir um pró-labore fixo e austero agora. Cortar as despesas na PF imediatamente, devolver o dinheiro gradativamente para a PJ e honrar os funcionários.", xp: 35, isBest: true, impacts: { caixa: 15000, margem: 1.0, compliance: 15 }, feedback: "ATITUDE DE DONO. Sangrou na PF, mas salvou o CNPJ. Você separou os bolsos." },
-      { id: "B", text: "Fazer um empréstimo rápido (capital de giro) na PJ para pagar a folha e prometer que 'mês que vem vai organizar' as contas pessoais.", xp: 10, isBest: false, impacts: { caixa: 5000, margem: -2.0, compliance: -10 }, feedback: "ILUSÃO. Você curou um corte com band-aid sujo. A dívida agora é da empresa." },
-      { id: "C", text: "Atrasar o pagamento dos funcionários para não ter que baixar o seu próprio padrão de vida e cortar suas despesas na PF.", xp: -40, isBest: false, impacts: { caixa: -10000, margem: -3.0, compliance: -40 }, feedback: "FALÊNCIA MORAL. Equipe desmotivada, passivo trabalhista gerado e o negócio perdeu seu maior ativo." }
-    ]
-  },
-  {
-    sector: "Gestão Tributária B2B", criticality: "Alta", title: "O Nocaute da Reforma Tributária",
-    theory: "Pequenos empresários do Simples Nacional correm o risco de perder clientes grandes B2B com o IVA Dual (CBS/IBS). Clientes do Lucro Real exigem o repasse integral dos créditos de impostos. Se a sua ME/EPP não se adaptar para repassar crédito, o cliente vai comprar do concorrente.",
-    context: "Seu maior cliente (30% do seu faturamento mensal) mandou um aviso: 'Com as novas regras do IVA, precisamos que você recolha a CBS por fora do Simples para nos dar o crédito integral, senão vamos buscar outro fornecedor.'",
-    character: "Diretoria do Cliente 'Ancora'",
-    options: [
-      { id: "A", text: "Chamar o contador, alterar o modelo de apuração para liberar o crédito por fora do Simples e renegociar levemente o contrato para equilibrar o custo.", xp: 40, isBest: true, impacts: { caixa: 12000, margem: 0.5, compliance: 20 }, feedback: "MÁXIMA ESTRATÉGIA. Você protegeu 30% da receita adaptando-se às novas regras tributárias." },
-      { id: "B", text: "Dar 10% de desconto do seu próprio bolso no valor da nota para o cliente ficar, sem mexer no modelo de tributação.", xp: 0, isBest: false, impacts: { caixa: -5000, margem: -3.5, compliance: 0 }, feedback: "SUICÍDIO DE MARGEM. Você pagou para trabalhar. O cliente ficou, mas seu lucro desapareceu." },
-      { id: "C", text: "Ignorar o email achando que é blefe, já que 'o Simples protege o pequeno empreendedor'.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -5.0, compliance: -20 }, feedback: "MIOPIA FATAL. O cliente encerrou o contrato e sua empresa ficou com um custo fixo que não consegue mais pagar." }
-    ]
-  },
-  {
-    sector: "Capital de Giro", criticality: "Extrema", title: "O Cemitério na Prateleira",
-    theory: "Caixa é oxigênio, estoque é dinheiro dormindo. Comprar grandes volumes só pelo 'desconto' do fornecedor prende o capital de giro em produtos de curva C (que não giram). O lucro ilusório da compra barata vira desespero financeiro na hora de pagar o boleto.",
-    context: "Faltam R$ 10.000 para fechar o mês no azul. No fundo da loja, você tem R$ 25.000 parados em um lote de mercadorias que você comprou a mais 'porque o preço estava bom', mas que não vende há 90 dias.",
-    character: "Fluxo de Caixa",
-    options: [
-      { id: "A", text: "Realizar um saldão agressivo a preço de custo (ou com pequeno prejuízo) para transformar estoque morto em dinheiro líquido no banco ainda esta semana.", xp: 35, isBest: true, impacts: { caixa: 12000, margem: -1.0, compliance: 10 }, feedback: "VISÃO DE DONO. Você engoliu o orgulho. Prejuízo em estoque parado é melhor do que não ter dinheiro para o giro." },
-      { id: "B", text: "Deixar o estoque lá e tentar vender mais dos produtos principais, contando que o mês que vem vai ser melhor para cobrir o buraco.", xp: -10, isBest: false, impacts: { caixa: -8000, margem: 0, compliance: -5 }, feedback: "NEGACIONISMO. A esperança não paga conta. O mês virou e a dívida aumentou." },
-      { id: "C", text: "Pegar o limite especial do banco a 8% ao mês para pagar as contas e não ter que abaixar o preço do produto empacado.", xp: -45, isBest: false, impacts: { caixa: -12000, margem: -4.5, compliance: -15 }, feedback: "RUÍNA. Tomar dinheiro caro do banco para financiar mercadoria parada é a receita do fechamento de portas." }
-    ]
-  }
-];
+// --- AS 40 DORES DO CAMPO DE BATALHA ---
+const businessPains: Record<number, string[]> = {
+  1: [
+    "O Assalto ao Próprio Caixa: Pagar escola do filho e mercado na conta PJ.",
+    "O Preço do Achismo: Copiar o preço do vizinho esquecendo taxa de maquininha e imposto.",
+    "A Ilusão do Desconto: Dar 15% de desconto por medo de perder a venda e trabalhar de graça.",
+    "O Fornecedor Amigão: Comprar o dobro do que precisa só pelo prazo longo.",
+    "O Salário de Sobras: Tirar o que sobra no fim do mês sem ter pró-labore definido.",
+    "O Vício de Antecipar: Apertar o botão da maquininha sexta-feira e pagar 4% ao mês.",
+    "O Cliente Sanguessuga: O cliente que compra pouco, chora preço e gasta todo seu tempo.",
+    "A Dívida da Sexta: Esquecer de provisionar dinheiro para folha, férias ou 13º.",
+    "Frete Grátis Cego: Oferecer entrega grátis sem calcular custo do motoboy ou correios.",
+    "Desorganização Básica: Pagar multas de boletos (luz, imposto) só porque perdeu o vencimento."
+  ],
+  2: [
+    "A Síndrome de Robin Hood: Vergonha de cobrar cliente amigo que atrasou o fiado/boleto.",
+    "O Cemitério na Prateleira: Dinheiro imobilizado em estoque que não gira há 90 dias.",
+    "O Efeito Tesoura: Vender em 6x para o cliente, mas pagar o fornecedor à vista.",
+    "Contratação por Desespero: Colocar um parente sem treino no atendimento e perder vendas.",
+    "A Batalha dos Centavos: Entrar em guerra de preço com loja gigante em vez de focar em valor.",
+    "O Dinheiro Invisível: Não fazer conciliação para checar se o cartão realmente pagou.",
+    "Risco Trabalhista Ingênuo: Ter funcionário sem contrato cumprindo horário fixo.",
+    "Falsa Ferramenta Milagrosa: Pagar software caro que a equipe não usa e não alimenta.",
+    "O Blefe do Representante: Comprar lançamento sem validar se o seu público quer.",
+    "Demissão de Cliente: Falta de coragem de cortar um cliente que dá lucro zero."
+  ],
+  3: [
+    "O Teto de Vidro do Dono: Recusar aumentar custo fixo para contratar ajuda, travando o negócio.",
+    "Cegueira do Custo Fixo: Aluguel e luz sobem, mas o preço de venda não é reajustado.",
+    "Risco de Concentração: Descobrir que 40% da receita depende de um único cliente.",
+    "A Trava do Simples/MEI: Medo de vender mais para não pular de faixa tributária.",
+    "Armadilha do Ponto Físico: Gastar o caixa em reforma antes de ter reserva de emergência.",
+    "O Funcionário Estrela: Vendedor pede aumento irreal ameaçando levar os clientes.",
+    "A Máquina Quebrada: Falta de fundo de depreciação para repor equipamento vital.",
+    "Crise de Reputação: Uma avaliação mentirosa no Google que começa a espantar clientes.",
+    "Fuga de Inteligência: Braço direito pede demissão para abrir concorrência na mesma rua.",
+    "Antecipação Estratégica: Usar caixa forte para comprar à vista com bom desconto."
+  ],
+  4: [
+    "O Nocaute da Reforma Tributária: Cliente grande exige repasse de crédito de IVA, senão cancela contrato.",
+    "A Armadilha do Ego: Faturar bem 3 meses e querer financiar um SUV de luxo no CNPJ.",
+    "A Concorrência Sonegadora: Vizinho não paga imposto e afunda preço. Como reagir sem sonegar?",
+    "O Canto da Sereia da Filial: Querer abrir a loja 2 antes da loja 1 rodar sem você.",
+    "O Contrato Lobo/Cordeiro: Multinacional exige exclusividade mas zera sua margem.",
+    "O Fundo de Guerra: Lucro acumulado: distribuir como dividendo ou investir em expansão segura?",
+    "A Sucessão Silenciosa: Você sofre um acidente leve e fica 20 dias fora. Quem assina os cheques?",
+    "Guerra de Talentos: Como usar PLR e metas para reter gerente sem ter que dar sociedade.",
+    "Risco do Crescimento a Prazo: Vender R$ 80k parcelado e asfixiar a necessidade de capital de giro.",
+    "O Salto Tributário Real: Hora de calcular se o Simples ainda compensa vs Lucro Presumido."
+  ]
+};
+
+// Fallback de segurança simplificado e focado
+const safetyFallback = {
+  sector: "Sinais Vitais", criticality: "Extrema", title: "O Apagão no Caixa",
+  theory: "O choque de realidade: Vender não é receber, e faturamento não é lucro. A falta de acompanhamento diário do fluxo de caixa transforma qualquer imprevisto em ameaça de falência imediata no pequeno negócio.",
+  context: "Sexta-feira, 16h. O fornecedor avisou que só descarrega a mercadoria mediante PIX à vista, mas o dinheiro da conta foi usado ontem para pagar contas pessoais do dono.",
+  character: "A Realidade do Banco",
+  options: [
+    { id: "A", text: "Devolver o dinheiro pessoal para a PJ hoje, pagar o fornecedor e blindar a conta empresa.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 1.0, compliance: 15 }, feedback: "ATITUDE DE DONO. Você separou os bolsos e manteve a roda girando." },
+    { id: "B", text: "Pegar limite rotativo do cheque especial para cobrir o fornecedor.", xp: -10, isBest: false, impacts: { caixa: 0, margem: -2.5, compliance: -10 }, feedback: "MIOPIA. Dívida cara para pagar despesa pessoal disfarçada." },
+    { id: "C", text: "Cancelar a entrega da mercadoria e ficar sem produto para vender no fim de semana.", xp: -40, isBest: false, impacts: { caixa: -8000, margem: -5.0, compliance: -20 }, feedback: "DESASTRE. Você quebrou a esteira de vendas do fim de semana." }
+  ]
+};
 
 export default function CodigoAzulGame() {
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot'>('login');
@@ -111,14 +139,12 @@ export default function CodigoAzulGame() {
   const [gameStarted, setGameStarted] = useState(false);
   
   const [xp, setXp] = useState(0);
-  // CAIXA ADEQUADO PARA PEQUENOS NEGÓCIOS
   const [caixa, setCaixa] = useState(45000); 
   const [margem, setMargem] = useState(18.0);
   const [compliance, setCompliance] = useState(100);
   const [isGameOver, setIsGameOver] = useState(false);
   const [lastImpacts, setLastImpacts] = useState<any>(null);
   const [showDRE, setShowDRE] = useState(false);
-  const [sessionStartStats, setSessionStartStats] = useState({ caixa: 45000, margem: 18.0 });
 
   // --- MOTOR IA DE DONO PARA DONO ---
   const [currentScenario, setCurrentScenario] = useState<any>(null);
@@ -134,13 +160,16 @@ export default function CodigoAzulGame() {
   const [promotionPending, setPromotionPending] = useState(false);
   const [promotedLevel, setPromotedLevel] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Controle de dores já sorteadas para não repetir
+  const [usedPains, setUsedPains] = useState<string[]>([]);
 
   const saveToDB = async () => {
     if (!email) return;
     try {
       await setDoc(doc(db, "users", email.toLowerCase()), {
         password: password,
-        data: { playerName, phone: telefone, email: email.toLowerCase(), companyName, xp, caixa, margem, compliance, currentStage, sessionStartStats, showDRE }
+        data: { playerName, phone: telefone, email: email.toLowerCase(), companyName, xp, caixa, margem, compliance, currentStage, showDRE, usedPains }
       });
     } catch (e) {
       console.error("Erro no Data Center: ", e);
@@ -148,26 +177,45 @@ export default function CodigoAzulGame() {
   };
 
   useEffect(() => { setIsLoading(false); }, []);
-  useEffect(() => { if (gameStarted && !isGameOver) saveToDB(); }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE]);
+  useEffect(() => { if (gameStarted && !isGameOver) saveToDB(); }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE, usedPains]);
 
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- BUSCA DO CENÁRIO (PÚBLICO ALVO: ATÉ 50K/MÊS) ---
-  const fetchScenarioFromAI = async (stageNum: number) => {
+  // --- BUSCA DO CENÁRIO FOCADA NAS 40 DORES ---
+  const fetchScenarioFromAI = async () => {
     if (isGeneratingScenario) return;
     setIsGeneratingScenario(true);
     setFeedback(null);
     setSupplementaryComment("");
     setTimeLeft(120);
 
-    const promptText = "Você é Pedro Monte, mentor implacável de donos de pequenos negócios. Gere um Estudo de Caso Prático inédito (Fase " + (stageNum + 1) + " de 10) para um empreendedor do " + currentLevel.title + " (empresa: " + companyName + ", Caixa atual R$ " + caixa + "). DIRETRIZ PEDAGÓGICA RIGOROSA: O caso DEVE focar EXCLUSIVAMENTE em uma destas 8 dores: 1. Síndrome do Caixa Único (Mistura PFxPJ), 2. Antecipação de Maquininha (Efeito tesoura), 3. Precificação Ilusória, 4. Inadimplência do Cliente 'Amigo', 5. Estoque Morto, 6. Gargalo Operacional (dono faz tudo), 7. Ilusão do Crescimento (Ego), ou 8. Impacto do IVA Dual/Reforma Tributária na perda de cliente B2B. A linguagem NÃO DEVE ter jargões de Wall Street, mas um choque de realidade direto, de dono para dono. Retorne APENAS um JSON estrito, sem markdown, contendo: { \"sector\": \"Tema (ex: Precificação)\", \"criticality\": \"Alta\", \"title\": \"Título\", \"theory\": \"Texto técnico dando um choque de realidade (mínimo 6 linhas)...\", \"context\": \"Problema diário do pequeno negócio...\", \"character\": \"Autoridade (ex: O Fornecedor, O Contador, O Cliente)\", \"options\": [ { \"id\": \"A\", \"text\": \"Ação de Dono (estratégica)...\", \"xp\": 35, \"isBest\": true, \"impacts\": { \"caixa\": 5000, \"margem\": 1.5, \"compliance\": 10 }, \"feedback\": \"Parecer...\" }, { \"id\": \"B\", \"text\": \"Ação paliativa...\", \"xp\": 10, \"isBest\": false, \"impacts\": { \"caixa\": 0, \"margem\": -0.5, \"compliance\": 0 }, \"feedback\": \"Parecer...\" }, { \"id\": \"C\", \"text\": \"Ação ingênua/desastrosa...\", \"xp\": -40, \"isBest\": false, \"impacts\": { \"caixa\": -10000, \"margem\": -4.0, \"compliance\": -25 }, \"feedback\": \"Parecer...\" } ] }";
+    // 1. Identificar o tier atual (1 a 4)
+    const tier = currentLevel.tier as 1 | 2 | 3 | 4;
+    
+    // 2. Pegar a lista de dores desse tier
+    const availablePains = businessPains[tier].filter(pain => !usedPains.includes(pain));
+    
+    // Se esgotar as 10 do tier atual, reseta o histórico (dificilmente ocorre em 10 rodadas)
+    let selectedPain = "";
+    if (availablePains.length === 0) {
+      selectedPain = businessPains[tier][Math.floor(Math.random() * businessPains[tier].length)];
+    } else {
+      selectedPain = availablePains[Math.floor(Math.random() * availablePains.length)];
+      setUsedPains(prev => [...prev, selectedPain]);
+    }
+
+    const promptText = `Você é Pedro Monte, mentor implacável de donos de pequenos negócios. Gere um Estudo de Caso Prático inédito para o aluno (Empresa: ${companyName}, Nível atual: ${currentLevel.title}, Caixa: R$ ${caixa}).
+    REGRA DE OURO (Obrigatório): O cenário DEVE ser exclusivamente sobre a seguinte dor: "${selectedPain}".
+    DIRETRIZES DE ESTILO: Zero jargões corporativos (sem "WACC", "IFRS", etc). Use linguagem de 'dono para dono', dando um choque de realidade. 
+    Retorne APENAS um JSON estrito, sem markdown, com esta estrutura:
+    { "sector": "Tema do Problema", "criticality": "Alta/Extrema", "title": "Título de Impacto", "theory": "Explicação do erro/conceito que quebra a empresa nessa dor (mínimo 5 linhas de choque de realidade)...", "context": "O problema estourando hoje na mesa do dono...", "character": "Quem cobra a atitude (Fornecedor, Contador, Cliente, O Próprio Caixa)", "options": [ { "id": "A", "text": "Atitude de Dono que resolve a raiz...", "xp": 35, "isBest": true, "impacts": { "caixa": 5000, "margem": 1.5, "compliance": 10 }, "feedback": "Parecer do mentor (elogio à atitude de dono)..." }, { "id": "B", "text": "Decisão paliativa ou fraca...", "xp": 5, "isBest": false, "impacts": { "caixa": -1000, "margem": -0.5, "compliance": 0 }, "feedback": "Parecer do mentor (crítica à falta de postura)..." }, { "id": "C", "text": "Decisão que acelera a quebra...", "xp": -40, "isBest": false, "impacts": { "caixa": -8000, "margem": -4.0, "compliance": -25 }, "feedback": "Parecer do mentor (sinalizando a falência próxima)..." } ] }`;
 
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { temperature: 0.95 } })
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { temperature: 0.85 } })
       });
 
       if (!response.ok) throw new Error("API Limit");
@@ -183,12 +231,10 @@ export default function CodigoAzulGame() {
       
       setCurrentScenario(parsedScenario);
     } catch (error) {
-      console.warn("API Offline. Carregando Fallback do Pequeno Negócio.");
-      const fallbackIndex = stageNum % eliteFallbacks.length;
-      const selectedFallback = JSON.parse(JSON.stringify(eliteFallbacks[fallbackIndex])); 
-      selectedFallback.title = `${selectedFallback.title} — Fase ${stageNum + 1}`; 
-      selectedFallback.options = shuffleArray(selectedFallback.options);
-      setCurrentScenario(selectedFallback);
+      console.warn("API Offline. Fallback carregado.");
+      let fallback = JSON.parse(JSON.stringify(safetyFallback));
+      fallback.options = shuffleArray(fallback.options);
+      setCurrentScenario(fallback);
     } finally {
       setIsGeneratingScenario(false);
     }
@@ -196,7 +242,7 @@ export default function CodigoAzulGame() {
 
   useEffect(() => {
     if (gameStarted && !isGameOver && !showDRE && !currentScenario && !isGeneratingScenario) {
-      fetchScenarioFromAI(currentStage);
+      fetchScenarioFromAI();
     }
   }, [gameStarted, currentStage, showDRE]);
 
@@ -211,7 +257,7 @@ export default function CodigoAzulGame() {
 
     if (supplementaryComment.trim()) {
       try {
-        const promptEval = "Você é Pedro Monte, mentor de pequenos negócios. O dono da empresa escolheu a ação '" + selectedOption.text + "'. Comentário complementar dele: '" + supplementaryComment + "'. Avalie se o dono teve visão estratégica de sobrevivência/crescimento. Retorne APENAS JSON: { \"isAssertive\": true/false, \"bonusXp\": 15, \"commentEvaluation\": \"Feedback de mentor direto e reto\" }";
+        const promptEval = `Você é Pedro Monte, mentor de negócios. O dono escolheu a ação '${selectedOption.text}'. Comentário/Tese dele: '${supplementaryComment}'. Avalie a visão de dono dele. Retorne APENAS JSON: { "isAssertive": true/false, "bonusXp": 15, "commentEvaluation": "Feedback reto e direto ao ponto." }`;
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
           method: "POST",
@@ -227,7 +273,7 @@ export default function CodigoAzulGame() {
            const evaluation = JSON.parse(jsonMatch[0]);
            if (evaluation.isAssertive) {
              finalXp += evaluation.bonusXp;
-             bonusMessage = `\n\n⭐ BÔNUS DO MENTOR: Sua visão complementar foi precisa (+${evaluation.bonusXp} XP).\nAnálise: ${evaluation.commentEvaluation}`;
+             bonusMessage = `\n\n⭐ BÔNUS DO MENTOR: Visão de dono validada (+${evaluation.bonusXp} XP).\nAnálise: ${evaluation.commentEvaluation}`;
            } else {
              bonusMessage = `\n\n💡 ALERTA DO MENTOR: ${evaluation.commentEvaluation}`;
            }
@@ -262,7 +308,7 @@ export default function CodigoAzulGame() {
             setCompanyName(d.companyName); setXp(d.xp || 0); 
             setCaixa(d.caixa ?? 45000); setMargem(d.margem ?? 18.0); setCompliance(d.compliance ?? 100);
             setCurrentStage(d.currentStage || 0); 
-            setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 45000, margem: d.margem ?? 18.0 });
+            setUsedPains(d.usedPains || []);
             setShowDRE(d.showDRE || false);
             setCurrentScenario(null); 
             if((d.caixa ?? 45000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
@@ -275,10 +321,10 @@ export default function CodigoAzulGame() {
         else {
           await setDoc(docRef, {
             password: cleanPassword,
-            data: { playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail, companyName: "", xp: 0, caixa: 45000, margem: 18.0, compliance: 100, currentStage: 0, sessionStartStats: { caixa: 45000, margem: 18.0 }, showDRE: false }
+            data: { playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail, companyName: "", xp: 0, caixa: 45000, margem: 18.0, compliance: 100, currentStage: 0, showDRE: false, usedPains: [] }
           });
           setPlayerName(nome.trim()); setXp(0); setCaixa(45000); setMargem(18.0); setCompliance(100);
-          setCurrentStage(0); setSessionStartStats({ caixa: 45000, margem: 18.0 });
+          setCurrentStage(0); setUsedPains([]);
           setPlayerNameInput(nome.trim()); setNeedsCompanySetup(true);
         }
       } else if (authMode === 'forgot') {
@@ -296,7 +342,6 @@ export default function CodigoAzulGame() {
     setCompanyName(companyNameInput.trim()); setPlayerName(playerNameInput.trim());
     setNeedsCompanySetup(false); setCurrentScenario(null); setTimeLeft(120); 
     setGameStarted(true); setIsGameOver(false); setShowDRE(false);
-    fetchScenarioFromAI(0);
   };
 
   const handleLogout = async () => {
@@ -308,7 +353,7 @@ export default function CodigoAzulGame() {
   const handleResetCareer = () => {
     if (confirm("Você vai zerar seu CNPJ e reiniciar sua jornada empreendedora. Confirma?")) {
       setXp(0); setCaixa(45000); setMargem(18.0); setCompliance(100);
-      setCurrentStage(0); setCurrentScenario(null); setSessionStartStats({ caixa: 45000, margem: 18.0 });
+      setCurrentStage(0); setCurrentScenario(null); setUsedPains([]);
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); 
       setGameStarted(false); setCompanyNameInput(""); setPlayerNameInput(playerName); setNeedsCompanySetup(true);
     }
@@ -349,8 +394,8 @@ export default function CodigoAzulGame() {
     setCaixa(newCaixa); setMargem(newMargem); setCompliance(newCompliance);
     setXp(newXp); setLastXpChange(totalXpGained); setLastImpacts(impacts);
 
-    if (newCaixa <= 0) { setIsGameOver(true); setFeedback("CNPJ NEGATIVADO. Seu fluxo de caixa zerou completamente. A empresa fechou."); return; }
-    if (newCompliance <= 0) { setIsGameOver(true); setFeedback("FECHAMENTO FISCAL. Problemas tributários e dívidas paralisaram o negócio."); return; }
+    if (newCaixa <= 0) { setIsGameOver(true); setFeedback("CNPJ NEGATIVADO. Seu fluxo de caixa zerou completamente. A empresa quebrou."); return; }
+    if (newCompliance <= 0) { setIsGameOver(true); setFeedback("FECHAMENTO FISCAL. Problemas tributários e processos paralisaram o negócio."); return; }
 
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
     if (newCalculatedLevel.minXp > currentLevel.minXp) {
@@ -362,10 +407,8 @@ export default function CodigoAzulGame() {
   const proceedToNextQuestion = () => {
     setPromotionPending(false); setPromotedLevel(null); setFeedback(null); setLastXpChange(null); setLastImpacts(null); setSupplementaryComment("");
     if (currentStage < 9) { 
-      const nextStage = currentStage + 1;
-      setCurrentStage(nextStage); 
+      setCurrentStage(prev => prev + 1); 
       setCurrentScenario(null); 
-      fetchScenarioFromAI(nextStage);
     } else { setShowDRE(true); }
   };
 
@@ -374,9 +417,9 @@ export default function CodigoAzulGame() {
     proceedToNextQuestion();
   };
 
-  const handleStartNewQuarter = () => { setShowDRE(false); setSessionStartStats({ caixa, margem }); setCurrentStage(0); fetchScenarioFromAI(0); };
+  const handleStartNewQuarter = () => { setShowDRE(false); setCurrentStage(0); setCurrentScenario(null); };
 
-  // Barras HUD adaptadas para a meta de 100k
+  // Barras HUD base 100k
   const caixaBarFill = Math.min(100, (caixa / 100000) * 100);
   const margemBarFill = Math.min(100, Math.max(0, (margem / 40.0) * 100));
 
@@ -476,8 +519,18 @@ export default function CodigoAzulGame() {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative">
         <div className="z-10 bg-[#0f172a]/80 p-8 md:p-12 rounded-3xl border border-white/5 max-w-2xl w-full text-center">
-          <h1 className="text-2xl md:text-4xl font-light text-slate-100 mb-8 uppercase">Evolução Desbloqueada</h1>
-          <div className="bg-[#0f172a]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left"><span className="text-cyan-400 text-xl font-semibold">{promotedLevel?.title}</span></div>
+          <h1 className="text-2xl md:text-4xl font-light text-slate-100 mb-8 uppercase">Maturidade Desbloqueada</h1>
+          <div className="bg-[#0f172a]/50 p-6 rounded-xl border border-slate-800 mb-8 text-left">
+            <span className="text-cyan-400 text-xl font-semibold">🏆 {promotedLevel?.title}</span>
+            {promotedLevel?.feedback && (
+               <div className="mt-4 border-t border-slate-700/50 pt-4">
+                 <p className="text-emerald-400 text-[10px] uppercase font-mono mb-1">Avanço:</p>
+                 <p className="text-slate-300 text-xs mb-3">{promotedLevel.feedback.forca}</p>
+                 <p className="text-amber-400 text-[10px] uppercase font-mono mb-1">Ponto de Atenção:</p>
+                 <p className="text-slate-300 text-xs">{promotedLevel.feedback.vulnerabilidade}</p>
+               </div>
+            )}
+          </div>
           <button onClick={proceedToNextQuestion} className="bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-mono py-3.5 px-10 rounded-xl uppercase">Continuar Operando</button>
         </div>
       </div>
