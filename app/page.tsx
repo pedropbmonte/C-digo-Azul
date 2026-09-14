@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// IMPORTAÇÕES DO FIREBASE
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
@@ -45,13 +44,61 @@ const playPromotionSound = () => {
 // --- CURVA DE CARREIRA ---
 const levels = [
   { tier: 1, title: "Estagiário", minXp: 0, hasTimer: false, feedback: null },
-  { tier: 1, title: "Assistente Financeiro", minXp: 120, hasTimer: false, feedback: { forca: "Execução metódica de conciliações e rotinas de contas a pagar/receber.", vulnerabilidade: "Sua leitura ainda é de curto prazo (regime de caixa). É preciso absorver o impacto das obrigações futuras." } },
-  { tier: 2, title: "Analista Financeiro Jr.", minXp: 280, hasTimer: false, feedback: { forca: "Domínio dos fluxos de tesouraria e identificação ágil de descasamentos.", vulnerabilidade: "Falta visão de estrutura de custos indiretos, provisões e impacto tributário na precificação." } },
-  { tier: 2, title: "Analista Financeiro Pleno", minXp: 500, hasTimer: true, feedback: { forca: "Análise consistente de margem de contribuição, Custeio ABC e sensibilidade de caixa.", vulnerabilidade: "Planejamento orçamentário plurianual e projeção de impactos macroeconômicos." } },
-  { tier: 3, title: "Business Partner / Analista Sr.", minXp: 800, hasTimer: true, feedback: { forca: "Ponte estratégica entre comercial, RH corporativo e diretoria financeira.", vulnerabilidade: "Conhecimento avançado de CPCs complexos, auditoria atuária e proteção cambial estrutural." } },
-  { tier: 3, title: "Controller", minXp: 1200, hasTimer: true, feedback: { forca: "Blindagem de compliance, controle interno (SoD), auditoria externa e mitigação fiscal agressiva.", vulnerabilidade: "Alocação de capital em M&A e otimização de custo médio ponderado de capital (WACC)." } },
-  { tier: 4, title: "CFO", minXp: 1800, hasTimer: true, feedback: { forca: "Engenharia de capital de elite, escudos fiscais, gestão de covenants e funding estruturado.", vulnerabilidade: "Governança executiva máxima, política sucessória e relacionamento direto com o conselho e acionistas." } },
-  { tier: 4, title: "CEO / Board Member", minXp: 2600, hasTimer: true, feedback: { forca: "Visão sistêmica institucional plena e liderança sobre o valor de mercado (Market Cap).", vulnerabilidade: "O desafio é a perpetuidade institucional diante de transformações regulatórias seculares e crises geopolíticas." } }
+  { tier: 1, title: "Assistente Financeiro", minXp: 120, hasTimer: false, feedback: { forca: "Execução metódica de conciliações e rotinas de contas a pagar/receber.", vulnerabilidade: "Sua leitura ainda é de curto prazo (regime de caixa)." } },
+  { tier: 2, title: "Analista Financeiro Jr.", minXp: 280, hasTimer: false, feedback: { forca: "Domínio dos fluxos de tesouraria e identificação ágil de descasamentos.", vulnerabilidade: "Falta visão de estrutura de custos indiretos." } },
+  { tier: 2, title: "Analista Financeiro Pleno", minXp: 500, hasTimer: true, feedback: { forca: "Análise consistente de margem de contribuição e sensibilidade de caixa.", vulnerabilidade: "Planejamento orçamentário plurianual e tributação." } },
+  { tier: 3, title: "Business Partner / Analista Sr.", minXp: 800, hasTimer: true, feedback: { forca: "Ponte estratégica entre comercial, RH corporativo e diretoria financeira.", vulnerabilidade: "Conhecimento avançado de CPCs complexos e proteção cambial." } },
+  { tier: 3, title: "Controller", minXp: 1200, hasTimer: true, feedback: { forca: "Blindagem de compliance, controle interno (SoD) e auditoria externa.", vulnerabilidade: "Alocação de capital em M&A e otimização de custo médio ponderado de capital (WACC)." } },
+  { tier: 4, title: "CFO", minXp: 1800, hasTimer: true, feedback: { forca: "Engenharia de capital de elite, escudos fiscais e funding estruturado.", vulnerabilidade: "Governança executiva máxima e relacionamento com investidores." } },
+  { tier: 4, title: "CEO / Board Member", minXp: 2600, hasTimer: true, feedback: { forca: "Visão sistêmica institucional plena e liderança de mercado.", vulnerabilidade: "A perpetuidade institucional diante de transformações seculares." } }
+];
+
+// --- BANCO DE EMERGÊNCIA (FALLBACKS ROTATIVOS DE ALTA GESTÃO) ---
+const eliteFallbacks = [
+  {
+    sector: "Controladoria & Solvência", criticality: "Extrema", title: "Gestão Estratégica do Ciclo de Caixa",
+    theory: "O Ciclo de Conversão de Caixa (CCC) regula a solvência patrimonial conforme o CPC 00. Crescer vendas alongando recebimentos (PMR) e encurtando pagamentos (PMP) gera o Efeito Tesoura: a DRE mostra lucro, mas o FCF (Fluxo de Caixa Livre) afunda, exigindo capital de giro estressado.",
+    context: "Sua rede de distribuição faturou 40% a mais. No entanto, o caixa amanheceu descoberto em R$ 1,2 Milhão. Fornecedores cortaram o prazo de 30 para 10 dias e os clientes estão pagando em 75 dias. O banco oferece crédito a 5% ao mês.",
+    character: "Diretoria Financeira",
+    options: [
+      { id: "A", text: "Travar crédito para novos clientes e antecipar recebíveis selecionados com trava de spread.", xp: 35, isBest: true, impacts: { caixa: 1200000, margem: -0.5, compliance: 10 }, feedback: "CIRÚRGICO. Estancou o Efeito Tesoura e protegeu a liquidez sem endividamento bancário agressivo." },
+      { id: "B", text: "Aceitar a linha de crédito rotativo a 5% a.m. para cobrir os boletos imediatos e não parar a fábrica.", xp: 10, isBest: false, impacts: { caixa: 1200000, margem: -2.5, compliance: 0 }, feedback: "PALIATIVO CARO. Comprou tempo com dívida tóxica, destruindo a margem líquida da operação." },
+      { id: "C", text: "Manter as vendas a prazo para diluir custos fixos e ignorar o buraco imediato no caixa.", xp: -40, isBest: false, impacts: { caixa: -2500000, margem: -5.0, compliance: -30 }, feedback: "RUÍNA. Acelerou a falência por falta aguda de capital de giro estrutural." }
+    ]
+  },
+  {
+    sector: "Contabilidade Societária", criticality: "Alta", title: "Reconhecimento de Perdas Esperadas (IFRS 9)",
+    theory: "Conforme o IFRS 9 / CPC 48, a mensuração de ativos financeiros exige a provisão prospectiva de Perdas de Crédito Esperadas (PECLD). Postergar esse reconhecimento superavalia os ativos e mascara o Ebitda, configurando distorção passível de ressalva da auditoria independente.",
+    context: "A empresa expandiu vendas para varejistas em crise estrutural. O DRE mostra lucro recorde, mas a auditoria externa exige a constituição de R$ 1,8 Milhão em PECLD antes de assinar o balanço anual amanhã.",
+    character: "Auditoria Externa da CVM",
+    options: [
+      { id: "A", text: "Acatar a exigência, constituir a PECLD integral e assumir a queda do lucro no trimestre.", xp: 35, isBest: true, impacts: { caixa: 0, margem: -2.0, compliance: 25 }, feedback: "GOVERNANÇA PLENA. Ajustou o balanço à realidade econômica, garantindo conformidade com a CVM." },
+      { id: "B", text: "Negociar com a auditoria para lançar a provisão de forma parcelada nos próximos 4 trimestres.", xp: 10, isBest: false, impacts: { caixa: 0, margem: -0.5, compliance: -10 }, feedback: "MIOPIA. Amenizou a queda de margem, mas deixou um passivo oculto que enfraquece o balanço perante bancos." },
+      { id: "C", text: "Recusar o lançamento contábil e demitir a firma de auditoria para contratar uma mais 'flexível'.", xp: -45, isBest: false, impacts: { caixa: -500000, margem: 0, compliance: -50 }, feedback: "CRIME DE FRAUDE CORPORATIVA. Violação direta das normas internacionais e quebra fiduciária com acionistas." }
+    ]
+  },
+  {
+    sector: "Engenharia Fiscal", criticality: "Extrema", title: "Transição para IVA Dual e Securitização",
+    theory: "A EC 132 (Reforma Tributária) instituiu o IVA Dual (CBS/IBS) com não cumulatividade plena. O acúmulo de créditos fiscais antigos não homologados exige auditoria ativa, pois representam dinheiro imobilizado que deteriora o WACC (Custo de Capital) da corporação.",
+    context: "Sua indústria possui R$ 4 Milhões em créditos acumulados de ICMS/PIS/COFINS travados na SEFAZ. O Diretor Comercial quer abaixar o preço de venda em 10%, contando com o uso imediato desses créditos sob a nova lei.",
+    character: "Comitê Tributário",
+    options: [
+      { id: "A", text: "Vetar o corte de preço. Auditar a base e estruturar a monetização jurídica (compensação cruzada) antes de mexer na margem.", xp: 35, isBest: true, impacts: { caixa: 2000000, margem: 1.0, compliance: 15 }, feedback: "BLINDAGEM TRIBUTÁRIA. Transformou um ativo fictício em caixa real, mantendo a rentabilidade intacta." },
+      { id: "B", text: "Aprovar metade do corte de preço (5%) para não perder mercado, esperando que o Estado libere os créditos logo.", xp: 0, isBest: false, impacts: { caixa: -800000, margem: -1.5, compliance: 0 }, feedback: "RISCO ALTO. Sangrou a margem contando com um evento futuro incerto (aprovação do Fisco)." },
+      { id: "C", text: "Aprovar o corte de 10% e compensar os impostos por conta própria, sem a homologação prévia da Receita Federal.", xp: -40, isBest: false, impacts: { caixa: -1500000, margem: -3.0, compliance: -40 }, feedback: "AUTO DE INFRAÇÃO. A compensação indevida gera multas punitivas de 150% sobre o valor compensado." }
+    ]
+  },
+  {
+    sector: "Finanças Estruturadas (M&A)", criticality: "Extrema", title: "Covenants e Risco de Cross-Default",
+    theory: "Covenants são cláusulas restritivas em contratos de dívida (Debêntures). Se o índice de 'Dívida Líquida / EBITDA' ultrapassar o limite, aciona-se o vencimento antecipado cruzado (Cross-Default). Defender os covenants é a função máxima da Engenharia Financeira.",
+    context: "Para adquirir um concorrente, a empresa lançou debêntures com limite de alavancagem de 2,5x. O trimestre fechou em 2,8x. Os credores exigem o aporte de garantias ou vão executar R$ 20 Milhões da dívida amanhã.",
+    character: "Sindicato de Debenturistas",
+    options: [
+      { id: "A", text: "Abrir negociação imediata de 'Waiver' (perdão temporário), oferecendo garantias reais alienadas aos bancos.", xp: 40, isBest: true, impacts: { caixa: -300000, margem: 0, compliance: 20 }, feedback: "MÁXIMA EFICIÊNCIA FIDUCIÁRIA. Você operou como um CFO sênior, contendo a execução da dívida e protegendo o caixa." },
+      { id: "B", text: "Maquiar o balanço, jogando despesas para o próximo semestre para forçar o EBITDA para cima e baixar o índice artificialmente.", xp: -50, isBest: false, impacts: { caixa: -1000000, margem: 0, compliance: -60 }, feedback: "CRIME FINANCEIRO E FALÊNCIA. A maquiagem aciona fraude à lei, responsabilizando os diretores civil e criminalmente." },
+      { id: "C", text: "Tomar uma nova dívida rotativa no mercado paralelo para quitar as debêntures antigas à vista.", xp: -35, isBest: false, impacts: { caixa: -4000000, margem: -5.0, compliance: -10 }, feedback: "DESTRUIÇÃO DE VALOR. Substituir dívida de longo prazo por juros rotativos asfixiou completamente a operação." }
+    ]
+  }
 ];
 
 export default function CodigoAzulGame() {
@@ -74,15 +121,15 @@ export default function CodigoAzulGame() {
   const [gameStarted, setGameStarted] = useState(false);
   
   const [xp, setXp] = useState(0);
-  const [caixa, setCaixa] = useState(5000000);
-  const [margem, setMargem] = useState(20.0);
+  const [caixa, setCaixa] = useState(7000000);
+  const [margem, setMargem] = useState(22.0);
   const [compliance, setCompliance] = useState(100);
   const [isGameOver, setIsGameOver] = useState(false);
   const [lastImpacts, setLastImpacts] = useState<any>(null);
   const [showDRE, setShowDRE] = useState(false);
-  const [sessionStartStats, setSessionStartStats] = useState({ caixa: 5000000, margem: 20.0 });
+  const [sessionStartStats, setSessionStartStats] = useState({ caixa: 7000000, margem: 22.0 });
 
-  // --- MOTOR IA ESCOLA DE ESTRATEGISTAS ---
+  // --- MOTOR IA ESTRATÉGICA ---
   const [currentScenario, setCurrentScenario] = useState<any>(null);
   const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
   const [supplementaryComment, setSupplementaryComment] = useState(""); 
@@ -102,11 +149,7 @@ export default function CodigoAzulGame() {
     try {
       await setDoc(doc(db, "users", email.toLowerCase()), {
         password: password,
-        data: { 
-          playerName, phone: telefone, email: email.toLowerCase(),
-          companyName, xp, caixa, margem, compliance, 
-          currentStage, sessionStartStats, showDRE 
-        }
+        data: { playerName, phone: telefone, email: email.toLowerCase(), companyName, xp, caixa, margem, compliance, currentStage, sessionStartStats, showDRE }
       });
     } catch (e) {
       console.error("Erro no Data Center: ", e);
@@ -114,16 +157,12 @@ export default function CodigoAzulGame() {
   };
 
   useEffect(() => { setIsLoading(false); }, []);
-
-  useEffect(() => {
-    if (gameStarted && !isGameOver) saveToDB();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE]);
+  useEffect(() => { if (gameStarted && !isGameOver) saveToDB(); }, [xp, caixa, margem, compliance, currentStage, gameStarted, isGameOver, showDRE]);
 
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
 
-  // --- GERAÇÃO DE CASO DINÂMICA (RESPEITANDO O NÍVEL DO JOGADOR) ---
+  // --- FUNÇÃO DE BUSCA BLINDADA COM EXTRATOR REGEX ---
   const fetchScenarioFromAI = async (stageNum: number) => {
     if (isGeneratingScenario) return;
     setIsGeneratingScenario(true);
@@ -131,71 +170,41 @@ export default function CodigoAzulGame() {
     setSupplementaryComment("");
     setTimeLeft(120);
 
-    let thematicFocus = "";
-    let theoreticalDepth = "";
-
-    if (currentLevel.tier === 1) {
-      thematicFocus = "rotinas operacionais, contas a pagar e receber, conciliação bancária e fluxo de caixa";
-      theoreticalDepth = "uma explicação clara focada nos conceitos fundamentais da administração financeira e rotina de caixa";
-    } else if (currentLevel.tier === 2) {
-      thematicFocus = "gestão de tesouraria, custeio ABC, margem de contribuição e provisões (PECLD)";
-      theoreticalDepth = "uma fundamentação técnica sólida, citando princípios contábeis e a lógica de análise de viabilidade";
-    } else if (currentLevel.tier === 3) {
-      thematicFocus = "controladoria, compliance (SoD), auditoria interna e normas IFRS/CPC intermediárias";
-      theoreticalDepth = "um texto acadêmico denso, citando explicitamente normas (CPCs, IFRS) e detalhando o impacto no balanço";
-    } else {
-      thematicFocus = "finanças corporativas avançadas, M&A, WACC, covenants bancários e governança de elite";
-      theoreticalDepth = "uma tese teórica de altíssima complexidade, citando regulação da CVM ou BACEN, com impacto estrutural em valuation";
-    }
-
-    const promptText = "Você é o reitor sênior da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático inédito (Fase " + (stageNum + 1) + " de 10) adequado à maturidade do aluno.\n" +
-    "Nível do aluno: " + currentLevel.title + " (Tier " + currentLevel.tier + ").\n" +
-    "Caixa R$ " + caixa + ", Margem " + margem + "%, Compliance " + compliance + "%.\n" +
-    "DIRETRIZ PEDAGÓGICA:\n" +
-    "- Focar ESTRITAMENTE nos temas: " + thematicFocus + ".\n" +
-    "- O campo 'theory' deve conter " + theoreticalDepth + ". Mínimo de 6 linhas, tom executivo.\n" +
-    "- O campo 'context' deve apresentar um problema realista e adequado à alçada de decisão deste cargo.\n" +
-    "- Crie 3 opções de respostas objetivas adequadas a esta senioridade (uma ótima, uma mediana, uma desastrosa).\n" +
-    "Retorne APENAS um JSON válido nesta estrutura exata: { \"sector\": \"Setor\", \"criticality\": \"Risco\", \"title\": \"Título\", \"theory\": \"Texto acadêmico...\", \"context\": \"Problema prático...\", \"character\": \"Autoridade\", \"options\": [ { \"id\": \"A\", \"text\": \"Estratégia...\", \"xp\": 35, \"isBest\": true, \"impacts\": { \"caixa\": 100000, \"margem\": 1.0, \"compliance\": 10 }, \"feedback\": \"Parecer técnico...\" } ] }";
+    const promptText = `Você é o reitor sênior da escola de negócios 'Código Azul'. Gere um Estudo de Caso Prático inédito (Fase ${stageNum + 1} de 10) focado no cargo de ${currentLevel.title}. A empresa se chama ${companyName} com Caixa R$ ${caixa}, Margem ${margem}% e Compliance ${compliance}%. Retorne APENAS um JSON estrito, sem formatação markdown ou crases. Estrutura exigida: { "sector": "Setor", "criticality": "Alta", "title": "Título Imponente", "theory": "Texto acadêmico citando normas...", "context": "Problema tenso na empresa...", "character": "Autoridade", "options": [ { "id": "A", "text": "Ação excelente...", "xp": 35, "isBest": true, "impacts": { "caixa": 1000000, "margem": 1.5, "compliance": 10 }, "feedback": "Parecer..." }, { "id": "B", "text": "Ação fraca...", "xp": 10, "isBest": false, "impacts": { "caixa": 0, "margem": -0.5, "compliance": 0 }, "feedback": "Parecer..." }, { "id": "C", "text": "Ação desastrosa...", "xp": -40, "isBest": false, "impacts": { "caixa": -2000000, "margem": -4.0, "compliance": -25 }, "feedback": "Parecer..." } ] }`;
 
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { temperature: 0.95 } })
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { temperature: 0.9 } })
       });
+
+      if (!response.ok) throw new Error("API Limit ou Instabilidade");
 
       const data = await response.json();
       let aiText = data.candidates[0].content.parts[0].text;
       
-      // SOLUÇÃO CIRÚRGICA DO ERRO DE COMPILAÇÃO (Evitando o bug do regex literal no TS)
-      aiText = aiText.replace(new RegExp("```json", "g"), "").replace(new RegExp("```", "g"), "").trim();
+      // EXTRATOR UNIVERSAL DE JSON (Ignora Markdown e textos soltos da IA)
+      const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("O Gemini não devolveu um JSON válido.");
       
-      const parsedScenario = JSON.parse(aiText);
+      const parsedScenario = JSON.parse(jsonMatch[0]);
       parsedScenario.options = shuffleArray(parsedScenario.options);
       
       setCurrentScenario(parsedScenario);
     } catch (error) {
-      console.error("Erro ao gerar cenário da IA:", error);
-      setCurrentScenario({
-        sector: "Rotina Financeira",
-        criticality: "Média",
-        title: "Acompanhamento de Fluxo Operacional",
-        theory: "A base de toda empresa saudável é o encontro de contas e o registro fiel de entradas e saídas. O descontrole operacional básico é a primeira causa de mortalidade dos negócios.",
-        context: "Sua mesa identificou um gargalo no processamento de notas fiscais atrasadas, gerando risco de multas.",
-        character: "Supervisão Imediata",
-        options: shuffleArray([
-          { id: "A", text: "Organizar mutirão de conciliação e priorizar guias com juros.", xp: 35, isBest: true, impacts: { caixa: 10000, margem: 0.5, compliance: 10 }, feedback: "Eficiência operacional. O básico executado com perfeição protege a empresa." },
-          { id: "B", text: "Pagar tudo com atraso para não perder tempo conciliando.", xp: -20, isBest: false, impacts: { caixa: -15000, margem: -1.0, compliance: -5 }, feedback: "Negligência destrói o caixa operacional." },
-          { id: "C", text: "Delegar a tarefa sem acompanhamento.", xp: -10, isBest: false, impacts: { caixa: -5000, margem: 0, compliance: -10 }, feedback: "Falta de proatividade e risco de erro." }
-        ])
-      });
+      console.warn("API Oscilou. Carregando Fallback Dinâmico de Contingência.");
+      // Mapeia o banco de contingência dinamicamente com base no estágio para NÃO repetir a pergunta
+      const fallbackIndex = stageNum % eliteFallbacks.length;
+      const selectedFallback = JSON.parse(JSON.stringify(eliteFallbacks[fallbackIndex])); // Copia profunda
+      selectedFallback.title = `${selectedFallback.title} — Fase ${stageNum + 1}`; // Força mudança visual
+      selectedFallback.options = shuffleArray(selectedFallback.options);
+      setCurrentScenario(selectedFallback);
     } finally {
       setIsGeneratingScenario(false);
     }
   };
 
-  // Disparo seguro vinculado à alteração do estágio
   useEffect(() => {
     if (gameStarted && !isGameOver && !showDRE && !currentScenario && !isGeneratingScenario) {
       fetchScenarioFromAI(currentStage);
@@ -203,7 +212,7 @@ export default function CodigoAzulGame() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameStarted, currentStage, showDRE]);
 
-  // --- AVALIAÇÃO DE BÔNUS DO COMENTÁRIO COMPLEMENTAR ---
+  // --- AVALIAÇÃO DE COMENTÁRIO COMPLEMENTAR ---
   const handleOptionSelectWithComment = async (selectedOption: any) => {
     if (isEvaluatingChoice || isGameOver) return;
     setIsEvaluatingChoice(true);
@@ -214,7 +223,7 @@ export default function CodigoAzulGame() {
 
     if (supplementaryComment.trim()) {
       try {
-        const promptEval = "Você é Pedro Monte, reitor do 'Código Azul'. O aluno escolheu a opção '" + selectedOption.text + "' para o problema: '" + currentScenario.context + "'. Comentário complementar: '" + supplementaryComment + "'. Avalie se o comentário é tecnicamente ASSERTIVO para o cargo dele. Retorne APENAS um JSON estrito: { \"isAssertive\": true/false, \"bonusXp\": número entre 10 e 20, \"commentEvaluation\": \"Feedback de 1 parágrafo\" }";
+        const promptEval = `O aluno escolheu a opção '${selectedOption.text}'. Comentário dele: '${supplementaryComment}'. Retorne APENAS um JSON: { "isAssertive": true/false, "bonusXp": 15, "commentEvaluation": "Feedback do reitor..." }`;
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
           method: "POST",
@@ -225,20 +234,17 @@ export default function CodigoAzulGame() {
         const data = await response.json();
         let aiText = data.candidates[0].content.parts[0].text;
         
-        // SOLUÇÃO CIRÚRGICA DO ERRO DE COMPILAÇÃO AQUI TAMBÉM
-        aiText = aiText.replace(new RegExp("```json", "g"), "").replace(new RegExp("```", "g"), "").trim();
-        
-        const evaluation = JSON.parse(aiText);
-
-        if (evaluation.isAssertive) {
-          finalXp += evaluation.bonusXp;
-          bonusMessage = `\n\n⭐ BÔNUS DO ESTRATEGISTA: Sua tese complementar foi julgada ASSERTIVA pela banca acadêmica (+${evaluation.bonusXp} XP).\nAnálise: ${evaluation.commentEvaluation}`;
-        } else {
-          bonusMessage = `\n\n💡 NOTA DA BANCA SOBRE O COMENTÁRIO: ${evaluation.commentEvaluation}`;
+        const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+        if(jsonMatch){
+           const evaluation = JSON.parse(jsonMatch[0]);
+           if (evaluation.isAssertive) {
+             finalXp += evaluation.bonusXp;
+             bonusMessage = `\n\n⭐ BÔNUS DO ESTRATEGISTA: Sua tese foi julgada ASSERTIVA pela banca (+${evaluation.bonusXp} XP).\nAnálise: ${evaluation.commentEvaluation}`;
+           } else {
+             bonusMessage = `\n\n💡 NOTA DA BANCA: ${evaluation.commentEvaluation}`;
+           }
         }
-      } catch (e) {
-        console.error("Erro ao avaliar bônus:", e);
-      }
+      } catch (e) { console.error("Erro no bônus", e); }
     }
 
     const fullFeedback = `${selectedOption.feedback}${bonusMessage}\n\nCÓDIGO AZUL.`;
@@ -266,12 +272,12 @@ export default function CodigoAzulGame() {
             setPlayerNameInput(d.playerName || ""); setNeedsCompanySetup(true);
           } else {
             setCompanyName(d.companyName); setXp(d.xp || 0); 
-            setCaixa(d.caixa ?? 5000000); setMargem(d.margem ?? 20.0); setCompliance(d.compliance ?? 100);
+            setCaixa(d.caixa ?? 7000000); setMargem(d.margem ?? 22.0); setCompliance(d.compliance ?? 100);
             setCurrentStage(d.currentStage || 0); 
-            setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 5000000, margem: d.margem ?? 20.0 });
+            setSessionStartStats(d.sessionStartStats || { caixa: d.caixa ?? 7000000, margem: d.margem ?? 22.0 });
             setShowDRE(d.showDRE || false);
             setCurrentScenario(null); 
-            if((d.caixa ?? 5000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
+            if((d.caixa ?? 7000000) <= 0 || (d.compliance ?? 100) <= 0) setIsGameOver(true);
             setGameStarted(true);
           }
         } else { setAuthError("E-mail ou senha incorretos."); }
@@ -281,27 +287,19 @@ export default function CodigoAzulGame() {
         else {
           await setDoc(docRef, {
             password: cleanPassword,
-            data: { 
-              playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail,
-              companyName: "", xp: 0, caixa: 5000000, margem: 20.0, compliance: 100, 
-              currentStage: 0, sessionStartStats: { caixa: 5000000, margem: 20.0 }, showDRE: false
-            }
+            data: { playerName: nome.trim(), phone: telefone.trim(), email: cleanEmail, companyName: "", xp: 0, caixa: 7000000, margem: 22.0, compliance: 100, currentStage: 0, sessionStartStats: { caixa: 7000000, margem: 22.0 }, showDRE: false }
           });
-          setPlayerName(nome.trim()); setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-          setCurrentStage(0); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+          setPlayerName(nome.trim()); setXp(0); setCaixa(7000000); setMargem(22.0); setCompliance(100);
+          setCurrentStage(0); setSessionStartStats({ caixa: 7000000, margem: 22.0 });
           setPlayerNameInput(nome.trim()); setNeedsCompanySetup(true);
         }
       } else if (authMode === 'forgot') {
         if (docSnap.exists()) {
           await setDoc(docRef, { password: cleanPassword }, { merge: true });
           setAuthSuccess("Senha redefinida com sucesso! Alterne para Acessar.");
-        } else {
-          setAuthError("E-mail não encontrado.");
-        }
+        } else { setAuthError("E-mail não encontrado."); }
       }
-    } catch (e) {
-      setAuthError("Falha de conexão com a nuvem.");
-    } finally { setIsAuthenticating(false); }
+    } catch (e) { setAuthError("Falha de conexão."); } finally { setIsAuthenticating(false); }
   };
 
   const handleCompanySubmit = async (e: React.FormEvent) => {
@@ -310,19 +308,19 @@ export default function CodigoAzulGame() {
     setCompanyName(companyNameInput.trim()); setPlayerName(playerNameInput.trim());
     setNeedsCompanySetup(false); setCurrentScenario(null); setTimeLeft(120); 
     setGameStarted(true); setIsGameOver(false); setShowDRE(false);
+    fetchScenarioFromAI(0);
   };
 
   const handleLogout = async () => {
     if(gameStarted && !isGameOver) await saveToDB();
-    setGameStarted(false); setNeedsCompanySetup(false);
-    setEmail(""); setPassword(""); setAuthError(""); setAuthSuccess(""); setNome(""); setTelefone("");
+    setGameStarted(false); setNeedsCompanySetup(false); setEmail(""); setPassword(""); setAuthError(""); setAuthSuccess(""); setNome(""); setTelefone("");
     setFeedback(null); setPromotionPending(false); setIsGameOver(false); setShowDRE(false); setCurrentScenario(null);
   };
 
   const handleResetCareer = () => {
     if (confirm("Confirma a liquidação da empresa? O histórico será reiniciado.")) {
-      setXp(0); setCaixa(5000000); setMargem(20.0); setCompliance(100);
-      setCurrentStage(0); setCurrentScenario(null); setSessionStartStats({ caixa: 5000000, margem: 20.0 });
+      setXp(0); setCaixa(7000000); setMargem(22.0); setCompliance(100);
+      setCurrentStage(0); setCurrentScenario(null); setSessionStartStats({ caixa: 7000000, margem: 22.0 });
       setFeedback(null); setPromotionPending(false); setIsGameOver(false); setLastImpacts(null); setShowDRE(false); 
       setGameStarted(false); setCompanyNameInput(""); setPlayerNameInput(playerName); setNeedsCompanySetup(true);
     }
@@ -364,37 +362,24 @@ export default function CodigoAzulGame() {
     setCaixa(newCaixa); setMargem(newMargem); setCompliance(newCompliance);
     setXp(newXp); setLastXpChange(totalXpGained); setLastImpacts(impacts);
 
-    if (newCaixa <= 0) {
-      setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi exaurido sem cobertura."); return;
-    }
-    if (newCompliance <= 0) {
-      setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. Bloqueio cautelar de compliance acionado."); return;
-    }
+    if (newCaixa <= 0) { setIsGameOver(true); setFeedback("FALÊNCIA DECRETADA. O caixa da companhia foi exaurido sem cobertura."); return; }
+    if (newCompliance <= 0) { setIsGameOver(true); setFeedback("INTERVENÇÃO REGULATÓRIA EXTREMA. Bloqueio cautelar de compliance acionado."); return; }
 
     const newCalculatedLevel = [...levels].reverse().find(l => newXp >= l.minXp) || levels[0];
     if (newCalculatedLevel.minXp > currentLevel.minXp) {
       setPromotionPending(true); setPromotedLevel(newCalculatedLevel);
     }
-
     setFeedback(feedbackText);
   };
 
-  // --- AVANÇO BLINDADO E IMEDIATO PARA A PRÓXIMA QUESTÃO ---
   const proceedToNextQuestion = () => {
-    setPromotionPending(false); 
-    setPromotedLevel(null); 
-    setFeedback(null); 
-    setLastXpChange(null); 
-    setLastImpacts(null); 
-    setSupplementaryComment("");
-    
+    setPromotionPending(false); setPromotedLevel(null); setFeedback(null); setLastXpChange(null); setLastImpacts(null); setSupplementaryComment("");
     if (currentStage < 9) { 
       const nextStage = currentStage + 1;
       setCurrentStage(nextStage); 
       setCurrentScenario(null); 
-    } else { 
-      setShowDRE(true); 
-    }
+      fetchScenarioFromAI(nextStage); // Disparo manual garantido
+    } else { setShowDRE(true); }
   };
 
   const handleNextStageOrPromotion = () => {
@@ -402,16 +387,13 @@ export default function CodigoAzulGame() {
     proceedToNextQuestion();
   };
 
-  const handleStartNewQuarter = () => {
-    setShowDRE(false); setSessionStartStats({ caixa, margem }); setCurrentStage(0); setCurrentScenario(null);
-  };
+  const handleStartNewQuarter = () => { setShowDRE(false); setSessionStartStats({ caixa, margem }); setCurrentStage(0); fetchScenarioFromAI(0); };
 
   const caixaBarFill = Math.min(100, (caixa / 15000000) * 100);
   const margemBarFill = Math.min(100, Math.max(0, (margem / 40.0) * 100));
 
   if (isLoading) return <div className="min-h-screen bg-[#060c17] flex items-center justify-center text-cyan-500 font-mono tracking-widest text-sm">Sincronizando Escola...</div>;
 
-  // --- TELA DE ONBOARDING ---
   if (needsCompanySetup) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
@@ -429,7 +411,6 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DE LOGIN / REGISTRO / REDEFINIÇÃO ---
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
@@ -459,20 +440,8 @@ export default function CodigoAzulGame() {
                 <span>{authMode === 'forgot' ? 'Nova Senha Segura' : 'Senha Segura'}</span>
               </label>
               <div className="relative">
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-cyan-50 pr-12" 
-                  required 
-                />
-                <button 
-                  type="button" 
-                  onClick={() => setShowPassword(!showPassword)} 
-                  className="absolute right-3 top-2.5 text-[10px] font-mono text-cyan-500 hover:text-cyan-300 uppercase tracking-widest"
-                >
-                  {showPassword ? "Ocultar" : "Mostrar"}
-                </button>
+                <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-[#020617]/50 border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-cyan-50 pr-12" required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 text-[10px] font-mono text-cyan-500 hover:text-cyan-300 uppercase tracking-widest">{showPassword ? "Ocultar" : "Mostrar"}</button>
               </div>
             </div>
 
@@ -488,7 +457,6 @@ export default function CodigoAzulGame() {
     );
   }
 
-  // --- TELA DE GAME OVER ---
   if (isGameOver) {
     return (
       <div className="min-h-screen bg-[#060202] flex items-center justify-center p-4 relative font-sans">
@@ -539,21 +507,18 @@ export default function CodigoAzulGame() {
 
   const timerColor = timeLeft > 60 ? 'bg-cyan-500' : timeLeft > 30 ? 'bg-amber-500' : 'bg-red-500';
 
-  // --- PAINEL PRINCIPAL DA ESCOLA ---
   return (
     <div className="min-h-screen bg-[#020617] text-slate-300 p-4 md:p-8 font-sans relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"></div>
       
       <div className="max-w-5xl mx-auto space-y-4 relative z-10">
         
-        {/* HUD */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 bg-[#0f172a]/80 backdrop-blur-md p-5 rounded-xl border border-white/5">
           <div className="flex flex-col"><div className="flex justify-between items-baseline mb-1"><span className="text-[10px] font-mono uppercase text-slate-400">Caixa Operacional</span><span className={`text-xs font-bold font-mono ${caixa > 2000000 ? 'text-emerald-400' : 'text-amber-400'}`}>{formatBRL(caixa)}</span></div><div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden"><div className={`h-full ${caixa > 1000000 ? 'bg-emerald-500' : 'bg-red-500'}`} style={{ width: `${caixaBarFill}%` }}></div></div></div>
           <div className="flex flex-col"><div className="flex justify-between items-baseline mb-1"><span className="text-[10px] font-mono uppercase text-slate-400">Margem EBITDA</span><span className={`text-xs font-bold font-mono ${margem >= 15 ? 'text-blue-400' : 'text-amber-400'}`}>{formatPct(margem)}</span></div><div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden"><div className={`h-full ${margem > 10 ? 'bg-blue-500' : 'bg-red-500'}`} style={{ width: `${margemBarFill}%` }}></div></div></div>
           <div className="flex flex-col"><div className="flex justify-between items-baseline mb-1"><span className="text-[10px] font-mono uppercase text-slate-400">Compliance</span><span className={`text-xs font-bold font-mono ${compliance >= 80 ? 'text-purple-400' : 'text-amber-400'}`}>{compliance}%</span></div><div className="h-1.5 w-full bg-[#020617] rounded-sm overflow-hidden"><div className={`h-full ${compliance > 60 ? 'bg-purple-500' : 'bg-red-500'}`} style={{ width: `${compliance}%` }}></div></div></div>
         </div>
 
-        {/* HEADER */}
         <header className="bg-[#0f172a]/50 p-5 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-center shadow-xl">
           <div className="flex items-center gap-4 w-full md:w-auto mb-4 md:mb-0">
             <div><h1 className="text-base font-light text-slate-100 uppercase"><span className="font-semibold text-cyan-400">{companyName}</span></h1><p className="text-slate-500 text-[10px] font-mono uppercase">Estudante / Nível: <span className="text-slate-300">{playerName}</span></p></div>
@@ -564,7 +529,6 @@ export default function CodigoAzulGame() {
           </div>
         </header>
 
-        {/* ÁREA DE ENSINO E CASO PRÁTICO */}
         {!feedback ? (
           <main className="bg-[#0f172a]/40 p-6 md:p-10 rounded-2xl border border-white/5 shadow-2xl relative">
             {currentLevel.hasTimer && (
@@ -576,11 +540,10 @@ export default function CodigoAzulGame() {
               <h2 className="text-xl md:text-2xl font-light text-slate-100 tracking-wide">{currentScenario.title}</h2>
             </div>
 
-            {/* DUPLO BLOCO COM TEORIA DENSIDADE MÁXIMA */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-[#020617]/50 p-6 rounded-xl border border-cyan-900/40">
                 <h3 className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> 1. Fundamentação Teórica & Normativa
+                  <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> 1. Fundamentação Teórica & Normativa (Aprofundada)
                 </h3>
                 <p className="text-slate-300 text-[13px] font-light leading-relaxed text-justify">{currentScenario.theory}</p>
               </div>
@@ -594,7 +557,6 @@ export default function CodigoAzulGame() {
               </div>
             </div>
 
-            {/* QUADRO DE COMENTÁRIO COMPLEMENTAR (BÔNUS) */}
             <div className="mb-6 bg-[#020617]/30 p-5 rounded-xl border border-slate-800">
               <label className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block mb-2">
                 ⭐ Quadro de Comentário Complementar (Opcional — Justifique sua tese e ganhe BÔNUS em XP se a banca julgar assertivo):
@@ -608,7 +570,6 @@ export default function CodigoAzulGame() {
               />
             </div>
 
-            {/* OPÇÕES OBJETIVAS DE RESPOSTA (ALEATÓRIAS) */}
             <div className="space-y-4 pt-2">
               <h3 className="text-[10px] font-mono text-slate-400 uppercase tracking-[0.3em] mb-3 text-center">Selecione a Alternativa Estratégica Adequada:</h3>
               {currentScenario.options.map((option: any, index: number) => (
@@ -625,7 +586,6 @@ export default function CodigoAzulGame() {
             </div>
           </main>
         ) : (
-          /* FEEDBACK DA TESE */
           <div className="bg-[#0f172a]/60 p-8 md:p-12 rounded-2xl border border-white/5 text-center shadow-2xl">
             <h2 className={`text-[10px] font-mono uppercase tracking-[0.3em] mb-4 mt-2 ${lastXpChange && lastXpChange > 0 ? 'text-cyan-400' : 'text-red-400'}`}>
               {lastXpChange && lastXpChange > 0 ? 'Parecer Acadêmico Aprovado' : 'Reprovação Parcial de Tese'}
