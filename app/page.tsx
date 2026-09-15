@@ -305,21 +305,32 @@ export default function CodigoAzulGame() {
   const monthProgress = ((currentStage) / 10) * 100;
 
   // --- NÚCLEO DO GAME: PREVENÇÃO DE REPETIÇÃO TOTAL ---
+ // --- O MOTOR BLINDADO DE INEDITISMO ABSOLUTO ---
   const loadNextQuestion = () => {
     setFeedback(null);
     setPhaseReward(null);
     setShowConsultoriaHint(false);
     
-    // Busca na base apenas questões do nível atual (ou menor) que NÃO estão nos IDs usados.
-    let available = questionBank.filter(q => q.tier <= currentLevel.tier && !usedQuestionIds.includes(q.id));
+    // 1. Pega TODAS as questões que o jogador AINDA NÃO RESPONDEU
+    let unplayedQuestions = questionBank.filter(q => !usedQuestionIds.includes(q.id));
     
-    // Fallback: Se o jogador jogou meses o suficiente para esgotar as 40 perguntas do banco, reinicia a memória dele.
-    if (available.length === 0) {
+    // 2. Se o cara for um viciado e zerar TODAS as questões do jogo, aí sim resetamos
+    if (unplayedQuestions.length === 0) {
       setUsedQuestionIds([]);
-      available = questionBank.filter(q => q.tier <= currentLevel.tier);
+      unplayedQuestions = [...questionBank];
+      alert("🏆 PARABÉNS DONO(A)! Você zerou todos os cenários do simulador. O mercado vai reiniciar com novas dinâmicas.");
     }
     
-    const selected = available[Math.floor(Math.random() * available.length)];
+    // 3. Tenta pegar as questões não jogadas do Nível atual dele
+    let availableInTier = unplayedQuestions.filter(q => q.tier <= currentLevel.tier);
+    
+    // 4. A SACADA: Se acabaram as do nível dele, NÃO REPITA. Avance a dificuldade! Puxe do próximo nível.
+    if (availableInTier.length === 0) {
+      availableInTier = unplayedQuestions; // Libera todo o resto do banco inédito
+    }
+    
+    // 5. Sorteia uma questão inédita e embaralha as opções
+    const selected = availableInTier[Math.floor(Math.random() * availableInTier.length)];
     const shuffledOptions = shuffleArray([...selected.options]);
     setCurrentScenario({ ...selected, options: shuffledOptions });
   };
