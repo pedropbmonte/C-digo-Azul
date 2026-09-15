@@ -44,7 +44,6 @@ const levels = [
 ];
 
 // --- BANCO DE DADOS LOCAL E BLINDADO (Sistema de Randomização de Alta Performance) ---
-// Adicione novas questões copiando o bloco e colando abaixo, mudando o "id". O sistema sorteia sozinho.
 const questionBank = [
   {
     id: "q_pf_pj_01",
@@ -161,9 +160,9 @@ const questionBank = [
     character: "O Funcionário 'Sócio'",
     consultoriaHint: "Mentor Pedro Monte diz: 'Nunca negocie com reféns. Dê um prêmio de retenção atrelado a meta (variável) para ganhar 30 dias. Nesse meio tempo, documente o processo dele e contrate dois estagiários para pulverizar a dependência.'",
     options: [
-      { id: "A", text: "Negar o aumento no fixo, oferecer um bônus por meta alcançada (variável) e iniciar imediatamente a contratação e treinamento de dois novos vendedores.", xp: 40, isBest: true, impacts: { caixa: 2000, margem: 1.0, compliance: 20 }, feedback: "GOVERNANÇA. Você quebrou o monopólio interno e protegeu o caixa fixo." },
-      { id: "B", text: "Dar o aumento de 40% no fixo porque você está desesperado com medo dele levar os clientes.", xp: -20, isBest: false, impacts: { caixa: -3000, margem: -4.0, compliance: -15 }, feedback: "VOCÊ FOI ENQUADRADO. O funcionário virou dono da sua empresa sem assumir o risco." },
-      { id: "C", text: "Mandar ele embora na mesma hora por desaforo e tentar atender sozinho os clientes dele.", xp: -30, isBest: false, impacts: { caixa: -8000, margem: -5.0, compliance: -10 }, feedback: "EGO INFLADO. Agir por emoção gerou um rombo imediato na receita que você não dá conta de suprir." }
+      { id: "A", text: "Negar o aumento no fixo, oferecer um bônus por meta alcançada (variável) e iniciar imediatamente a contratação de novos vendedores.", xp: 40, isBest: true, impacts: { caixa: 2000, margem: 1.0, compliance: 20 }, feedback: "GOVERNANÇA. Você quebrou o monopólio interno e protegeu o caixa fixo." },
+      { id: "B", text: "Dar o aumento de 40% no fixo porque você está desesperado com medo dele levar os clientes.", xp: -20, isBest: false, impacts: { caixa: -3000, margem: -4.0, compliance: -15 }, feedback: "VOCÊ FOI ENQUADRADO. O funcionário virou dono da sua empresa." },
+      { id: "C", text: "Mandar ele embora na mesma hora por desaforo e tentar atender sozinho os clientes dele.", xp: -30, isBest: false, impacts: { caixa: -8000, margem: -5.0, compliance: -10 }, feedback: "EGO INFLADO. Agir por emoção gerou um rombo imediato na receita." }
     ]
   },
   {
@@ -176,9 +175,9 @@ const questionBank = [
     character: "O Limite da Receita Federal",
     consultoriaHint: "Mentor Pedro Monte diz: 'Crescer dói. Não limite suas vendas. Fature, oficialize o desenquadramento, pague a nova alíquota e seja bem-vindo ao jogo de quem é grande de verdade.'",
     options: [
-      { id: "A", text: "Aceitar os pedidos, oficializar o desenquadramento com o contador, precificar a nova carga tributária e abraçar o crescimento.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 1.5, compliance: 25 }, feedback: "PASSAPORTE DO CRESCIMENTO. Pagar mais imposto sobre muito lucro é a única via." },
+      { id: "A", text: "Aceitar os pedidos, oficializar o desenquadramento com o contador, precificar a nova carga tributária e abraçar o crescimento.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 1.5, compliance: 25 }, feedback: "PASSAPORTE DO CRESCIMENTO. Pagar mais imposto sobre lucro é a única via." },
       { id: "B", text: "Parar de vender em novembro, dar férias coletivas e só voltar em janeiro.", xp: -25, isBest: false, impacts: { caixa: -10000, margem: -2.0, compliance: 0 }, feedback: "MENTALIDADE DE ESCASSEZ. Travou o CNPJ e frustrou os clientes." },
-      { id: "C", text: "Vender aceitando apenas dinheiro vivo (sem nota) para maquiar o faturamento.", xp: -50, isBest: false, impacts: { caixa: 10000, margem: -3.0, compliance: -50 }, feedback: "CRIME FISCAL. O cruzamento de dados da Receita vai fechar o seu negócio em meses." }
+      { id: "C", text: "Vender aceitando apenas dinheiro vivo (sem nota) para maquiar o faturamento.", xp: -50, isBest: false, impacts: { caixa: 10000, margem: -3.0, compliance: -50 }, feedback: "CRIME FISCAL. O cruzamento de dados da Receita vai fechar o seu negócio." }
     ]
   }
 ];
@@ -213,7 +212,7 @@ export default function CodigoAzulGame() {
   const [currentScenario, setCurrentScenario] = useState<any>(null);
   const [usedQuestionIds, setUsedQuestionIds] = useState<string[]>([]);
   const [isEvaluatingChoice, setIsEvaluatingChoice] = useState(false);
-  const [currentStage, setCurrentStage] = useState(0); // Contador infinito (virada a cada 5)
+  const [currentStage, setCurrentStage] = useState(0); 
   const [feedback, setFeedback] = useState<string | null>(null);
   const [lastXpChange, setLastXpChange] = useState<number | null>(null);
   
@@ -242,23 +241,21 @@ export default function CodigoAzulGame() {
 
   const currentLevel = [...levels].reverse().find(l => xp >= l.minXp) || levels[0];
   const nextLevel = levels.find(l => l.minXp > xp);
+  const progressToNext = nextLevel ? ((xp - currentLevel.minXp) / (nextLevel.minXp - currentLevel.minXp)) * 100 : 100;
 
   // --- O MOTOR BLINDADO DE QUESTÕES ---
   const loadNextQuestion = () => {
     setFeedback(null);
     setShowConsultoriaHint(false);
     
-    // Filtra questões pro tier atual que ainda não foram respondidas
     let available = questionBank.filter(q => q.tier <= currentLevel.tier && !usedQuestionIds.includes(q.id));
     
-    // Se esgotar as perguntas (quase impossível se adicionar mais no banco), reseta o histórico
     if (available.length === 0) {
       setUsedQuestionIds([]);
       available = questionBank.filter(q => q.tier <= currentLevel.tier);
     }
     
     const selected = available[Math.floor(Math.random() * available.length)];
-    // Sorteia as opções
     const shuffledOptions = shuffleArray([...selected.options]);
     setCurrentScenario({ ...selected, options: shuffledOptions });
   };
@@ -276,7 +273,7 @@ export default function CodigoAzulGame() {
       setXp(prev => prev + 25);
       setShowConsultoriaHint(true);
     } else {
-      alert("Caixa insuficiente para acionar a Consultoria Premium.");
+      alert("Caixa insuficiente para acionar a Consultoria do Pedro Monte.");
     }
   };
 
@@ -292,7 +289,6 @@ export default function CodigoAzulGame() {
 
     const fullFeedback = `${selectedOption.feedback}\n\nCÓDIGO AZUL.`;
     
-    // Aplica impactos
     let newCaixa = Math.max(0, caixa + finalImpacts.caixa);
     let newMargem = margem + finalImpacts.margem;
     let newCompliance = Math.min(100, Math.max(0, compliance + finalImpacts.compliance));
@@ -321,15 +317,14 @@ export default function CodigoAzulGame() {
     const nextStage = currentStage + 1;
     setCurrentStage(nextStage);
     
-    // A cada 5 rodadas, o mês vira (força visualização da DRE)
     if (nextStage % 5 === 0) {
       setIsDREOpen(true);
     } else {
-      setCurrentScenario(null); // Carrega a próxima
+      setCurrentScenario(null); 
     }
   };
 
-  // --- SISTEMA DRE (Lógica PME Real) ---
+  // --- SISTEMA DRE INTERATIVO (Lógica PME Real) ---
   const dreReceita = 50000;
   const dreImpostos = 3800; // 7.6%
   const dreCMV = 18000; // 36%
@@ -339,11 +334,10 @@ export default function CodigoAzulGame() {
   const dreNovaMargem = (dreLucroLiquido / dreReceita) * 100;
 
   const handleAplicarDRE = () => {
-    // Ao fechar a DRE, injeta o lucro gerado na rodada no caixa principal
     setCaixa(prev => prev + dreLucroLiquido);
     setMargem(dreNovaMargem);
     setIsDREOpen(false);
-    setCurrentScenario(null); // Carrega nova pergunta
+    setCurrentScenario(null); 
   };
 
   const handleAuth = async (e: React.FormEvent) => {
