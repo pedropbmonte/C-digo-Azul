@@ -52,20 +52,25 @@ export default function CodigoAzulMaster() {
   const [receita, setReceita] = useState(30000); 
   const [compliance, setCompliance] = useState(100); 
 
-  // --- CONTROLES DA DRE ---
+  // --- CONTROLES DA DRE E RISCO ---
   const [dreProLabore, setDreProLabore] = useState(3000);
   const [dreMarketing, setDreMarketing] = useState(1000);
   const [dreCustosInuteis, setDreCustosInuteis] = useState(2500);
+  const [mesesNoVermelho, setMesesNoVermelho] = useState(0); // O "Relógio da Morte"
 
   // --- MOTOR DE JOGO ---
   const [answeredQuestions, setAnsweredQuestions] = useState<string[]>([]);
-  const [decisionsThisMonth, setDecisionsThisMonth] = useState(0); // Volta para ciclo de 4
+  const [decisionsThisMonth, setDecisionsThisMonth] = useState(0); // Vai até 10 (30 dias)
   const [currentQuestion, setCurrentQuestion] = useState<any>(null);
   const [feedbackState, setFeedbackState] = useState<any>(null);
   const [showDRE, setShowDRE] = useState(false);
   const [isConsultingUsed, setIsConsultingUsed] = useState(false);
   const [gameOver, setGameOver] = useState<{is: boolean, reason: string}>({is: false, reason: ""});
   
+  // --- EFEITOS ESPECIAIS (CASSINO & PÂNICO) ---
+  const [jackpot, setJackpot] = useState<{ active: boolean, mult: number, bonusXp: number } | null>(null);
+  const [urgentAlert, setUrgentAlert] = useState<string | null>(null);
+
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatusText, setSaveStatusText] = useState("Salvar Progresso");
 
@@ -79,7 +84,10 @@ export default function CodigoAzulMaster() {
     try {
       await setDoc(doc(db, "users", email.toLowerCase()), {
         password,
-        data: { nome, telefone, companyName, xp, caixa, receita, compliance, answeredQuestions, decisionsThisMonth, dreProLabore, dreMarketing, dreCustosInuteis }
+        data: { 
+          nome, telefone, companyName, xp, caixa, receita, compliance, 
+          answeredQuestions, decisionsThisMonth, dreProLabore, dreMarketing, dreCustosInuteis, mesesNoVermelho 
+        }
       });
       setSaveStatusText("Dados Sincronizados");
       setTimeout(() => setSaveStatusText("Salvar Progresso"), 3000);
@@ -94,7 +102,7 @@ export default function CodigoAzulMaster() {
   useEffect(() => {
     if (gameStarted && !gameOver.is && !showDRE) {
         setDoc(doc(db, "users", email.toLowerCase()), {
-            password, data: { nome, telefone, companyName, xp, caixa, receita, compliance, answeredQuestions, decisionsThisMonth, dreProLabore, dreMarketing, dreCustosInuteis }
+            password, data: { nome, telefone, companyName, xp, caixa, receita, compliance, answeredQuestions, decisionsThisMonth, dreProLabore, dreMarketing, dreCustosInuteis, mesesNoVermelho }
           }).catch(console.error);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,9 +116,11 @@ export default function CodigoAzulMaster() {
   const pullNextEvent = useCallback(() => {
     setFeedbackState(null);
     setIsConsultingUsed(false);
+    setJackpot(null);
+    setUrgentAlert(null);
     
-    // A CADA 4 DECISÕES, CHAMA A DRE
-    if (decisionsThisMonth >= 4) {
+    // A CADA 10 DECISÕES (30 Dias), CHAMA A DRE
+    if (decisionsThisMonth >= 10) {
       setShowDRE(true);
       return;
     }
@@ -128,12 +138,38 @@ export default function CodigoAzulMaster() {
     if (gameStarted && !currentQuestion && !showDRE && !gameOver.is) pullNextEvent();
   }, [gameStarted, currentQuestion, showDRE, gameOver, pullNextEvent]);
 
-  // --- AÇÃO E IMPACTO ---
+  // --- AÇÃO E IMPACTO (COM SISTEMA CASSINO E PÂNICO) ---
   const handleAnswer = (option: any) => {
     let finalXp = option.xp;
-    // XP cortado se pedir ajuda
-    if (isConsultingUsed && option.isBest && finalXp > 0) finalXp = Math.max(1, Math.floor(finalXp / 2));
-    
+    let currentJackpot = null;
+    let currentAlert = null;
+
+    // Se pediu ajuda, perde metade do XP e zera chance de Jackpot
+    if (isConsultingUsed && option.isBest && finalXp > 0) {
+      finalXp = Math.max(1, Math.floor(finalXp / 2));
+    } else if (option.isBest && finalXp > 0) {
+      // SISTEMA CASSINO (DOPAMINA): 25% de chance de crítico
+      const roll = Math.random();
+      if (roll > 0.75) { 
+         const mult = roll > 0.92 ? 3 : 2; // 8% chance de 3x, 17% de 2x
+         const bonus = finalXp * (mult - 1);
+         finalXp *= mult;
+         currentJackpot = { active: true, mult, bonusXp: bonus };
+      }
+    }
+
+    // SISTEMA DE PÂNICO: Decisões ruins geram alertas vitais (Toast)
+    if (!option.isBest || (option.impacts.caixa && option.impacts.caixa < 0)) {
+      const badAlerts = [
+        "⚠️ URGENTE: Conta de luz vencida! Risco de corte amanhã.",
+        "⚠️ ALERTA: Fornecedor principal suspendeu entregas por falta de pagamento.",
+        "⚠️ RH INFORMA: Atraso no FGTS gerou reclamação trabalhista.",
+        "⚠️ FISCAL: Malha fina! O sistema do Simples Nacional travou a emissão de NFe.",
+        "⚠️ URGENTE: Salários atrasados gerando motim e corpo mole na equipe."
+      ];
+      currentAlert = badAlerts[Math.floor(Math.random() * badAlerts.length)];
+    }
+
     setXp(prev => Math.max(0, prev + finalXp));
     setCaixa(prev => prev + (option.impacts.caixa || 0));
     setReceita(prev => Math.max(5000, prev + (option.impacts.receita || 0)));
@@ -142,10 +178,12 @@ export default function CodigoAzulMaster() {
     if (currentQuestion.id) setAnsweredQuestions(prev => [...prev, currentQuestion.id]);
     setDecisionsThisMonth(prev => prev + 1);
     
+    setJackpot(currentJackpot);
+    setUrgentAlert(currentAlert);
     setFeedbackState({ option, earnedXp: finalXp });
   };
 
-  // --- PROCESSAR DRE E VIRAR O MÊS ---
+  // --- PROCESSAR DRE E VIRAR O MÊS (12 MESES NO VERMELHO) ---
   const processDRE = () => {
     const custoFixoOperacional = receita * 0.40;
     const totalDespesas = custoFixoOperacional + dreProLabore + dreMarketing + dreCustosInuteis;
@@ -155,13 +193,20 @@ export default function CodigoAzulMaster() {
     if (dreMarketing > receita * 0.08) novaReceita = receita * 1.12; 
     else if (dreMarketing < receita * 0.02) novaReceita = receita * 0.90;
 
-    setCaixa(prev => prev + lucroLiquido);
+    const novoCaixa = caixa + lucroLiquido;
+    let novosMesesNoVermelho = novoCaixa < 0 ? mesesNoVermelho + 1 : 0;
+
+    setCaixa(novoCaixa);
     setReceita(novaReceita);
+    setMesesNoVermelho(novosMesesNoVermelho);
     setDecisionsThisMonth(0);
     setShowDRE(false);
 
-    if (caixa + lucroLiquido <= -5000) {
-      setGameOver({is: true, reason: "Insolvência Operacional. A empresa ficou sem capital de giro e os credores bloquearam as contas."});
+    if (novosMesesNoVermelho >= 12) {
+      setGameOver({is: true, reason: `FALÊNCIA INEVITÁVEL. Você sangrou a empresa por 12 meses consecutivos no limite do cheque especial. O banco encerrou suas linhas de crédito. Acabou.`});
+    } else if (novoCaixa <= -50000) {
+      // Abismo absoluto
+      setGameOver({is: true, reason: `ROMBO INSUSTENTÁVEL. Sua dívida imediata superou os R$ 50 mil. Os credores entraram com pedido de execução judicial.`});
     } else {
       pullNextEvent();
     }
@@ -185,13 +230,14 @@ export default function CodigoAzulMaster() {
           setXp(d.xp || 0); setCaixa(d.caixa ?? 15000); setReceita(d.receita ?? 30000); setCompliance(d.compliance ?? 100);
           setAnsweredQuestions(d.answeredQuestions || []); setDecisionsThisMonth(d.decisionsThisMonth || 0);
           setDreProLabore(d.dreProLabore ?? 3000); setDreMarketing(d.dreMarketing ?? 1000); setDreCustosInuteis(d.dreCustosInuteis ?? 2500);
+          setMesesNoVermelho(d.mesesNoVermelho || 0);
           setGameStarted(true);
         } else { setAuthError("Credenciais inválidas."); }
       } else {
         if (!nome || !telefone || !companyName) return setAuthError("Preencha todos os dados da empresa.");
         if (docSnap.exists()) { setAuthError("E-mail já cadastrado."); } 
         else {
-          await setDoc(docRef, { password, data: { nome, telefone, companyName, email: cleanEmail, xp: 0, caixa: 15000, receita: 30000, compliance: 100, answeredQuestions: [], decisionsThisMonth: 0, dreProLabore: 3000, dreMarketing: 1000, dreCustosInuteis: 2500 } });
+          await setDoc(docRef, { password, data: { nome, telefone, companyName, email: cleanEmail, xp: 0, caixa: 15000, receita: 30000, compliance: 100, answeredQuestions: [], decisionsThisMonth: 0, dreProLabore: 3000, dreMarketing: 1000, dreCustosInuteis: 2500, mesesNoVermelho: 0 } });
           setGameStarted(true);
         }
       }
@@ -204,6 +250,7 @@ export default function CodigoAzulMaster() {
     if (confirm("LIQUIDAR CNPJ? AVISO: Isso apagará seu histórico irreversivelmente.")) {
       setXp(0); setCaixa(15000); setReceita(30000); setCompliance(100);
       setDreProLabore(3000); setDreMarketing(1000); setDreCustosInuteis(2500);
+      setMesesNoVermelho(0);
       setAnsweredQuestions([]); setDecisionsThisMonth(0); setFeedbackState(null); setShowDRE(false);
       setGameOver({is: false, reason: ""});
       saveProgress();
@@ -278,7 +325,7 @@ export default function CodigoAzulMaster() {
   }
 
   // ==========================================
-  // TELA 3: DRE INTERATIVA (FECHAMENTO)
+  // TELA 3: DRE INTERATIVA (FECHAMENTO DO MÊS)
   // ==========================================
   if (showDRE) {
     const custoFixoOperacional = receita * 0.40;
@@ -297,7 +344,7 @@ export default function CodigoAzulMaster() {
             <p className="text-slate-500 text-[10px] tracking-[0.2em] mt-2 uppercase font-mono">DRE: Defina as alavancas do próximo mês</p>
           </div>
           
-          <div className="bg-[#020617]/60 p-6 rounded-xl border border-slate-800/80 font-mono text-sm space-y-5 mb-8 shadow-inner">
+          <div className="bg-[#020617]/60 p-6 rounded-xl border border-slate-800/80 font-mono text-sm space-y-5 mb-6 shadow-inner">
             <div className="flex justify-between text-cyan-400 font-bold text-base border-b border-slate-800/80 pb-3">
               <span>RECEITA FATURADA</span><span>{formatBRL(receita)}</span>
             </div>
@@ -325,6 +372,14 @@ export default function CodigoAzulMaster() {
               <span className="uppercase text-xs tracking-widest mt-1">Lucro Líquido Real</span><span>{formatBRL(lucro)}</span>
             </div>
           </div>
+
+          {/* ALERTA DE RISCO - 12 MESES NO VERMELHO */}
+          {mesesNoVermelho > 0 && (
+             <div className="mb-6 bg-red-950/40 border border-red-500/50 p-4 rounded-lg text-center animate-pulse">
+                <p className="text-red-400 text-xs font-mono uppercase tracking-widest font-bold">⚠️ ALERTA: {mesesNoVermelho} MÊS(ES) NO VERMELHO</p>
+                <p className="text-red-300 text-[10px] mt-1 font-mono uppercase tracking-wider">12 meses consecutivos geram falência automática.</p>
+             </div>
+          )}
 
           <div className="flex flex-col md:flex-row gap-4">
             <button onClick={processDRE} className="flex-1 bg-[#020617] hover:bg-[#050A15] border border-slate-700 text-slate-300 font-mono text-[10px] py-4 rounded-lg uppercase tracking-[0.2em] transition-colors shadow-lg">
@@ -362,8 +417,8 @@ export default function CodigoAzulMaster() {
           
           <div className="flex flex-col md:flex-row items-center gap-6">
              <div className="text-center md:text-right">
-                <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Mês Operacional</p>
-                <div className="text-sm font-mono text-cyan-400 font-bold">{decisionsThisMonth}/4</div>
+                <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Dia Operacional</p>
+                <div className="text-sm font-mono text-cyan-400 font-bold">{(decisionsThisMonth * 3) || 1} / 30</div>
              </div>
              <button onClick={saveProgress} disabled={isSaving} className="bg-[#020617]/80 hover:bg-[#020617] border border-cyan-900/50 hover:border-cyan-500/50 text-cyan-400 font-mono text-[9px] uppercase tracking-[0.2em] px-4 py-2.5 rounded-lg transition-all shadow-[0_0_10px_rgba(6,182,212,0.05)] w-full md:w-auto">
                {saveStatusText}
@@ -375,14 +430,18 @@ export default function CodigoAzulMaster() {
           
           {/* SINAIS VITAIS (BARRA LATERAL) */}
           <aside className="lg:col-span-4 space-y-6">
-            <div className="bg-[#0f172a]/60 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-xl">
+            <div className="bg-[#0f172a]/60 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-xl relative overflow-hidden">
+              {/* Overlay vermelho piscando se estiver no vermelho */}
+              {mesesNoVermelho > 0 && <div className="absolute inset-0 bg-red-900/10 animate-pulse pointer-events-none"></div>}
+
               <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.3em] mb-5">Visão Executiva</h3>
               
-              <div className="bg-[#020617]/50 p-5 rounded-xl border border-slate-800/80 mb-4 shadow-inner">
+              <div className="bg-[#020617]/50 p-5 rounded-xl border border-slate-800/80 mb-4 shadow-inner relative">
                 <p className="text-[10px] text-slate-500 uppercase font-mono mb-1 tracking-wider">Caixa (Liquidez)</p>
-                <p className={`text-2xl font-light font-mono tracking-wider ${caixa < 10000 ? 'text-red-400' : 'text-emerald-400'}`}>
+                <p className={`text-2xl font-light font-mono tracking-wider ${caixa < 0 ? 'text-red-500 font-bold' : caixa < 10000 ? 'text-amber-400' : 'text-emerald-400'}`}>
                   {formatBRL(caixa)}
                 </p>
+                {mesesNoVermelho > 0 && <span className="absolute top-4 right-4 text-[9px] bg-red-950 border border-red-500 text-red-400 px-2 py-1 rounded-full font-mono font-bold animate-bounce">{mesesNoVermelho}/12</span>}
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -414,7 +473,8 @@ export default function CodigoAzulMaster() {
           </aside>
 
           {/* ÁREA DE DECISÃO (MAIN PANEL) */}
-          <main className="lg:col-span-8">
+          <main className="lg:col-span-8 relative">
+            
             {currentQuestion && !feedbackState && (
               <div className="bg-[#0f172a]/40 backdrop-blur-xl p-8 md:p-10 rounded-2xl border border-white/5 shadow-2xl relative">
                 
@@ -464,23 +524,42 @@ export default function CodigoAzulMaster() {
 
             {feedbackState && (
                <div className="bg-[#0f172a]/60 backdrop-blur-2xl p-10 md:p-14 rounded-2xl border border-white/5 shadow-2xl relative text-center">
+                
+                {/* ALERTA DE PÂNICO (TOAST VERMELHO) */}
+                {urgentAlert && (
+                  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md bg-red-950/90 border border-red-500/50 p-3 rounded-lg shadow-[0_0_20px_rgba(239,68,68,0.3)] z-50 animate-bounce">
+                    <p className="text-white text-xs font-mono font-bold tracking-wide">{urgentAlert}</p>
+                  </div>
+                )}
+
                 <div className={`absolute top-0 left-0 w-full h-1 ${feedbackState.option.isBest ? 'bg-emerald-500 shadow-[0_0_15px_#10b981]' : 'bg-red-500 shadow-[0_0_15px_#ef4444]'}`}></div>
                 
-                <h2 className={`text-[10px] font-mono uppercase tracking-[0.4em] mb-6 mt-4 ${feedbackState.option.isBest ? 'text-emerald-500' : 'text-red-400'}`}>
-                  {feedbackState.option.isBest ? 'Decisão Executiva Aprovada' : 'Risco Operacional Sancionado'}
-                </h2>
+                {/* EFEITO CASSINO (JACKPOT) */}
+                {jackpot && (
+                  <div className="mb-8 bg-gradient-to-r from-amber-600/20 via-yellow-400/20 to-amber-600/20 border border-yellow-400/50 p-5 rounded-xl shadow-[0_0_30px_rgba(250,204,21,0.2)] animate-pulse inline-block">
+                    <p className="text-[10px] font-mono text-yellow-400 uppercase tracking-[0.4em] font-black mb-1">🔥 JACKPOT EXECUTIVO 🔥</p>
+                    <p className="text-3xl font-black text-white mt-1 font-mono">{jackpot.mult}X XP MULTIPLIER</p>
+                    <p className="text-xs text-yellow-200 mt-2 font-mono uppercase tracking-widest">Bônus Adquirido: +{jackpot.bonusXp} XP</p>
+                  </div>
+                )}
+
+                {!jackpot && (
+                  <h2 className={`text-[10px] font-mono uppercase tracking-[0.4em] mb-6 mt-4 ${feedbackState.option.isBest ? 'text-emerald-500' : 'text-red-400'}`}>
+                    {feedbackState.option.isBest ? 'Decisão Executiva Aprovada' : 'Risco Operacional Sancionado'}
+                  </h2>
+                )}
                 
-                <div className="text-5xl font-light text-slate-100 tracking-wider mb-2 font-mono">
+                <div className="text-5xl font-light text-slate-100 tracking-wider mb-2 font-mono mt-4">
                   {feedbackState.earnedXp > 0 ? '+' : ''}{feedbackState.earnedXp} <span className="text-xl text-slate-600">XP</span>
                 </div>
                 
                 {isConsultingUsed && feedbackState.option.isBest && (
-                  <div className="text-[9px] font-mono text-amber-500 uppercase tracking-widest mb-8 bg-amber-950/30 inline-block px-3 py-1 rounded-md border border-amber-900/50">
+                  <div className="text-[9px] font-mono text-amber-500 uppercase tracking-widest mb-8 bg-amber-950/30 inline-block px-3 py-1 rounded-md border border-amber-900/50 mt-2">
                     Penalidade de XP (Mentoria)
                   </div>
                 )}
 
-                <div className="bg-[#020617]/50 p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative">
+                <div className="bg-[#020617]/50 p-8 rounded-xl border border-white/5 mb-8 text-left max-w-2xl mx-auto relative mt-6">
                   <span className="absolute -top-3 left-6 bg-[#0f172a] px-3 py-1 text-[9px] uppercase tracking-widest text-slate-400 font-mono border border-slate-700/50 rounded-md">Parecer Técnico:</span>
                   <p className="text-slate-300 text-sm font-light leading-relaxed mt-2">
                     {feedbackState.option.feedback}
@@ -508,8 +587,8 @@ export default function CodigoAzulMaster() {
                   </div>
                 </div>
 
-                <button onClick={pullNextEvent} className="bg-transparent border border-slate-600 hover:border-cyan-400 text-cyan-600 hover:text-cyan-400 text-[10px] font-mono tracking-[0.3em] py-4 px-12 rounded-xl transition-all uppercase hover:bg-cyan-950/20">
-                  Prosseguir Operação
+                <button onClick={pullNextEvent} className="bg-transparent border border-slate-600 hover:border-cyan-400 text-cyan-600 hover:text-cyan-400 text-[10px] font-mono tracking-[0.3em] py-4 px-12 rounded-xl transition-all uppercase hover:bg-cyan-950/20 mt-4">
+                  Avançar no Calendário
                 </button>
               </div>
             )}
