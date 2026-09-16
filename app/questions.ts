@@ -1,251 +1,306 @@
 // ARQUIVO: app/questions.ts
 
 export const questionBank = [
-  // --- TIER 1: SOBREVIVÊNCIA E CAIXA ---
+  // --- TIER 1: A BASE DA SOBREVIVÊNCIA E CAIXA ---
   {
-    id: "q_pf_pj_01", tier: 1, sector: "Sobrevivência Financeira", title: "A Sangria Silenciosa",
-    theory: "Misturar contas PF e PJ mascara seu Ponto de Equilíbrio. Se a empresa paga a conta de luz da sua casa direto no CNPJ, você não sabe se o seu negócio dá lucro ou se você é apenas um funcionário caro da sua própria desorganização.",
-    context: "Sexta-feira. A conta PJ tem R$ 4.000. O vale semanal da equipe amanhã soma R$ 6.000. Ao checar o extrato, você constata que passou R$ 3.500 no cartão corporativo para pagar compras de supermercado da sua família nesta semana.",
+    id: "t1_caixa_01", tier: 1, sector: "Sobrevivência Financeira", title: "A Sangria Silenciosa",
+    theory: "O maior mito do pequeno negócio é achar que 'o que sobra no banco dia 30 é o lucro'. Misturar contas PF e PJ mascara seu Ponto de Equilíbrio. Se a empresa paga a conta de luz da sua casa e o mercado direto no CNPJ, você não sabe se o seu negócio dá lucro ou se você é apenas um funcionário caro.",
+    context: "Sexta-feira. A conta PJ tem R$ 2.500. O vale semanal da equipe (2 pessoas) amanhã soma R$ 1.800. Ao checar o extrato, você constata que passou R$ 1.200 no cartão corporativo no supermercado da sua casa nesta semana.",
     character: "O Extrato Implacável",
-    consultoriaHint: "Dono que assalta a própria empresa vira refém de banco. Devolva o capital para a PJ hoje. Pague sua equipe. O seu luxo na Pessoa Física precisa ser cortado até a empresa dar lucro real.",
+    consultoriaHint: "Dono que assalta a própria empresa vira refém de banco. Devolva o capital para a PJ hoje. Pague sua equipe. O seu luxo na Pessoa Física precisa ser cortado até a empresa ter Margem de Contribuição real.",
     options: [
-      { id: "A", text: "Injetar dinheiro do próprio bolso (PF) na PJ hoje, pagar a equipe e instituir uma retirada fixa e austera a partir de segunda.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 1.0, compliance: 15 }, feedback: "ATITUDE DE DONO. Separou os bolsos e travou o sangramento.", reward: "🏆 Trava de Retirada: O sistema impede pagamentos de CPF na conta PJ.", lesson: "" },
-      { id: "B", text: "Acionar o cheque especial da conta PJ para cobrir a equipe, sem precisar cortar seus gastos pessoais no fim de semana.", xp: -10, isBest: false, impacts: { caixa: -500, margem: -2.5, compliance: -10 }, feedback: "A ILUSÃO. Você tomou dívida cara na PJ para financiar luxo na PF.", reward: "", lesson: "A dívida da empresa não sustenta o ego do dono." },
-      { id: "C", text: "Atrasar o vale da equipe dizendo que 'o mercado está retraído' e pedir compreensão.", xp: -40, isBest: false, impacts: { caixa: -2000, margem: -5.0, compliance: -30 }, feedback: "FALÊNCIA MORAL. Sua equipe sabe a verdade.", reward: "", lesson: "A desmotivação da base é o primeiro sintoma da quebra." }
+      { id: "A", text: "Injetar dinheiro do próprio bolso (PF) na PJ hoje, pagar a equipe e instituir uma retirada de pró-labore fixa e austera.", xp: 35, isBest: true, impacts: { caixa: 1500, margem: 1.0, compliance: 15 }, feedback: "ATITUDE DE DONO. Você separou os bolsos, honrou o acordo e travou o sangramento.", reward: "🏆 Trava de Retirada: Seu sistema agora impede o pagamento de boletos de CPF dentro da conta PJ.", lesson: "" },
+      { id: "B", text: "Acionar o limite do cheque especial da conta PJ para cobrir a equipe, sem precisar cortar gastos pessoais.", xp: -10, isBest: false, impacts: { caixa: -500, margem: -2.5, compliance: -10 }, feedback: "A ILUSÃO. Você tomou dívida cara na PJ para financiar luxo na PF.", reward: "", lesson: "A dívida da empresa não existe para sustentar o ego do dono." },
+      { id: "C", text: "Atrasar o vale da equipe dizendo que 'o mercado está retraído essa semana' e pedir compreensão.", xp: -40, isBest: false, impacts: { caixa: -1200, margem: -5.0, compliance: -30 }, feedback: "FALÊNCIA MORAL. Um time com fome não atende cliente com sorriso.", reward: "", lesson: "A desmotivação da base é o primeiro sintoma da quebra." }
     ]
   },
   {
-    id: "q_maq_01", tier: 1, sector: "Capital de Giro", title: "A Ilusão da Venda Esculpida",
-    theory: "Antecipar recebíveis não é gerar caixa, é agiotagem legalizada. Se a sua Margem é de 15% e você paga 5% ao mês de taxa, você entrega um terço do seu esforço só para ter o dinheiro amanhã.",
-    context: "Você acaba de comemorar uma venda de R$ 15.000 parcelada em 10x sem juros. Porém, o boleto do fornecedor dessa mesma mercadoria vence amanhã e seu saldo atual é zero.",
+    id: "t1_maq_02", tier: 1, sector: "Capital de Giro", title: "A Ilusão da Venda Esculpida",
+    theory: "Vender não é receber. Antecipar recebíveis de maquininha não é gerar caixa, é agiotagem legalizada. Se a sua Margem é de 15% e você paga 5% de taxa de antecipação, você entrega um terço do lucro só para ter o dinheiro mais cedo.",
+    context: "Você comemorou uma venda de R$ 5.000 parcelada em 10x sem juros para um cliente. Mas o boleto de reposição dessa mercadoria (R$ 2.800) vence segunda-feira e seu saldo atual é zero.",
     character: "O Custo Financeiro",
-    consultoriaHint: "Nunca antecipe para cobrir furo. Ligue para o fornecedor, alongue o prazo dele e crie uma campanha PIX relâmpago hoje para fazer caixa barato.",
+    consultoriaHint: "Nunca antecipe para cobrir furo. Ligue para o fornecedor, alongue o prazo dele e crie uma campanha PIX relâmpago hoje para pequenos produtos que estão parados.",
     options: [
-      { id: "A", text: "Renegociar o boleto para 15 dias e lançar uma promoção relâmpago via PIX na sua base para levantar liquidez.", xp: 35, isBest: true, impacts: { caixa: 4000, margem: 1.5, compliance: 10 }, feedback: "ESTRATEGISTA DE CAIXA. Preservou a margem da grande venda.", reward: "🏆 Visão de Liquidez: Você injeitou caixa sem depender de bancos.", lesson: "" },
-      { id: "B", text: "Apertar o botão de antecipação no app da maquininha, pagando 6% de taxa total para ter o dinheiro de manhã.", xp: -5, isBest: false, impacts: { caixa: 0, margem: -3.0, compliance: 0 }, feedback: "A ARMADILHA. Resolveu segunda-feira, mas rasgou o lucro da semana.", reward: "", lesson: "O botão de antecipar é o botão de autodestruição da margem." },
-      { id: "C", text: "Pagar o fornecedor com o cartão de crédito corporativo, somando os juros do cartão.", xp: -45, isBest: false, impacts: { caixa: -3000, margem: -5.0, compliance: -20 }, feedback: "BOLA DE NEVE FATAL. Custo financeiro sobre custo financeiro.", reward: "", lesson: "Pegar fogo para apagar incêndio só gera cinzas." }
+      { id: "A", text: "Ser transparente com o fornecedor, renegociar o boleto para 15 dias e lançar uma promoção relâmpago via PIX para levantar liquidez.", xp: 35, isBest: true, impacts: { caixa: 1200, margem: 1.5, compliance: 10 }, feedback: "ESTRATEGISTA DE CAIXA. Preservou a margem da grande venda e esticou o passivo honestamente.", reward: "🏆 Visão de Liquidez: Aprendeu injeção de caixa sem depender dos bancos.", lesson: "" },
+      { id: "B", text: "Apertar o botão de antecipação no app da maquininha, pagando 6% de taxa total para ter o dinheiro na segunda.", xp: -5, isBest: false, impacts: { caixa: 0, margem: -3.0, compliance: 0 }, feedback: "A ARMADILHA DO CONFORTO. Resolveu segunda-feira, mas rasgou parte do lucro.", reward: "", lesson: "O botão de antecipar é o botão de autodestruição da margem." },
+      { id: "C", text: "Pagar o fornecedor com o cartão de crédito corporativo, somando os juros do cartão com o custo do produto.", xp: -45, isBest: false, impacts: { caixa: -1500, margem: -5.0, compliance: -20 }, feedback: "BOLA DE NEVE FATAL. Custo financeiro sobre custo financeiro.", reward: "", lesson: "Pegar fogo para apagar incêndio só gera cinzas." }
     ]
   },
   {
-    id: "q_preco_01", tier: 1, sector: "Precificação Cega", title: "O Teto de Vidro do Vizinho",
-    theory: "Preço de Venda = Preço do Concorrente é a fórmula da falência. O vizinho pode ter aluguel mais barato, sonegar impostos ou estar quebrando. Balizar seu preço pelo dele é pagar para trabalhar.",
-    context: "Seu produto carro-chefe custa R$ 80. O custo de reposição subiu 15%. A loja vizinha vende por R$ 75. Você tem pavor de reajustar e perder clientela.",
+    id: "t1_preco_03", tier: 1, sector: "Precificação Cega", title: "O Teto de Vidro do Vizinho",
+    theory: "Preço de Venda = Preço do Concorrente. Eis a fórmula da falência. Seu concorrente pode ter aluguel mais barato, sonegar impostos ou estar quebrando. Balizar seu preço pelo dele sem conhecer seu Markup real é pagar para trabalhar.",
+    context: "Seu serviço/produto principal custa R$ 120. Os insumos subiram 15% amanhã. A loja vizinha faz por R$ 110. Você tem pavor de reajustar e perder a clientela mensal.",
     character: "O Medo da Precificação",
-    consultoriaHint: "Quem atrai por preço, por preço perde. Repasse o aumento amanhã. Deixe os 'sugadores de desconto' afundarem a margem do concorrente.",
+    consultoriaHint: "Quem atrai por preço, por preço perde. Não absorva inflação. Repasse o aumento. Deixe os clientes 'sugadores de desconto' irem afundar a margem do seu concorrente.",
     options: [
-      { id: "A", text: "Repassar o aumento para a tabela, treinar o time em objeções e aceitar a perda dos clientes de preço.", xp: 35, isBest: true, impacts: { caixa: 3000, margem: 2.5, compliance: 10 }, feedback: "MATURIDADE COMERCIAL. Você limpou sua carteira.", reward: "🏆 Filtro de Posicionamento: Sua marca atrai valor, não esmolas.", lesson: "" },
-      { id: "B", text: "Absorver o custo de 15% 'até ver se o mercado vai aceitar' e manter a tabela congelada.", xp: -15, isBest: false, impacts: { caixa: -2000, margem: -3.0, compliance: 0 }, feedback: "SANGRAMENTO VOLUNTÁRIO. Tirou dinheiro do bolso por medo.", reward: "", lesson: "O medo de perder uma venda é o que mais fecha empresas." },
-      { id: "C", text: "Baixar o seu preço para R$ 70 na tentativa agressiva de quebrar o vizinho no volume.", xp: -50, isBest: false, impacts: { caixa: -8000, margem: -6.0, compliance: -10 }, feedback: "SUICÍDIO MATEMÁTICO. Vender volume com margem negativa.", reward: "", lesson: "Volume não conserta precificação podre." }
+      { id: "A", text: "Repassar o aumento para a tabela (R$ 138), focar no atendimento e aceitar a perda dos clientes focados apenas em preço baixo.", xp: 35, isBest: true, impacts: { caixa: 1500, margem: 2.5, compliance: 10 }, feedback: "MATURIDADE COMERCIAL. Faturamento é ego; Margem é oxigênio.", reward: "🏆 Filtro de Posicionamento: Sua marca atrai valor, não esmolas.", lesson: "" },
+      { id: "B", text: "Absorver o custo de 15% 'até ver se o mercado aceita' e manter a tabela congelada em R$ 120.", xp: -15, isBest: false, impacts: { caixa: -800, margem: -3.0, compliance: 0 }, feedback: "SANGRAMENTO VOLUNTÁRIO. Tirou dinheiro do bolso por medo de vender.", reward: "", lesson: "O medo de perder uma venda é o que mais fecha pequenas empresas." },
+      { id: "C", text: "Baixar o preço para R$ 100 para quebrar o vizinho, apostando que vai 'ganhar no giro'.", xp: -50, isBest: false, impacts: { caixa: -3000, margem: -6.0, compliance: -10 }, feedback: "SUICÍDIO MATEMÁTICO. Vender volume com margem negativa acelera a quebra.", reward: "", lesson: "Volume não conserta precificação podre." }
     ]
   },
   {
-    id: "q_rh_01", tier: 1, sector: "Gestão de Pessoas", title: "O Custo Oculto da Pena",
-    theory: "Empresa não é ONG e CNPJ tem DRE, não coração. Manter um funcionário incompetente porque 'precisa do emprego' destrói o moral dos bons que carregam o peso.",
-    context: "Um atendente, amigo da família, chega atrasado dia sim, dia não. Hoje, por desorganização dele, um pedido grande foi enviado errado e o cliente cancelou R$ 3.000.",
+    id: "t1_rh_04", tier: 1, sector: "Gestão de Pessoas", title: "O Custo Oculto da Pena",
+    theory: "O CNPJ tem DRE, não coração. Manter um funcionário incompetente porque 'precisa do emprego' destrói o moral da equipe enxuta. O cara bom desmotiva ao carregar o cara ruim nas costas.",
+    context: "Você tem um entregador/atendente que é amigo da família, mas que falha frequentemente. Hoje, por preguiça dele, um pedido de R$ 800 estragou/foi cancelado pelo cliente.",
     character: "O Clima Organizacional",
-    consultoriaHint: "Pessoas boas de coração, mas ruins de execução, quebram empresas por dentro. Demita rápido. O respeito é liberar para o mercado.",
+    consultoriaHint: "Pessoas boas de coração, mas ruins de execução, quebram PMEs de dentro para fora. Seja rápido na demissão. Respeito é dar o feedback e liberar pro mercado.",
     options: [
-      { id: "A", text: "Desligar hoje. Pagar rescisão, assumir a perda e contratar alguém focado em performance.", xp: 35, isBest: true, impacts: { caixa: -1500, margem: 1.5, compliance: 15 }, feedback: "POSTURA DE LÍDER. Cortou o membro infeccionado.", reward: "🏆 Cultura de Performance: O amadorismo não tem mais espaço.", lesson: "" },
-      { id: "B", text: "Dar uma bronca severa, mas manter na equipe porque 'demitir agora custa caro em rescisão'.", xp: -10, isBest: false, impacts: { caixa: -1000, margem: -1.0, compliance: -5 }, feedback: "COVARDIA FINANCEIRA. O erro dele é mais caro que a rescisão.", reward: "", lesson: "O problema ignorado é o teto do seu crescimento." },
-      { id: "C", text: "Descontar os R$ 3.000 do salário dele no fim do mês como punição.", xp: -45, isBest: false, impacts: { caixa: 1000, margem: -2.0, compliance: -30 }, feedback: "PASSIVO TRABALHISTA. Punição ilegal que vai render processo.", reward: "", lesson: "Justiça não se faz com as próprias mãos no RH." }
+      { id: "A", text: "Chamar para o desligamento hoje. Pagar rescisão, assumir a perda do caixa e buscar alguém focado em performance.", xp: 35, isBest: true, impacts: { caixa: -1200, margem: 1.5, compliance: 15 }, feedback: "POSTURA DE LÍDER. Cortou o membro infeccionado antes de perder o braço.", reward: "🏆 Cultura de Performance: A equipe percebeu que amadorismo não tem espaço.", lesson: "" },
+      { id: "B", text: "Dar bronca severa, mas manter na equipe porque 'demitir e contratar alguém novo dá muito trabalho'.", xp: -10, isBest: false, impacts: { caixa: -500, margem: -1.0, compliance: -5 }, feedback: "COVARDIA FINANCEIRA. O custo invisível do erro é maior que a rescisão.", reward: "", lesson: "O problema que você ignora dita o limite do seu crescimento." },
+      { id: "C", text: "Descontar os R$ 800 do salário de R$ 1.800 dele no fim do mês como punição severa.", xp: -45, isBest: false, impacts: { caixa: 400, margem: -2.0, compliance: -30 }, feedback: "PASSIVO TRABALHISTA GERADO. Punição ilegal que vai render processo caro.", reward: "", lesson: "Justiça não se faz com as próprias mãos no RH." }
     ]
   },
-  {
-    id: "q_reserva_01", tier: 1, sector: "Reservas", title: "A Surpresa de Dezembro",
-    theory: "Falta de provisão (13º, férias) transforma compromissos matemáticos anuais em surpresas fatais que sugam o lucro do fim do ano.",
-    context: "Chegou o dia 20 de novembro. O 13º da equipe dá R$ 12.000 e você não provisionou 1/12 avos durante o ano. O caixa não tem esse valor solto.",
-    character: "A Folha de Pagamento",
-    consultoriaHint: "O erro foi no passado. Resolva o presente queimando algo parado (estoque) para fazer liquidez rápida. Não financie folha de pagamento.",
-    options: [
-      { id: "A", text: "Fazer um saldão agressivo do estoque antigo, levantar os R$ 12k à vista e criar a rotina de provisão para o ano que vem.", xp: 35, isBest: true, impacts: { caixa: 4000, margem: -1.0, compliance: 15 }, feedback: "APRENDIZADO NA DOR. Pagou a conta sem juros.", reward: "🏆 Provisão Ativada: Agora a empresa guarda 1/12 por mês.", lesson: "" },
-      { id: "B", text: "Pegar um empréstimo rápido em 24x no banco para pagar o 13º.", xp: -15, isBest: false, impacts: { caixa: -2000, margem: -2.0, compliance: -5 }, feedback: "O CUSTO DO ERRO. Vai pagar o banco o ano todo.", reward: "", lesson: "Tomar dívida longa para despesa de curto prazo esmaga o caixa." },
-      { id: "C", text: "Parcelar o 13º da equipe em 4 vezes e avisar no dia do pagamento.", xp: -45, isBest: false, impacts: { caixa: -5000, margem: -3.0, compliance: -30 }, feedback: "QUEBRA DE CONFIANÇA.", reward: "", lesson: "A equipe perde o respeito e o risco de denúncia trabalhista é imediato." }
-    ]
-  },
-
+  
   // --- TIER 2: ORGANIZAÇÃO, PROCESSOS E ESTOQUE ---
   {
     id: "t2_estoque_01", tier: 2, sector: "Gestão de Estoque", title: "O Dinheiro Congelado na Prateleira",
-    theory: "Estoque que não gira (Curva C) é dinheiro no ralo. O 'desconto de volume' que o fornecedor deu só vale a pena se você tem velocidade de venda.",
-    context: "Você tem R$ 20.000 de capital imobilizado em mercadorias lentas. O aluguel vence amanhã (R$ 6.000) e o caixa tem R$ 1.500.",
+    theory: "O Representante trabalha pela comissão dele, não pelo seu caixa. O 'desconto de volume' leva donos de PME a comprarem mercadoria para 6 meses. Estoque que não gira é dinheiro apodrecendo na inflação.",
+    context: "A empresa fatura seus 35k/mês. Porém, você tem R$ 12.000 de capital imobilizado em mercadorias paradas há 4 meses. O aluguel vence amanhã (R$ 3.500) e a conta bancária tem R$ 900.",
     character: "O Boleto do Ponto",
-    consultoriaHint: "Lucro no papel não paga boleto. Queime esse estoque a preço de custo hoje. Converta pó em dinheiro líquido.",
+    consultoriaHint: "Lucro de papel não paga boleto. Mercadoria encalhada é erro do passado. Queime esse estoque a preço de custo no WhatsApp agora. Converta caixa de papelão em Pix.",
     options: [
-      { id: "A", text: "Rodar 'Queima de Estoque' pelo WhatsApp a preço de custo (zero lucro) para levantar R$ 6.000 hoje.", xp: 35, isBest: true, impacts: { caixa: 7000, margem: -1.0, compliance: 10 }, feedback: "DOR DA APRENDIZAGEM. Engoliu o ego e salvou o aluguel.", reward: "🏆 Oxigênio de Caixa: Você dominou a arte de liquidar ativos.", lesson: "" },
-      { id: "B", text: "Manter o preço cheio, torcer para o cliente aparecer e pagar o aluguel usando cheque especial.", xp: -15, isBest: false, impacts: { caixa: -2500, margem: -1.5, compliance: -5 }, feedback: "ILUSÃO CONTÁBIL. Trocou problema por dívida a 8% a.m.", reward: "", lesson: "A esperança não é estratégia de negócios." },
-      { id: "C", text: "Comprar mais mercadorias no boleto para criar um combo e 'desovar' o estoque velho.", xp: -40, isBest: false, impacts: { caixa: -12000, margem: -4.0, compliance: -15 }, feedback: "O ABISMO. Tentou curar envenenamento com mais veneno.", reward: "", lesson: "Não se resolve falta de caixa gerando novos passivos." }
+      { id: "A", text: "Rodar 'Queima de Estoque' agressiva hoje. Vender a preço de custo (zero lucro) para transformar produto parado nos R$ 3.500 do aluguel.", xp: 35, isBest: true, impacts: { caixa: 3500, margem: -1.0, compliance: 10 }, feedback: "DOR DA APRENDIZAGEM. Engoliu o ego, assumiu a compra errada e salvou o mês.", reward: "🏆 Oxigênio de Caixa: Você dominou a técnica de liquidar curva C.", lesson: "" },
+      { id: "B", text: "Manter o preço cheio, torcer pro cliente aparecer e pagar o aluguel utilizando cheque especial do banco.", xp: -15, isBest: false, impacts: { caixa: -1000, margem: -1.5, compliance: -5 }, feedback: "ILUSÃO CONTÁBIL. Trocou um problema de prateleira por dívida a 8% a.m.", reward: "", lesson: "Esperança não é estratégia comercial." },
+      { id: "C", text: "Acionar fornecedor e comprar mais mercadorias no boleto parcelado, tentando criar um combo para 'desovar' o velho.", xp: -40, isBest: false, impacts: { caixa: -6000, margem: -4.0, compliance: -15 }, feedback: "O ABISMO. Curou envenenamento com mais veneno.", reward: "", lesson: "Não se resolve falta de caixa gerando novos boletos." }
     ]
   },
   {
-    id: "t2_inadimp_01", tier: 2, sector: "Inadimplência", title: "O Fiado do 'Parceiro' Fiel",
-    theory: "O medo de cobrar o 'cliente parceiro' destrói o capital de giro. Se ele compra muito, mas nunca paga no prazo, ele te usa como linha de crédito gratuita.",
-    context: "Um cliente antigo deve R$ 9.000 há 40 dias. Hoje enviou mensagem pedindo uma remessa urgente de R$ 5.000.",
+    id: "t2_inadimp_02", tier: 2, sector: "Inadimplência", title: "O Fiado do 'Parceiro' Fiel",
+    theory: "Dono de pequeno negócio não é banco sem juros. O medo de cobrar o 'cliente parceiro' destrói seu giro. Se ele compra muito e nunca paga no prazo, ele te encontrou como financiamento grátis.",
+    context: "Um cliente antigo deve R$ 3.500 há 40 dias. Você não cobrou para 'não ficar chato'. Hoje ele pediu uma remessa urgente de mais R$ 1.500 para amanhã cedo.",
     character: "O Calote Disfarçado",
-    consultoriaHint: "Trave a esteira. Passivo não é cliente. Não existe venda nova com título antigo em aberto.",
+    consultoriaHint: "Trave a esteira. Passivo não é cliente. Não existe venda nova com título antigo em aberto. Aproxime-se do atrito.",
     options: [
-      { id: "A", text: "Travar: 'Parceiro, a liberação de crédito para nova remessa exige a baixa do título anterior'.", xp: 35, isBest: true, impacts: { caixa: 6000, margem: 1.0, compliance: 15 }, feedback: "POSTURA EXECUTIVA. Cortou a sangria e expôs o blefe.", reward: "🏆 A Régua Implacável: Tolerância zero estabelecida.", lesson: "" },
-      { id: "B", text: "Entregar e pedir 'pelo amor de Deus' para depositar uma parte semana que vem.", xp: -15, isBest: false, impacts: { caixa: -4000, margem: -1.5, compliance: -10 }, feedback: "SUBMISSÃO TÁTICA. Validou que não há regras na empresa.", reward: "", lesson: "Quem tem pena do devedor, acorda devendo." },
-      { id: "C", text: "Entregar e descontar uma duplicata no banco para cobrir o buraco de R$ 9.000.", xp: -45, isBest: false, impacts: { caixa: -9000, margem: -4.0, compliance: -20 }, feedback: "CAMINHO DA RUÍNA. Transferiu a dívida para o seu nome.", reward: "", lesson: "O banco nunca esquece de cobrar. Seu cliente, sim." }
+      { id: "A", text: "Responder com firmeza: 'A liberação de crédito para nova remessa está travada no sistema até a baixa dos R$ 3.500'.", xp: 35, isBest: true, impacts: { caixa: 3500, margem: 1.0, compliance: 15 }, feedback: "POSTURA EXECUTIVA. Você cortou a sangria e expôs o blefe.", reward: "🏆 A Régua Implacável: Tolerância zero para liberação sem quitação.", lesson: "" },
+      { id: "B", text: "Entregar o pedido novo e pedir 'pelo amor de Deus' para ele depositar uma parte da dívida antiga na semana que vem.", xp: -15, isBest: false, impacts: { caixa: -1500, margem: -1.5, compliance: -10 }, feedback: "SUBMISSÃO TÁTICA. Validou que não há regras na sua gestão.", reward: "", lesson: "Quem tem pena do devedor, acorda devendo." },
+      { id: "C", text: "Entregar o pedido e, em segredo, descontar duplicatas ou antecipar cartão (tomando juros) para cobrir o buraco que ele deixou.", xp: -45, isBest: false, impacts: { caixa: -2500, margem: -4.0, compliance: -20 }, feedback: "O CAMINHO DA RUÍNA. Transferiu a dívida dele para o seu colo.", reward: "", lesson: "O banco nunca esquece de te cobrar. Seu cliente, sim." }
     ]
   },
   {
-    id: "t2_processos_01", tier: 2, sector: "Processos", title: "A Falsa Automação",
-    theory: "Software não organiza bagunça, digitaliza a bagunça. Gastar em ERPs complexos sem processo é ilusão de gestão.",
-    context: "Paga R$ 900/mês em ERP. Há 3 meses a equipe só anota vendas num caderno por achar o sistema 'difícil na pressa'.",
-    character: "O Custo Inútil",
-    consultoriaHint: "Processo antes da ferramenta. Volte pro básico, faça a equipe registrar tudo. Só evolua a ferramenta quando o hábito existir.",
-    options: [
-      { id: "A", text: "Cancelar ERP premium, usar versão básica e treinar exaustivamente: sem lançamento, sem comissão.", xp: 30, isBest: true, impacts: { caixa: 1500, margem: 1.0, compliance: 10 }, feedback: "RACIONALIDADE DIRETA. Alinhou os incentivos.", reward: "🏆 Gestão à Vista", lesson: "" },
-      { id: "B", text: "Manter pagando 'para não perder histórico' e esperar a equipe se acostumar.", xp: -10, isBest: false, impacts: { caixa: -900, margem: -0.5, compliance: -5 }, feedback: "DESPERDÍCIO PASSIVO.", reward: "", lesson: "Omissão de gestão custa caro." },
-      { id: "C", text: "Abolir o sistema, ficar só no caderno para não estressar a equipe.", xp: -35, isBest: false, impacts: { caixa: -2500, margem: -1.0, compliance: -15 }, feedback: "O RETROCESSO. Aceitou a cegueira financeira.", reward: "", lesson: "Empresa sem dados é navio sem radar." }
-    ]
-  },
-  {
-    id: "t2_mkt_01", tier: 2, sector: "Marketing", title: "A Métrica de Vaidade",
-    theory: "Curtidas e Seguidores não pagam DARF. Focar em branding antes de ter uma máquina de vendas (ROAS) é falir sendo famoso.",
-    context: "Sua agência comemora que seu post teve 5.000 likes. Você gastou R$ 2.000 em impulsionamento, mas o caixa registrou apenas 3 vendas.",
-    character: "A Agência de Ego",
-    consultoriaHint: "Corte o topo de funil vazio. Tráfego pago para PME tem que ter CTA direto pro WhatsApp e focar em fundo de funil (conversão).",
-    options: [
-      { id: "A", text: "Trocar a meta da agência: pausar campanhas de 'alcance' e focar 100% em campanhas de mensagens para o WhatsApp (Lead).", xp: 35, isBest: true, impacts: { caixa: 2000, margem: 1.5, compliance: 10 }, feedback: "FOCO NO CAIXA. Conversão virou a métrica rainha.", reward: "🏆 Máquina de Leads Ativada", lesson: "" },
-      { id: "B", text: "Comemorar os likes achando que 'a marca está ficando forte para o longo prazo'.", xp: -15, isBest: false, impacts: { caixa: -2000, margem: -1.0, compliance: 0 }, feedback: "CEGUEIRA DE MARCA.", reward: "", lesson: "Até chegar o 'longo prazo', seu caixa quebra." },
-      { id: "C", text: "Dobrar o orçamento de alcance para virar referência na região.", xp: -40, isBest: false, impacts: { caixa: -4000, margem: -3.0, compliance: -5 }, feedback: "QUEIMA ACELERADA. Falindo de forma muito popular.", reward: "", lesson: "Popularidade sem conversão é caridade pro Mark Zuckerberg." }
-    ]
-  },
-  {
-    id: "t2_tesoura_01", tier: 2, sector: "Fluxo de Caixa", title: "O Efeito Tesoura",
-    theory: "Onde a empresa que mais vende quebra. Se seu Prazo de Recebimento (vender em 10x) é maior que o Prazo de Pagamento (fornecedor 30d), crescer drena liquidez.",
-    context: "Mês histórico: R$ 60k vendidos em 6x s/ juros. Mas a fatura do estoque novo chega amanhã: R$ 25.000. Caixa negativo.",
+    id: "t2_tesoura_04", tier: 2, sector: "Fluxo de Caixa", title: "O Efeito Tesoura",
+    theory: "É aqui que a empresa que fatura 50k quebra. O 'Efeito Tesoura' é quando seu Prazo de Recebimento (cliente paga em 6x) é maior que o Prazo de Pagamento (fornecedor em 30d). O crescimento engole o caixa.",
+    context: "Recorde! Vendeu R$ 48.000 no mês. Tudo parcelado no cartão de crédito. Mas a fatura de reposição de estoque vence amanhã e custa R$ 20.000. O caixa físico está negativo.",
     character: "O Paradoxo do Crescimento",
-    consultoriaHint: "Inverta o ciclo. Encurte os prazos do cliente oferecendo vantagens à vista, e negocie alongamento com fornecedores.",
+    consultoriaHint: "Inverta o ciclo. Encurte prazos de venda dando Desconto Assoalho para PIX, e alongue com fornecedores. Freie a maquininha.",
     options: [
-      { id: "A", text: "Criar 'Desconto Assoalho' PIX, limitar vendas a 3x e pedir carência ao fornecedor este mês.", xp: 35, isBest: true, impacts: { caixa: 8000, margem: 1.0, compliance: 10 }, feedback: "CONTROLE DE ROTAÇÃO. Freou vendas tóxicas e trouxe dinheiro rápido.", reward: "🏆 O Ciclo Positivo (Caixa Livre)", lesson: "" },
-      { id: "B", text: "Pegar Capital de Giro no banco para cobrir o buraco do crescimento.", xp: -20, isBest: false, impacts: { caixa: -3000, margem: -3.0, compliance: -10 }, feedback: "ARMADILHA CLÁSSICA. Pagou juros porque vendeu muito.", reward: "", lesson: "Vender a prazo com dinheiro do banco é repassar juros." },
-      { id: "C", text: "Deixar de pagar o fornecedor esperando os cartões caírem.", xp: -45, isBest: false, impacts: { caixa: -10000, margem: -2.0, compliance: -25 }, feedback: "QUEIMA DE CRÉDITO. Seu CNPJ negativou.", reward: "", lesson: "O crédito na praça é seu maior ativo." }
+      { id: "A", text: "Ligar pro fornecedor pedindo prorrogação. E amanhã: limitar parcelas a 3x e criar desconto forte pra PIX à vista.", xp: 35, isBest: true, impacts: { caixa: 6000, margem: 1.0, compliance: 10 }, feedback: "CONTROLE DE ROTAÇÃO. Você freou as vendas tóxicas e chamou liquidez.", reward: "🏆 O Ciclo Positivo: Fôlego retomado antes do boleto vencer.", lesson: "" },
+      { id: "B", text: "Comemorar o recorde e pegar empréstimo Capital de Giro no banco para cobrir os R$ 20k até as parcelas caírem.", xp: -20, isBest: false, impacts: { caixa: -2000, margem: -3.0, compliance: -10 }, feedback: "A ARMADILHA CLÁSSICA. Pagou juros caros porque vendeu muito.", reward: "", lesson: "Vender a prazo com o dinheiro do banco não é vender, é repassar juros." },
+      { id: "C", text: "Deixar de pagar o fornecedor alegando que 'ele tem que entender', esperando os cartões caírem.", xp: -45, isBest: false, impacts: { caixa: -8000, margem: -2.0, compliance: -25 }, feedback: "QUEIMA DE CRÉDITO. Seu CNPJ foi pro Serasa. A roda travou.", reward: "", lesson: "O crédito na praça é o maior ativo do pequeno comércio." }
+    ]
+  },
+  {
+    id: "t2_mkt_05", tier: 2, sector: "Marketing", title: "A Métrica de Vaidade",
+    theory: "Para quem fatura até 50k, Curtidas não pagam DAS. Focar em branding e topo de funil antes de ter uma esteira de conversão (ROAS) no WhatsApp é brincar de ser famoso enquanto o caixa seca.",
+    context: "Sua 'agência' comemora que seu Reels teve 10.000 views. Você gastou R$ 800 impulsionando. Mas no fim do dia, o WhatsApp da loja só tocou 2 vezes com curiosos.",
+    character: "O Tráfego Pago Jogado Fora",
+    consultoriaHint: "Dinheiro de PME na internet tem que voltar rápido. Pause campanhas de 'Alcance'. O foco é campanha de Mensagem direta para o WhatsApp com oferta irresistível.",
+    options: [
+      { id: "A", text: "Trocar o foco da agência: zerar verba de 'brand' e jogar os R$ 800 100% em campanhas de mensagens (Leads) focadas na região.", xp: 35, isBest: true, impacts: { caixa: 1500, margem: 1.5, compliance: 10 }, feedback: "FOCO NA CONVERSÃO. View não enche carrinho, mensagem sim.", reward: "🏆 Máquina de Vendas: Cada real gasto agora busca um CPF para fechar negócio.", lesson: "" },
+      { id: "B", text: "Comemorar as visualizações acreditando que 'aos poucos a marca vai ficando forte na mente do povo'.", xp: -15, isBest: false, impacts: { caixa: -800, margem: -1.0, compliance: 0 }, feedback: "CEGUEIRA DE EGO.", reward: "", lesson: "Até o longo prazo chegar, seu fluxo de caixa despenca." },
+      { id: "C", text: "Ficar frustrado, mas dobrar a verba de alcance para R$ 1.600 achando que faltou botar mais dinheiro no Instagram.", xp: -40, isBest: false, impacts: { caixa: -2500, margem: -3.0, compliance: -5 }, feedback: "QUEIMA ACELERADA. Falindo de forma muito popular.", reward: "", lesson: "Popularidade sem esteira de vendas é caridade para o Mark Zuckerberg." }
     ]
   },
 
-  // --- TIER 3: GESTÃO DO TEMPO, ESCALA E CUSTOS ---
+  // --- TIER 3: GESTÃO DO TEMPO, ESCALA E CUSTOS INVISÍVEIS ---
   {
     id: "t3_gargalo_01", tier: 3, sector: "Custo de Oportunidade", title: "A Prisão do 'Ninguém faz como eu'",
-    theory: "O teto de crescimento da empresa é sua agenda. Dono que empacota pedido cobra R$ 300/hora para fazer serviço de R$ 15/hora. O medo de delegar trava o CNPJ.",
-    context: "Sua receita empacou. A jornada é de 14h. O WhatsApp tem 50 mensagens não lidas porque você passou a tarde no balcão.",
+    theory: "O teto de crescimento de uma empresa de R$ 40k é a agenda do dono. Se você varre o chão, embala pedido e envia boleto, cobra de si mesmo R$ 150/hora por um serviço braçal. O medo de delegar e errar garante que você não cresça.",
+    context: "Sua receita empacou. A jornada é de 14h. O WhatsApp de vendas tem 30 mensagens não lidas porque você passou a tarde conferindo se a funcionária limpou o estoque direito.",
     character: "O Teto de Vidro",
-    consultoriaHint: "Assuma o Custo Fixo. Terceirize o básico. Sua energia livre será revertida em alianças e visão de lucro.",
+    consultoriaHint: "Assuma o aumento de Custo Fixo e delegue o operacional. A sua energia livre será revertida em alianças comerciais e vendas de fechamento. Treine e libere.",
     options: [
-      { id: "A", text: "Contratar assistente. Aceitar que fará 80% bem, desenhar processo básico e focar em Vendas.", xp: 40, isBest: true, impacts: { caixa: -2500, margem: 3.5, compliance: 10 }, feedback: "CORAGEM DA ESCALA. O CEO voltou ao jogo.", reward: "🏆 Tempo de Dono: Você destravou sua agenda.", lesson: "" },
-      { id: "B", text: "Contratar freelancer barato só para a noite, sem processo.", xp: -5, isBest: false, impacts: { caixa: -500, margem: 0.5, compliance: -5 }, feedback: "MEIA SOLUÇÃO. O gargalo diurno continua.", reward: "", lesson: "Mão de obra sem processo é refação pura." },
-      { id: "C", text: "Continuar na mesma rotina e fechar a loja mais cedo pra dormir.", xp: -40, isBest: false, impacts: { caixa: -6000, margem: -4.0, compliance: -10 }, feedback: "SUICÍDIO LENTO. Você aceitou o limite máximo da empresa.", reward: "", lesson: "O orgulho de ser o 'peão' destrói o CNPJ." }
+      { id: "A", text: "Contratar um assistente operacional. Desenhar o processo básico, aceitar que ele fará 80% tão bem quanto você, e focar em Vender.", xp: 40, isBest: true, impacts: { caixa: -1800, margem: 3.5, compliance: 10 }, feedback: "A CORAGEM DA ESCALA. O Custo Fixo subiu hoje, mas a receita destrava porque o CEO voltou ao jogo.", reward: "🏆 Tempo de Dono: Você saiu da operação para olhar o painel de controle.", lesson: "" },
+      { id: "B", text: "Contratar um 'freelancer' muito barato apenas para apagar incêndios à noite, sem compromisso.", xp: -5, isBest: false, impacts: { caixa: -500, margem: 0.5, compliance: -5 }, feedback: "A MEIA SOLUÇÃO. Mão de obra barata sem processo é refação. O caos continua.", reward: "", lesson: "Economizar em mão de obra de base custa o seu cérebro estratégico." },
+      { id: "C", text: "Continuar na mesma rotina, alegando que 'mão de obra tá difícil' e apenas desligar o celular mais cedo.", xp: -40, isBest: false, impacts: { caixa: -4000, margem: -4.0, compliance: -10 }, feedback: "O SUICÍDIO LENTO. Você aceitou o limite máximo da sua empresa. A concorrência agradece.", reward: "", lesson: "O orgulho de ser o 'melhor peão' da própria empresa mata o CNPJ." }
     ]
   },
   {
-    id: "t3_refem_01", tier: 3, sector: "Gestão de Riscos (RH)", title: "O Sequestro da Operação",
-    theory: "Dependência absoluta de um funcionário inverte o poder. Ele vira dono da empresa sem assumir riscos.",
-    context: "Seu principal vendedor (50% da receita) pede 40% de aumento fixo hoje, ou vai pro concorrente.",
+    id: "t3_refem_02", tier: 3, sector: "Gestão de Riscos (RH)", title: "O Sequestro da Operação",
+    theory: "O Risco Chave: Dependência de 1 funcionário. Quando o vendedor 'estrela' percebe que detém os processos vitais da pequena empresa, o poder inverte. Ele vira o dono sem assumir o risco de pagar a folha.",
+    context: "Seu único vendedor sênior pediu uma reunião: 'Estou sendo assediado. Ou meu fixo sobe 40% hoje (mais R$ 1.500/mês), ou vou pro concorrente e os clientes vão comigo'.",
     character: "O Ultimato Interno",
-    consultoriaHint: "Nunca negocie com reféns. Dê bônus variável para ganhar tempo, sugue os processos dele e contrate júniors.",
+    consultoriaHint: "Nunca negocie com reféns. O terrorista quer o controle. Conceda um bônus por meta (variável) para ganhar 30 dias. Sugue as informações dele, faça um CRM básico e contrate estagiários. Pulverize o risco.",
     options: [
-      { id: "A", text: "Negar fixo, oferecer agressivo bônus meta. Documentar processos e iniciar seleção silenciosa.", xp: 40, isBest: true, impacts: { caixa: 2000, margem: 1.0, compliance: 20 }, feedback: "MANOBRA EXECUTIVA. Blindou o negócio e iniciou pulverização.", reward: "🏆 Empresa Despersonalizada", lesson: "" },
-      { id: "B", text: "Conceder o aumento pelo pavor de perder receita.", xp: -25, isBest: false, impacts: { caixa: -4000, margem: -4.0, compliance: -15 }, feedback: "SEQUESTRO. Ele é o dono da empresa agora.", reward: "", lesson: "Quem cede ao terrorismo de um, perde o respeito dos outros." },
-      { id: "C", text: "Demiti-lo aos gritos e tentar cobrir os clientes dele sozinho.", xp: -45, isBest: false, impacts: { caixa: -10000, margem: -5.0, compliance: -20 }, feedback: "BURRICE DO EGO. Rombo de 50% na receita.", reward: "", lesson: "Decisão emocional quebra caixa." }
+      { id: "A", text: "Negar fixo, oferecer agressivo bônus em cima de metas (variável). Documentar processos e iniciar seleção silenciosa na mesma noite.", xp: 40, isBest: true, impacts: { caixa: 1500, margem: 1.0, compliance: 20 }, feedback: "MANOBRA EXECUTIVA. Não cedeu à chantagem, blindou a base e iniciou a pulverização.", reward: "🏆 Empresa Despersonalizada: Os processos agora valem mais do que o CPF que executa.", lesson: "" },
+      { id: "B", text: "Conceder o aumento fixo de 40% engolindo a raiva, pelo pavor de perder os clientes que ele atende.", xp: -25, isBest: false, impacts: { caixa: -2500, margem: -4.0, compliance: -15 }, feedback: "SEQUESTRO VALIDADO. Você acabou de transferir o controle da sua empresa para ele.", reward: "", lesson: "Quem cede ao terrorismo interno de um, perde a liderança dos outros." },
+      { id: "C", text: "Demitir aos gritos para 'mostrar quem manda' e tentar você mesmo ligar pros clientes no dia seguinte.", xp: -45, isBest: false, impacts: { caixa: -6000, margem: -5.0, compliance: -20 }, feedback: "A BURRICE DO EGO. A raiva gerou um rombo comercial imediato e risco de assédio.", reward: "", lesson: "Um líder ofendido toma as decisões mais caras do mundo." }
     ]
   },
   {
-    id: "t3_crise_01", tier: 3, sector: "Reputação", title: "A Crise Silenciosa (Google)",
-    theory: "A conversão desaba silenciosamente se sua nota cai de 4.0 online. Reputação é Margem.",
-    context: "Ex-funcionário criou fakes e abaixou sua nota no Google para 2.4. Vendas caíram 40%.",
-    character: "O Algoritmo",
-    consultoriaHint: "Controle danos. Peça suporte massivo aos clientes fiéis para avaliarem com 5 estrelas e soterrar o ataque.",
+    id: "t3_inflacao_04", tier: 3, sector: "Custos Invisíveis", title: "A Cegueira do Custo Fixo",
+    theory: "A inflação age como cupim num negócio que fatura 30k, 40k. A conta de luz, o aluguel, a gasolina e o dissídio subiram. Se sua tabela de preços é a mesma de 1 ano atrás, a sua margem já evaporou.",
+    context: "O balanço fechou empatado. R$ 0,00 de lucro. O contador mostrou que seus custos operacionais subiram 15% nos últimos 12 meses. A tabela de preços não foi tocada.",
+    character: "A Fome da Margem",
+    consultoriaHint: "Preço é a única coisa que joga oxigênio para dentro da DRE. O cliente vai chiar? Vai. Mas vender muito dando prejuízo é a pior tortura. Reajuste e assuma a perda de volume barato.",
     options: [
-      { id: "A", text: "Denunciar fakes ao Google e fazer campanha com clientes reais pedindo reviews urgentes.", xp: 35, isBest: true, impacts: { caixa: 2500, margem: 1.5, compliance: 15 }, feedback: "GESTÃO DE CRISE. A maturidade vence o troll.", reward: "🏆 Muralha Digital", lesson: "" },
-      { id: "B", text: "Bater boca online xingando o autor das fakes.", xp: -20, isBest: false, impacts: { caixa: -3000, margem: -1.0, compliance: -10 }, feedback: "A LAMA. Potenciais clientes fugiram do barraco.", reward: "", lesson: "Não lute com um porco na lama." },
-      { id: "C", text: "Deletar o perfil do Google Meu Negócio.", xp: -50, isBest: false, impacts: { caixa: -12000, margem: -4.0, compliance: -20 }, feedback: "APAGÃO COMERCIAL. Ninguém acha mais a empresa.", reward: "", lesson: "Sumir do mapa elimina as soluções." }
-    ]
-  },
-  {
-    id: "t3_inflacao_01", tier: 3, sector: "Custos", title: "A Cegueira do Custo Fixo",
-    theory: "A inflação é como cupim. Se a sua tabela tem a mesma 'cara' há 2 anos, seu lucro virou pó.",
-    context: "Lucro R$ 0 por 3 meses. Custos fixos subiram 18%. Você não reajustou a tabela.",
-    character: "O Desgaste da Margem",
-    consultoriaHint: "O preço é o único pilar que traz dinheiro pra dentro. Reajuste hoje. Perder venda ruim é melhor que empatar.",
-    options: [
-      { id: "A", text: "Reajustar 18% imediatamente, focar na excelência e aceitar perder clientes sensíveis a preço.", xp: 40, isBest: true, impacts: { caixa: 6000, margem: 3.5, compliance: 10 }, feedback: "CORAGEM DE ESCALA. Protegeu a entidade que alimenta todos.", reward: "🏆 Reposicionamento de Valor", lesson: "" },
-      { id: "B", text: "Diminuir drasticamente a qualidade dos insumos para economizar os 18%.", xp: -25, isBest: false, impacts: { caixa: 0, margem: -2.0, compliance: -15 }, feedback: "DESTRUIÇÃO DA MARCA. Boca a boca negativo ativado.", reward: "", lesson: "O cliente jamais perdoa a queda de qualidade." },
-      { id: "C", text: "Dobrar gastos em Ads para tentar empurrar volume e compensar a margem ruim.", xp: -45, isBest: false, impacts: { caixa: -15000, margem: -5.0, compliance: -10 }, feedback: "O VOO DO PATO. Escalar modelo que sangra é fatal.", reward: "", lesson: "Crescer dando prejuízo aproxima você do penhasco." }
-    ]
-  },
-  {
-    id: "t3_concorrencia_01", tier: 3, sector: "Competição", title: "O Sonegador Vizinho",
-    theory: "Guerra de preços com quem não emite nota é lutar contra a matemática.",
-    context: "Três concorrentes informais derrubaram o preço do mercado em 30%. Você é Simples Nacional 100% limpo.",
-    character: "O Mercado Canibalizado",
-    consultoriaHint: "Pivote. Saia do Oceano Vermelho. Foque em clientes B2B que exigem nota e valorizam garantia.",
-    options: [
-      { id: "A", text: "Mudar foco comercial para clientes corporativos (B2B) que exigem NF-e e pagam mais caro pela segurança.", xp: 40, isBest: true, impacts: { caixa: 12000, margem: 2.0, compliance: 20 }, feedback: "PIVÔ INTELIGENTE.", reward: "🏆 Oceano Azul (B2B Ativado)", lesson: "" },
-      { id: "B", text: "Reclamar na internet sobre a 'concorrência desleal' para o público ter pena.", xp: -15, isBest: false, impacts: { caixa: -2000, margem: -1.0, compliance: 0 }, feedback: "CHORO PERDEDOR.", reward: "", lesson: "O cliente quer o problema dele resolvido, não o seu." },
-      { id: "C", text: "Parar de emitir nota fiscal para conseguir competir de igual para igual.", xp: -50, isBest: false, impacts: { caixa: 20000, margem: -5.0, compliance: -50 }, feedback: "CRIME FISCAL.", reward: "", lesson: "Autuação estadual vai lacrar a sua porta." }
+      { id: "A", text: "Reajustar a tabela imediatamente em 15%, treinar o time em objeções baseadas na qualidade e dispensar os clientes que brigam por centavos.", xp: 40, isBest: true, impacts: { caixa: 4500, margem: 3.5, compliance: 10 }, feedback: "A CORAGEM DA ESCALA. Protegeu a entidade que paga todos vocês. Vender valor, não preço.", reward: "🏆 O Reposicionamento: O cliente tóxico saiu, o cliente bom pagou mais.", lesson: "" },
+      { id: "B", text: "Trocar de fornecedor de insumos para opções mais baratas, forçando uma queda na qualidade da entrega para segurar o preço velho.", xp: -25, isBest: false, impacts: { caixa: 0, margem: -2.0, compliance: -15 }, feedback: "A DESTRUIÇÃO DO NOME. Resolveu por 2 meses sacrificando o boca-a-boca pra sempre.", reward: "", lesson: "O mercado pode perdoar o preço alto, mas não perdoa a queda de qualidade." },
+      { id: "C", text: "Ignorar o aumento do custo fixo e dobrar os anúncios para vender no 'volume' e fechar a conta do mês.", xp: -45, isBest: false, impacts: { caixa: -8000, margem: -5.0, compliance: -10 }, feedback: "O VOO DO PATO. Escalar venda sangrando margem é pedir falência acelerada.", reward: "", lesson: "Não se escala um modelo de negócios que está dando prejuízo unitário." }
     ]
   },
 
-  // --- TIER 4: ELITE, DIREÇÃO E B2B ---
+  // --- TIER 4: DIRETORES DE PME, TRIBUTOS E SUCESSÃO ---
   {
-    id: "t4_tributos_01", tier: 4, sector: "Tributos", title: "A Trava do Simples Nacional",
-    theory: "Congelar vendas por medo de estourar a faixa tributária é a receita certa para jogar na série B para sempre.",
-    context: "Novembro. Faturamento em R$ 4.750.000,00. Três contratos grandes (600k) te jogarão no Lucro Presumido.",
-    character: "O Teto da Receita",
-    consultoriaHint: "Crescer dói. Desenquadre com honra, pague o imposto e construa um império.",
+    id: "t4_tributos_01", tier: 4, sector: "Estratégia Tributária", title: "O Degrau do Simples Nacional",
+    theory: "Congelar as vendas porque o contador avisou que você vai pular para uma faixa de imposto maior (de 6% para 11%, por exemplo) é o cúmulo da mentalidade de escassez.",
+    context: "Novembro. A sua pequena empresa está batendo R$ 50 mil de média/mês. O contador ligou: 'Se faturarmos os próximos R$ 20.000, pulamos de faixa no Simples Nacional e o imposto sobe muito'.",
+    character: "O Medo do Leão",
+    consultoriaHint: "Crescimento custa imposto. Segurar faturamento é matar o comercial da empresa. Pule de faixa, emita a nota, pague os 11% e reajuste a precificação para o ano que vem.",
     options: [
-      { id: "A", text: "Assinar contratos, avisar contador da migração para Lucro Presumido e reformular o Mark-up.", xp: 40, isBest: true, impacts: { caixa: 25000, margem: 1.5, compliance: 30 }, feedback: "A MUDANÇA DE SÉRIE. Levou lucro pra casa com segurança jurídica.", reward: "🏆 Elite Corporativa (Compliance)", lesson: "" },
-      { id: "B", text: "Pedir aos clientes para faturarem no ano que vem para não estourar o limite.", xp: -20, isBest: false, impacts: { caixa: -15000, margem: -2.0, compliance: 0 }, feedback: "ESCASSEZ. O mercado corporativo não tem tempo para o seu medo.", reward: "", lesson: "O cliente sério não financia esquema tributário." },
-      { id: "C", text: "Fechar contrato sem nota fiscal para maquiar a receita do teto.", xp: -50, isBest: false, impacts: { caixa: 30000, margem: -5.0, compliance: -60 }, feedback: "CRIME FISCAL. DIRF acusou fraude cruzada.", reward: "", lesson: "Sonegar B2B é atestado de óbito garantido." }
+      { id: "A", text: "Faturar os pedidos totais, pular de faixa tributária com orgulho e ajustar a planilha de Markup com o novo imposto para os próximos orçamentos.", xp: 40, isBest: true, impacts: { caixa: 6000, margem: 1.5, compliance: 30 }, feedback: "A MUDANÇA DE SÉRIE. Você aceitou a dor do crescimento e deixou a mentalidade escassa.", reward: "🏆 Limite Rompido: A empresa faturou mais, pagou imposto certo e lucrou muito mais.", lesson: "" },
+      { id: "B", text: "Travar as vendas em novembro, dispensar clientes novos e só faturar em janeiro para 'proteger a alíquota'.", xp: -20, isBest: false, impacts: { caixa: -8000, margem: -2.0, compliance: 0 }, feedback: "ESCASSEZ. O mercado não vai esperar seu medo tributário. Frustrou a clientela inteira.", reward: "", lesson: "Empresa que escolhe não vender escolhe morrer." },
+      { id: "C", text: "Fazer as vendas de R$ 20.000 no dinheiro vivo/Pix CPF sem emitir nota fiscal para fraudar o teto da Receita.", xp: -50, isBest: false, impacts: { caixa: 15000, margem: -5.0, compliance: -60 }, feedback: "O CRIME FISCAL. O banco cruzou seu CPF com o Pix CNPJ. A autuação estadual chegou dobrada.", reward: "", lesson: "A ilusão da sonegação no Simples é a morte súbita da PME." }
     ]
   },
   {
-    id: "t4_ego_01", tier: 4, sector: "Gestão do Ego", title: "A Ilusão do Crescimento",
-    theory: "Pico sazonal de 3 meses não é consolidação. Alavancar passivos usando fluxo recém-criado sufoca a empresa.",
-    context: "Três meses de lucro recorde. R$ 60k livres. O banco oferece financiar uma SUV de R$ 300k no CNPJ.",
+    id: "t4_ego_02", tier: 4, sector: "Gestão do Ego", title: "A Ilusão da Caminhonete",
+    theory: "O ego do pequeno empreendedor que acabou de fazer caixa destrói mais CNPJs que o próprio mercado. Pico de 3 meses não é consolidação. Alavancar passivos fixos (carrão na PJ) remove o oxigênio essencial para crises.",
+    context: "Você teve 3 meses excelentes. O caixa acumulou R$ 25.000 livres. O vendedor da concessionária aprovou um financiamento no seu CNPJ para uma SUV. Parcela: R$ 3.500 mensais.",
     character: "O Status Social",
-    consultoriaHint: "Dinheiro livre recém-chegado vira Fundo de Guerra. SUV não vende para você, apenas tira liquidez da operação.",
+    consultoriaHint: "Não estrangule seu fluxo de caixa na largada. Carro zero financiado no CNPJ não vende para o seu cliente, apenas enriquece a financeira. Faça uma Reserva de Emergência.",
     options: [
-      { id: "A", text: "Declinar o banco e transferir 80% do lucro para CDI de Liquidez Diária como Reserva.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 1.0, compliance: 20 }, feedback: "O DIRETOR EXECUTIVO. Estocou feno pro inverno.", reward: "🏆 Blindagem de Capital", lesson: "" },
-      { id: "B", text: "Fazer uma reforma luxuosa na loja inteira à vista, zerando o caixa livre.", xp: -25, isBest: false, impacts: { caixa: -60000, margem: 0, compliance: -10 }, feedback: "BELEZA VULNERÁVEL. Qualquer tropeço mês que vem atrasa a folha.", reward: "", lesson: "Porcelanato não paga boleto." },
-      { id: "C", text: "Assinar a SUV de luxo assumindo parcelas fixas altas no CNPJ.", xp: -50, isBest: false, impacts: { caixa: -60000, margem: -6.0, compliance: -25 }, feedback: "O CANCRO NO FLUXO. Custo fixo desnecessário e pesado.", reward: "", lesson: "Vaidade asfixiou o pulmão do negócio." }
+      { id: "A", text: "Agradecer o banco, declinar o carro e aplicar 80% desse valor (R$ 20k) num CDB Diário como Reserva de Guerra da empresa.", xp: 40, isBest: true, impacts: { caixa: 8000, margem: 1.0, compliance: 20 }, feedback: "O VERDADEIRO DIRETOR EXECUTIVO. Estocou feno pro inverno. A vaidade espera.", reward: "🏆 Blindagem de Capital: Sono tranquilo sabendo que a empresa sobrevive meses sem vender.", lesson: "" },
+      { id: "B", text: "Torrar os R$ 25.000 numa grande reforma visual da loja à vista, porque 'ambiente luxuoso atrai rico'.", xp: -25, isBest: false, impacts: { caixa: -25000, margem: 0, compliance: -10 }, feedback: "BELEZA VULNERÁVEL. Loja de primeiro mundo com caixa de terceiro mundo. Atrasou folha mês que vem.", reward: "", lesson: "Gesso, pintura e arandelas não pagam funcionário." },
+      { id: "C", text: "Assinar o financiamento da SUV, dando R$ 10k de entrada e assumindo o boleto de R$ 3.500 todos os meses.", xp: -50, isBest: false, impacts: { caixa: -10000, margem: -6.0, compliance: -25 }, feedback: "O CANCRO NO FLUXO. Custo fixo desnecessário enforcou a operação. O IPVA e Seguro vêm aí.", reward: "", lesson: "A vaidade sufocou o pulmão do negócio recém-saudável." }
     ]
   },
   {
-    id: "t4_sucessao_01", tier: 4, sector: "Governança", title: "A Paralisia do Rei",
-    theory: "O valor da empresa é como ela roda sem o dono. Se a operação para sem sua digital no banco, você é escravo.",
-    context: "Você viaja para o exterior. Sem sinal. Dia 5 chegou. Sem sua digital, 15 funcionários ficarão sem salário.",
-    character: "O Processo de Alçada",
-    consultoriaHint: "Descentralize com segurança. Crie limites de alçada bancária para gerentes + contador.",
+    id: "t4_dividendo_04", tier: 4, sector: "Lucratividade", title: "A Retirada Selvagem",
+    theory: "O lucro de uma PME não deve ir 100% para a piscina do dono. Distribuição selvagem é o caminho rápido para a descapitalização de um negócio de 50k. O lucro de hoje financia o giro de amanhã sem banco.",
+    context: "Fechamento do ano: O lucro limpo acumulado da operação foi de exatos R$ 90.000 (R$ 7,5k/mês). Você e seu sócio estão tentados a zerar a conta corporativa e transferir tudo 50/50 para a Pessoa Física.",
+    character: "A Distribuição de Lucros",
+    consultoriaHint: "Regra de ouro 30/70. Prêmio para o sócio é 30% do lucro gerado. Os outros 70% ficam travados na empresa para compra de estoque à vista, marketing e expansão. Não sangre o CNPJ.",
     options: [
-      { id: "A", text: "Prevenção ativada: Você havia estabelecido limites de Alçada no banco para os gerentes aprovarem a folha.", xp: 40, isBest: true, impacts: { caixa: 0, margem: 2.0, compliance: 30 }, feedback: "MATRIZ CULTURAL. A empresa sobrevive sem você presente.", reward: "🏆 Negócio Despersonalizado", lesson: "" },
-      { id: "B", text: "Logar do avião pagando roaming caríssimo e atrasar aprovações gerando pânico interno.", xp: -15, isBest: false, impacts: { caixa: -500, margem: -1.0, compliance: -10 }, feedback: "O SALVADOR ESTRESSADO.", reward: "", lesson: "Microgerenciamento cobra juros e taquicardia." },
-      { id: "C", text: "Deixar a senha Master no Post-it com a secretária e o Token solto na gaveta.", xp: -50, isBest: false, impacts: { caixa: -35000, margem: -5.0, compliance: -50 }, feedback: "ROLETA RUSSA. Falha gravíssima de compliance.", reward: "", lesson: "A ruína mede 6 dígitos de senha num papel." }
+      { id: "A", text: "Aplicar governança financeira: Distribuir 30% (27k) como prêmio justo e deixar 70% (63k) guardados em liquidez no CNPJ.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 1.5, compliance: 20 }, feedback: "ALINHAMENTO COM EQUITY. Prêmio no CPF, mas a empresa virou uma usina que se financia.", reward: "🏆 Equity Sólido: A empresa roda e cresce com o dinheiro mais barato que existe.", lesson: "" },
+      { id: "B", text: "Ceder à pressa do momento e transferir os R$ 90.000 para vocês. 'Ano que vem a gente vende e faz mais'.", xp: -30, isBest: false, impacts: { caixa: -90000, margem: -3.0, compliance: -15 }, feedback: "SECAGEM DE POÇO. Sangraram o paciente. Em fevereiro precisarão de empréstimo comercial.", reward: "", lesson: "Fome de consumo irresponsável é o Custo Fixo mais caro que existe." },
+      { id: "C", text: "Não distribuir e colocar os 90k em apostas online (Bets/Trade) 'pela empresa' para tentar dobrar o lucro rapidamente.", xp: -50, isBest: false, impacts: { caixa: -90000, margem: -5.0, compliance: -40 }, feedback: "DESVIO DE FINALIDADE INSANO. Queimou o caixa suado num mercado de alto risco.", reward: "", lesson: "A sua empresa faz serviços/produtos, não é Asset Management de Wall Street." }
     ]
   },
   {
-    id: "t4_dividendos_01", tier: 4, sector: "Lucratividade", title: "A Distribuição Selvagem",
-    theory: "Lucro é ficção sem gestão. Extrair todo o lucro no ano bom impede a expansão e o Fundo de Guerra do ano seguinte.",
-    context: "Lucro líquido do ano: R$ 250.000 limpos. O sócio exige sacar os 100% amanhã para 'colher frutos'.",
-    character: "A Divisão de Dividendos",
-    consultoriaHint: "Negócios geniais seguem 30/70. 30% pros sócios, 70% travado no caixa da empresa para reinvestimento e proteção.",
+    id: "t4_b2b_06", tier: 4, sector: "Contratos", title: "O Cliente 'Lobo'",
+    theory: "Multinacionais amam usar PMEs como banco. Exclusividade e volume alto em troca de pagamento em 120 dias com margem de 5% é escravidão corporativa, não parceria.",
+    context: "Você fez um piloto para uma grande rede de varejo. Eles adoraram e querem contrato anual (R$ 20.000/mês). Mas impõem: você não pode atender concorrentes e o pagamento é sempre com 90 dias após a nota.",
+    character: "O Cliente Gigante",
+    consultoriaHint: "Se vai pagar em 90 dias, o preço é outro (embute taxa de antecipação). Não dê exclusividade para quem paga pouco e demorado. Você quebra por asfixia financeira.",
     options: [
-      { id: "A", text: "Bater o pé no 30/70. Distribuir 30% e alocar 70% na holding da empresa para expansão livre de bancos.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 1.5, compliance: 20 }, feedback: "EQUITY. O CNPJ virou usina geradora de si mesmo.", reward: "🏆 Máquina de Capital", lesson: "" },
-      { id: "B", text: "Ceder ao sócio e distribuir os 100%.", xp: -30, isBest: false, impacts: { caixa: -250000, margem: -3.0, compliance: -15 }, feedback: "DESCAPITALIZAÇÃO. Sangraram o paciente saudável.", reward: "", lesson: "Fome de consumo do sócio quebra a empresa." },
-      { id: "C", text: "Tentar aplicar o lucro todo em 'Day Trade/Cripto' pelo CNPJ para ganho rápido.", xp: -50, isBest: false, impacts: { caixa: -120000, margem: -5.0, compliance: -40 }, feedback: "DESVIO DE FINALIDADE. Perdeu metade na volatilidade.", reward: "", lesson: "A empresa não é cassino nem corretora." }
+      { id: "A", text: "Recusar a exclusividade e só aceitar os 90 dias se a tabela de preços deles for reajustada com a taxa de juros do período.", xp: 40, isBest: true, impacts: { caixa: 8000, margem: 2.0, compliance: 20 }, feedback: "NEGOCIAÇÃO DE IGUAL. Blindou sua liquidez contra abusos de empresas gigantes.", reward: "🏆 Contrato Blindado: Venda B2B com margem real e giro protegido.", lesson: "" },
+      { id: "B", text: "Aceitar as regras deles e tentar correr nos bancos para antecipar essas notas de 90 dias.", xp: -25, isBest: false, impacts: { caixa: -4000, margem: -4.0, compliance: -10 }, feedback: "A ARMADILHA. Você virou um funcionário terceirizado que paga juros pro cliente crescer.", reward: "", lesson: "Você financiou uma multinacional com o seu CNPJ frágil." },
+      { id: "C", text: "Aceitar a exclusividade sem questionar só para poder colocar a logomarca do cliente grandão no seu site/Instagram.", xp: -50, isBest: false, impacts: { caixa: -12000, margem: -6.0, compliance: -20 }, feedback: "DESTRUIÇÃO TÁTICA. O ego falou mais alto. Faturou muito, faliu sem ver a cor do dinheiro.", reward: "", lesson: "Trabalhou 3 meses usando dinheiro próprio para manter o serviço do bilionário." }
+    ]
+  },
+
+  // --- LOTE 1: EXPANSÃO DE ARSENAL (CÓDIGO AZUL) ---
+  {
+    id: "t1_vendas_02", tier: 1, sector: "Vendas", title: "O Cliente Sanguessuga",
+    theory: "Todo CNPJ tem o 'Cliente 80/20 invertido': aquele que traz 20% do faturamento, mas suga 80% da energia, tempo de suporte e paciência da equipe. Atender quem não respeita seu processo é um Custo de Oportunidade altíssimo, pois impede sua equipe de prospectar clientes bons.",
+    context: "Um cliente que compra R$ 1.500 todo mês exige atendimento VIP fora do horário, pede refação de serviço o tempo todo e trata sua equipe mal. Hoje, ele exigiu uma entrega no domingo, ou ameaçou 'cancelar tudo'.",
+    character: "O Limite do Atendimento",
+    consultoriaHint: "Demitir cliente ruim é o primeiro passo para o lucro. O faturamento dele não paga o custo psicológico da sua equipe. Corte o cordão umbilical, assuma o buraco e preencha com prospecção.",
+    options: [
+      { id: "A", text: "Demitir o cliente com educação formal. Cancelar o contrato, assumir a perda dos R$ 1.500 e focar a equipe em prospectar dois clientes novos que respeitem o processo.", xp: 35, isBest: true, impacts: { caixa: -1500, margem: 2.0, compliance: 15 }, feedback: "POSTURA DE DONO. A equipe respirou aliviada e a produtividade dobrou.", reward: "🏆 Higiene de Carteira: Sua empresa não é refém de maluco.", lesson: "" },
+      { id: "B", text: "Engolir o sapo, fazer a equipe trabalhar no domingo e dar um desconto para acalmar o cliente, afinal 'R$ 1.500 faz falta no caixa'.", xp: -15, isBest: false, impacts: { caixa: 1500, margem: -2.0, compliance: -10 }, feedback: "SÍNDROME DE ESTOCOLMO. Você acabou de ensinar à sua equipe que eles não têm valor.", reward: "", lesson: "O cliente tóxico só piora quando você cede." },
+      { id: "C", text: "Xingar o cliente no WhatsApp, mandar ele procurar o concorrente e bloquear o número sem nenhum aviso formal.", xp: -45, isBest: false, impacts: { caixa: -1500, margem: -1.0, compliance: -25 }, feedback: "A RAIVA CUSTA CARO. O cliente expôs os prints na internet e abriu um processo no Procon.", reward: "", lesson: "Não perca a razão, mesmo quando o cliente não tem nenhuma." }
     ]
   },
   {
-    id: "t4_b2b_01", tier: 4, sector: "B2B", title: "O Contrato 'Lobo'",
-    theory: "Multinacionais usam pequenas empresas para se financiar. Exclusividade com margem zero é escravidão corporativa.",
-    context: "Rede gigante exige exclusividade, mas impõe 120 dias para pagar e uma margem líquida de 5%.",
-    character: "A Multinacional",
-    consultoriaHint: "Não seja o banco do seu cliente. Embute juros de factoring no longo prazo ou recuse a exclusividade.",
+    id: "t2_compras_02", tier: 2, sector: "Compras", title: "O Falso Desconto à Vista",
+    theory: "O caixa é o rei. Descapitalizar a empresa para ganhar '5% de desconto à vista' em compras grandes é um erro clássico de quem não entende o custo do dinheiro no tempo. Se você gira o produto em 60 dias, pagar à vista asfixia a operação.",
+    context: "O fornecedor ofereceu um lote de matéria-prima por R$ 20.000 parcelado em 3x sem juros (30/60/90). Porém, se você pagar no PIX hoje, ele dá 5% de desconto (R$ 19.000). O seu caixa atual tem R$ 25.000 livres.",
+    character: "O Custo do Dinheiro",
+    consultoriaHint: "Guarde sua liquidez. Desconto de 5% não compensa secar o caixa de um pequeno negócio. Fique com o dinheiro, use o prazo do fornecedor para vender a mercadoria e pagar a parcela com o próprio lucro.",
     options: [
-      { id: "A", text: "Recusar a exclusividade e aceitar prazo de 30 dias com volume menor para blindar a margem mínima.", xp: 40, isBest: true, impacts: { caixa: 15000, margem: 2.0, compliance: 20 }, feedback: "NEGOCIAÇÃO DE IGUAL.", reward: "🏆 Margem B2B Blindada", lesson: "" },
-      { id: "B", text: "Aceitar a exclusividade e antecipar os 120 dias no banco.", xp: -25, isBest: false, impacts: { caixa: -10000, margem: -4.0, compliance: -10 }, feedback: "ARMADILHA. Você virou terceirizado que paga juros.", reward: "", lesson: "Você financiou a multinacional com seu crédito." },
-      { id: "C", text: "Aceitar as regras abusivas só para colocar o logo do gigante no seu site.", xp: -50, isBest: false, impacts: { caixa: -30000, margem: -6.0, compliance: -20 }, feedback: "DESTRUIÇÃO TÁTICA.", reward: "", lesson: "Faturou 1 milhão e faliu por falta de liquidez." }
+      { id: "A", text: "Recusar o desconto e pegar o parcelamento em 3x de R$ 6.666. Manter os R$ 25.000 seguros no caixa da empresa para proteger o giro do mês.", xp: 35, isBest: true, impacts: { caixa: 0, margem: 1.0, compliance: 10 }, feedback: "ENGENHARIA FINANCEIRA. Você usou o dinheiro do fornecedor para financiar sua operação e manteve seu colchão de segurança.", reward: "🏆 Caixa Blindado: Liquidez é vida.", lesson: "" },
+      { id: "B", text: "Fazer o PIX de R$ 19.000 na hora para 'economizar mil reais' e aproveitar a oportunidade de ouro.", xp: -20, isBest: false, impacts: { caixa: -19000, margem: -2.0, compliance: -5 }, feedback: "SECAGEM DE POÇO. O caixa caiu para perigosos R$ 6.000. Semana que vem o aluguel bate e a conta não fecha.", reward: "", lesson: "Economizar na compra e quebrar no fluxo não é ser inteligente." },
+      { id: "C", text: "Fazer o PIX usando o limite do Cheque Especial da empresa para não mexer no saldo livre.", xp: -45, isBest: false, impacts: { caixa: 0, margem: -4.0, compliance: -15 }, feedback: "BOLA DE NEVE. Ganhou 5% do fornecedor e pagou 8% pro banco.", reward: "", lesson: "Tomar crédito caro para pagar à vista é um crime matemático." }
+    ]
+  },
+  {
+    id: "t3_sociedade_01", tier: 3, sector: "Sociedade", title: "O Sócio Encostado",
+    theory: "Sociedade 50/50 sem acordo de cotistas e sem definição de escopo vira um casamento falido onde o divórcio quebra a empresa. Se um sócio trabalha 12h por dia e o outro passa na loja 2 vezes por semana, o 'pró-labore igual' é um roubo institucionalizado.",
+    context: "Você toca a operação de segunda a sábado. Seu sócio aparece às terças e quintas, tira o mesmo pró-labore de R$ 5.000 que você e ainda reclama que 'as vendas estão fracas'.",
+    character: "O Peso Societário",
+    consultoriaHint: "Pró-labore remunera trabalho. Lucro remunera cota. Quem trabalha menos, ganha menos no fim do mês. Chame pro embate formal antes que o ressentimento destrua a operação.",
+    options: [
+      { id: "A", text: "Chamar uma reunião de conselho. Redefinir os pró-labores com base em valor de mercado (horas trabalhadas) e deixar a divisão igualitária APENAS para a distribuição de lucros semestral.", xp: 40, isBest: true, impacts: { caixa: 2500, margem: 2.0, compliance: 20 }, feedback: "MATURIDADE INSTITUCIONAL. O acordo foi tenso, mas cortou a sangria injusta do caixa mensal.", reward: "🏆 Governança Real: O CNPJ está acima dos CPFs.", lesson: "" },
+      { id: "B", text: "Não falar nada para 'evitar briga', engolir o cansaço e continuar trabalhando por dois, alimentando a mágoa dia após dia.", xp: -15, isBest: false, impacts: { caixa: -2000, margem: -2.0, compliance: -10 }, feedback: "A BOMBA RELÓGIO. O ressentimento está corroendo a sua vontade de crescer.", reward: "", lesson: "O problema que o dono não enfrenta, a empresa paga." },
+      { id: "C", text: "Começar a pegar dinheiro do caixa da loja 'por fora' para compensar o seu esforço a mais, já que 'é justo e você que faz a roda girar'.", xp: -50, isBest: false, impacts: { caixa: -5000, margem: -5.0, compliance: -40 }, feedback: "O GOLPE DE ESTADO FRAUDULENTO. Você destruiu a própria empresa de dentro para fora.", reward: "", lesson: "Desviar caixa para corrigir sociedade é assinar a própria ruína moral." }
+    ]
+  },
+  {
+    id: "t4_expansao_01", tier: 4, sector: "Expansão", title: "A Filial da Vaidade",
+    theory: "Abrir uma filial quando a matriz ainda depende 100% da sua presença física não é expansão, é dividir seu tempo pela metade e dobrar seu Custo Fixo. Se o processo não está redondo e automatizado, a filial vira um dreno que suga a matriz até a morte.",
+    context: "A loja atual dá um bom lucro. O corretor te ofereceu um ponto excelente no bairro vizinho por um aluguel de R$ 8.000. O ego quer ver a placa brilhando na outra rua, mas você ainda é quem aprova os pagamentos e faz as vendas difíceis na matriz.",
+    character: "O Deslumbramento",
+    consultoriaHint: "Cópia de processo imperfeito gera caos em dobro. Trave a expansão física, crie manuais operacionais e automatize o que você tem hoje. A matriz precisa rodar no piloto automático antes de nascer o filho número dois.",
+    options: [
+      { id: "A", text: "Recusar o ponto, direcionar o foco para padronizar os processos atuais da matriz e testar a expansão apenas através de vendas online (delivery/e-commerce) para validar a região nova sem Custo Fixo pesado.", xp: 40, isBest: true, impacts: { caixa: 10000, margem: 2.5, compliance: 15 }, feedback: "CRESCIMENTO CALCULADO. Você dominou a vaidade e escalou de forma inteligente, validando demanda com baixo risco.", reward: "🏆 A Expansão Blindada: Mais mercado, zero passivo oculto.", lesson: "" },
+      { id: "B", text: "Pegar o novo ponto para 'não perder a oportunidade', dividindo a equipe ao meio e correndo de carro entre as duas lojas três vezes por dia.", xp: -25, isBest: false, impacts: { caixa: -15000, margem: -4.0, compliance: -10 }, feedback: "O CAOS LOGÍSTICO. A filial não decolou e a qualidade da matriz despencou. O caixa está sangrando nos dois lados.", reward: "", lesson: "Dois negócios mal geridos dão muito menos lucro que um bem feito." },
+      { id: "C", text: "Assinar o aluguel e financiar R$ 80.000 no banco para fazer a maior e mais luxuosa loja do bairro, contando com um faturamento que ainda não existe.", xp: -50, isBest: false, impacts: { caixa: -80000, margem: -6.0, compliance: -30 }, feedback: "O VOO DO ÍCARO. Alavancagem mortal. O Custo Fixo engoliu a reserva das duas lojas no primeiro trimestre.", reward: "", lesson: "A esperança de venda futura não paga os boletos da vaidade presente." }
+    ]
+  },
+
+  // --- LOTE 2: ESCALADA OPERACIONAL (CÓDIGO AZUL) ---
+  {
+    id: "t1_rh_05", tier: 1, sector: "Recursos Humanos", title: "O Cabide de Empregos",
+    theory: "CNPJ não é instituição de caridade para parentes. Contratar o 'sobrinho que cobra barato' para cuidar de uma área vital custa o dobro: você perde dinheiro pela incompetência e perde a relação familiar na hora da demissão.",
+    context: "Você precisa de um atendente para responder o WhatsApp de vendas. Sua cunhada pede para você dar uma chance pro filho dela, de 19 anos, que 'fica o dia todo no celular e precisa de um rumo'. Ele aceita ganhar menos que o piso.",
+    character: "O Vínculo Tóxico",
+    consultoriaHint: "Misturar sangue e CNPJ sem processo seletivo rígido é suicídio. Agradeça, diga que a vaga exige experiência em vendas comprovada e contrate um profissional com fome de comissão.",
+    options: [
+      { id: "A", text: "Recusar educadamente, assumir o custo real de um profissional e contratar alguém testado e focado em metas.", xp: 35, isBest: true, impacts: { caixa: -500, margem: 1.5, compliance: 15 }, feedback: "BLINDAGEM FAMILIAR. Você pagou mais caro no salário, mas protegeu a esteira de vendas e a paz no domingo.", reward: "🏆 RH Profissionalizado: Parentesco não substitui competência.", lesson: "" },
+      { id: "B", text: "Contratar o sobrinho para 'testar um mês', já que o custo fixo vai ficar baixo e ajuda a família.", xp: -20, isBest: false, impacts: { caixa: -800, margem: -2.0, compliance: -10 }, feedback: "A ECONOMIA BURRA. Ele atendeu mal, você perdeu vendas e não tem coragem de demitir.", reward: "", lesson: "O funcionário barato custa os clientes que ele afugenta." },
+      { id: "C", text: "Contratar por fora, sem carteira assinada, pagando no PIX para não gerar vínculo e 'facilitar as coisas'.", xp: -50, isBest: false, impacts: { caixa: 1000, margem: -4.0, compliance: -40 }, feedback: "ROLETA RUSSA TRABALHISTA. A família brigou e o sobrinho vai te processar com juros.", reward: "", lesson: "Na justiça do trabalho, laço sanguíneo não anula fraude." }
+    ]
+  },
+  {
+    id: "t2_mkt_06", tier: 2, sector: "Marketing e Tráfego", title: "O Especialista de Palco",
+    theory: "Gestor de tráfego que promete 'dobrar seu faturamento' sem auditar sua esteira de atendimento é fraude. Tráfego não faz milagre, só joga holofote. Se o seu comercial é ruim, o tráfego pago só acelera a queima do seu caixa.",
+    context: "Uma agência promete 500 leads/mês cobrando R$ 1.500 de honorários + R$ 1.000 de anúncios. O problema: seu time de vendas hoje demora 4 horas para responder um cliente no WhatsApp e não segue nenhum roteiro de vendas.",
+    character: "O Balde Furado",
+    consultoriaHint: "Não jogue água num balde furado. Arrume a casa primeiro. Treine o atendimento, defina um SLA (tempo de resposta de 5 min) e só depois coloque dinheiro na máquina do Mark Zuckerberg.",
+    options: [
+      { id: "A", text: "Pausar a contratação da agência. Focar os próximos 15 dias em criar um script de vendas e treinar a equipe para responder em menos de 10 minutos.", xp: 35, isBest: true, impacts: { caixa: 2500, margem: 2.0, compliance: 10 }, feedback: "FOCO NO PROCESSO. Você tapou os furos do balde antes de abrir a torneira.", reward: "🏆 Esteira de Vendas: A base está pronta para escalar.", lesson: "" },
+      { id: "B", text: "Fechar com a agência acreditando que o grande volume de pessoas chamando vai 'forçar' a equipe a vender mais.", xp: -20, isBest: false, impacts: { caixa: -2500, margem: -2.5, compliance: 0 }, feedback: "QUEIMA DE LEADS. Choveram curiosos, a equipe surtou, a demora aumentou e ninguém comprou.", reward: "", lesson: "Volume expõe a incompetência da operação." },
+      { id: "C", text: "Pegar o limite do cartão da empresa para investir o dobro em Ads (R$ 5.000) porque 'só ganha quem aposta alto'.", xp: -50, isBest: false, impacts: { caixa: -5000, margem: -5.0, compliance: -10 }, feedback: "O DELÍRIO DO TRÁFEGO. Gastou o que não tinha para atrair clientes que não foram atendidos.", reward: "", lesson: "Tráfego pago potencializa o que você já é. Se você é ruim, passará vergonha em escala." }
+    ]
+  },
+  {
+    id: "t1_caixa_05", tier: 1, sector: "Fluxo de Caixa", title: "O Canto da Sereia Bancária",
+    theory: "Bancos amam PMEs desorganizadas. O gerente que liga oferecendo um 'limite pré-aprovado imperdível' não é seu parceiro, ele bate meta vendendo dinheiro caro para cobrir os buracos da sua falta de gestão.",
+    context: "Dia 20 do mês. O caixa está apertado para pagar os fornecedores da próxima semana. O gerente do banco liga oferecendo um Capital de Giro fácil de R$ 20.000, 'pré-aprovado na tela', com taxa de 3,5% ao mês.",
+    character: "O Dinheiro Fácil",
+    consultoriaHint: "Crédito sem destinação de expansão (ex: comprar uma máquina que se paga) vira despesa corrente. Você usará os 20k para boletos, e no mês que vem terá os mesmos boletos MAIS a parcela do banco.",
+    options: [
+      { id: "A", text: "Agradecer o gerente, desligar e fazer uma ação agressiva de vendas na sua própria base de clientes inativos para levantar os R$ 5.000 que faltam.", xp: 35, isBest: true, impacts: { caixa: 5000, margem: 1.5, compliance: 10 }, feedback: "BLINDAGEM. Você resolveu o problema de caixa usando vendas, a única fonte de dinheiro limpo.", reward: "🏆 Independência Bancária: Você manda no seu fluxo.", lesson: "" },
+      { id: "B", text: "Pegar apenas R$ 10.000 para 'ficar garantido' e deixar o dinheiro parado na conta para dar paz de espírito.", xp: -20, isBest: false, impacts: { caixa: -1000, margem: -2.0, compliance: -5 }, feedback: "CUSTO DO MEDO. Dinheiro parado na conta pagando 3,5% ao mês. Você está financiando sua ansiedade.", reward: "", lesson: "Dinheiro de banco só serve se gerar mais dinheiro que os juros dele." },
+      { id: "C", text: "Pegar os R$ 20.000 totais e usar uma parte para reformar a fachada da loja, que estava precisando.", xp: -45, isBest: false, impacts: { caixa: -5000, margem: -5.0, compliance: -15 }, feedback: "ERRO DE ALOCAÇÃO. Tomou dívida de curto prazo para imobilizar no gesso da fachada. O caixa afogou.", reward: "", lesson: "Nunca se financia melhorias estéticas com crédito de curtíssimo prazo." }
+    ]
+  },
+  {
+    id: "t2_operacao_03", tier: 2, sector: "Processos", title: "O Padrão Oculto",
+    theory: "Se a receita de como sua empresa roda está apenas na sua cabeça, você não tem um negócio, tem uma prisão. Processo bom é processo escrito e treinável, a ponto de um estagiário assumir o básico em 7 dias.",
+    context: "Você pegou uma virose forte e precisou de 3 dias de repouso absoluto. A equipe travou. Ninguém sabia aprovar o desconto especial, acessar o emissor de notas ou onde estava a chave do estoque reserva. O faturamento zerou nos 3 dias.",
+    character: "A Centralização Absoluta",
+    consultoriaHint: "Não culpe a equipe pela sua vaidade centralizadora. Volte, tire 2 horas por dia para documentar o básico num Playbook (Manual) e distribua limites de alçadas de decisão.",
+    options: [
+      { id: "A", text: "Assumir o erro. Desenhar um 'Manual de Sobrevivência' com senhas restritas, limites pré-aprovados de desconto e processos em vídeo para a equipe rodar sem você.", xp: 40, isBest: true, impacts: { caixa: 2000, margem: 1.0, compliance: 20 }, feedback: "DESCENTRALIZAÇÃO. A empresa deu o primeiro passo para não depender do seu CPF.", reward: "🏆 Operação Autônoma: O líder ensina, a equipe executa.", lesson: "" },
+      { id: "B", text: "Voltar irritado e dar uma bronca geral na equipe alegando que faltou 'iniciativa e sangue no olho' enquanto você estava doente.", xp: -15, isBest: false, impacts: { caixa: -1000, margem: -1.0, compliance: -5 }, feedback: "A CULPA É DO ESPELHO. Você puniu a equipe por um segredo que você guardava.", reward: "", lesson: "Nenhum funcionário tem a obrigação de ler a mente do dono." },
+      { id: "C", text: "Aceitar que 'ninguém faz como você', cancelar as férias programadas do fim do ano e prometer não adoecer mais.", xp: -40, isBest: false, impacts: { caixa: -4000, margem: -4.0, compliance: -10 }, feedback: "A PRISÃO VOLUNTÁRIA. Você acabou de decretar que o teto da empresa é a sua estafa mental.", reward: "", lesson: "Se a empresa para sem você, ela não tem valor de mercado nenhum." }
+    ]
+  },
+  {
+    id: "t3_preco_05", tier: 3, sector: "Precificação e Custos", title: "O Contrato Kamikaze",
+    theory: "No mundo B2B (empresas vendendo para empresas), o volume seduz o ego. Mas fechar um contrato gigantesco com margem quase zero, sob a justificativa de que 'ajuda a pagar os custos fixos', é a rota expressa para a descapitalização brutal.",
+    context: "Uma construtora quer fechar um pedido mensal que vai dobrar o volume de produção da sua pequena indústria/distribuidora. Porém, a exigência de desconto deles espremeu sua Margem de Contribuição para meros 2%.",
+    character: "O Canto da Vaidade B2B",
+    consultoriaHint: "Volume sem margem é trabalho escravo com CNPJ. Qualquer soluço logístico, atraso de pagamento ou aumento na matéria-prima vai jogar a operação inteira no negativo. Rejeite com classe.",
+    options: [
+      { id: "A", text: "Recusar a proposta ou fazer uma contraproposta travando a margem mínima de segurança de 15%, mesmo sabendo que eles vão recusar.", xp: 40, isBest: true, impacts: { caixa: 1500, margem: 2.0, compliance: 15 }, feedback: "LUCIDEZ FINANCEIRA. Você protegeu o caixa e a capacidade de atendimento dos clientes bons.", reward: "🏆 Defesa de Margem: O ego não dita as regras.", lesson: "" },
+      { id: "B", text: "Aceitar o contrato para 'fazer nome no mercado' e colocar a logomarca da construtora no seu site, apostando no longo prazo.", xp: -30, isBest: false, impacts: { caixa: -6000, margem: -5.0, compliance: -10 }, feedback: "ILUSÃO DO PORTFÓLIO. O volume entrou, os custos operacionais explodiram e o lucro sumiu.", reward: "", lesson: "Ter logomarca de cliente famoso no site não paga a folha na sexta-feira." },
+      { id: "C", text: "Aceitar e, como o volume é gigante, pegar um empréstimo para comprar mais máquinas para dar conta do pedido no prazo.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -8.0, compliance: -20 }, feedback: "A TEMPESTADE PERFEITA. Margem de 2% não paga nem os juros da máquina que você financiou.", reward: "", lesson: "Você apostou a empresa inteira em um cliente que não te dá lucro." }
     ]
   }
+
+  // --- COLE O LOTE 3 AQUI ABAIXO DESTA LINHA ---
+
 ];
