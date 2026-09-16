@@ -612,7 +612,68 @@ export const questionBank = [
       { id: "B", text: "Negar o pagamento legal, dizendo que ele 'concordou verbalmente com as folgas' e mandar ele procurar os direitos se não estiver satisfeito.", xp: -35, isBest: false, impacts: { caixa: 0, margem: -2.0, compliance: -30 }, feedback: "A ARROGÂNCIA PROCESSUAL. Ele procurou um advogado. Sem controle de ponto (ônus da empresa), o juiz deferiu não apenas as 40h, mas tudo o que ele pediu retroativo a 2 anos.", reward: "", lesson: "Quem não tem prova documental das horas (ponto), perde a presunção na Justiça." },
       { id: "C", text: "Negociar e pagar as horas extras em dinheiro vivo direto no bolso dele para não incidir FGTS, INSS e férias no cálculo rescisório.", xp: -45, isBest: false, impacts: { caixa: -1800, margem: -3.0, compliance: -40 }, feedback: "A MAQUILAGEM PERIGOSA. Ele pegou o dinheiro por fora e depois processou a empresa dizendo que o pagamento foi comissões não declaradas. Você pagará duas vezes.", reward: "", lesson: "Recibo em guardanapo ou Pix oculto não têm validade para o Tribunal." }
     ]
-  }
+  },
 
-  // --- COLE O LOTE 8 AQUI ABAIXO DESTA LINHA ----- COLE O LOTE 7 AQUI ABAIXO DESTA LINHA ---// --- COLE O LOTE 6 AQUI ABAIXO DESTA LINHA ------ COLE O LOTE 5 AQUI ABAIXO DESTA LINHA ---OLE O LOTE 4 AQUI ABAIXO DESTA LINHA ---
+ // --- LOTE 8: MARKETING, VENDAS E GROWTH HACKING (CÓDIGO AZUL) ---
+  
+  {
+    id: "t2_mkt_01", tier: 2, sector: "Marketing e Tráfego", title: "O Terreno Alugado (Dependência de Algoritmo)",
+    theory: "Construir sua máquina de vendas dependendo exclusivamente do Instagram é construir um castelo em terreno alugado. Se a plataforma mudar as regras, você quebra. O verdadeiro valor do marketing é tirar o cliente da rede social e trazê-lo para um canal próprio (CRM, E-mail, Lista de WhatsApp).",
+    context: "O Instagram atualizou o algoritmo de madrugada. Seu engajamento orgânico caiu 70% e o telefone, que tocava 10 vezes por dia com pedidos, não tocou nenhuma vez hoje. O desespero bateu.",
+    character: "O Feed Silencioso",
+    consultoriaHint: "Pare de tentar adivinhar algoritmo. Rede social é vitrine, não é balcão. Você precisa minerar a base que já comprou de você no WhatsApp e criar uma oferta direta hoje para pagar as contas da semana.",
+    options: [
+      { id: "A", text: "Parar de focar só em posts, extrair a lista de clientes antigos do WhatsApp/Sistema e fazer uma oferta direta e exclusiva de 'recompra' para eles.", xp: 15, isBest: true, impacts: { caixa: 4500, receita: 1500, compliance: 5 }, feedback: "ESTRATÉGIA DE RETENÇÃO (LTV). Você parou de depender da sorte da rede social, usou seus próprios dados e gerou caixa imediato com custo de aquisição zero." },
+      { id: "B", text: "Fazer uma promoção relâmpago agressiva (50% OFF) nos stories torcendo para que alguém veja e compre.", xp: 5, isBest: false, impacts: { caixa: 1000, receita: -500, compliance: 0 }, feedback: "SANGRAMENTO DE MARGEM. Entraram algumas vendas, mas o desconto corroeu todo o seu lucro. Você trabalhou de graça para a plataforma." },
+      { id: "C", text: "Gastar R$ 2.000 do caixa em impulsionamento de posts no desespero para tentar recuperar os likes e as visualizações.", xp: -15, isBest: false, impacts: { caixa: -2000, receita: 0, compliance: -5 }, feedback: "O RALO DO TRÁFEGO CEGO. Impulsionar sem funil de vendas é rasgar dinheiro. O engajamento subiu, mas nenhuma venda foi concretizada." }
+    ]
+  },
+  {
+    id: "t2_vendas_02", tier: 2, sector: "Vendas e Margem", title: "A Armadilha do 'Cobrindo a Oferta'",
+    theory: "Vender dando descontos absurdos apenas para bater meta de faturamento é a ilusão do 'vendedor amador'. Volume sem margem de contribuição acelera a falência. O cliente que vem apenas por preço, vai embora por preço.",
+    context: "Um cliente prospect (que pode trazer um bom faturamento) avisa que o seu concorrente fez o mesmo serviço 25% mais barato. Ele diz: 'Se você cobrir, eu fecho com você agora'. Cobrir essa oferta zera completamente o seu lucro.",
+    character: "O Cliente Leiloeiro",
+    consultoriaHint: "Deixe esse cliente ir para a concorrência e quebrar a empresa deles. Quem foca em preço não é cliente parceiro, é mercenário. Defenda o valor da sua entrega, não o preço da etiqueta.",
+    options: [
+      { id: "A", text: "Manter sua tabela de preços, reforçar os diferenciais técnicos, o prazo e a segurança do seu CNPJ, e estar disposto a perder o negócio se ele insistir no desconto.", xp: 10, isBest: true, impacts: { caixa: 0, receita: 0, compliance: 10 }, feedback: "POSICIONAMENTO DE MARCA. Você perdeu a venda, mas protegeu a saúde financeira da empresa e a sua autoridade. Filtro natural de clientes ruins." },
+      { id: "B", text: "Oferecer 10% de desconto e 'tirar' algum benefício ou serviço extra da proposta para tentar chegar num meio termo.", xp: 5, isBest: false, impacts: { caixa: 500, receita: 500, compliance: 0 }, feedback: "O EMPATE TÉCNICO. Fechou, mas o cliente já entrou sentindo que perdeu benefícios. A relação começou desgastada." },
+      { id: "C", text: "Cobrir os 25% de desconto sorrindo, só para 'roubar' o cliente da concorrência e faturar a nota.", xp: -10, isBest: false, impacts: { caixa: -1500, receita: 3000, compliance: -10 }, feedback: "TRABALHO ESCRAVO. A receita subiu, a vaidade inflou, mas o custo operacional engoliu o caixa. Você pagou para trabalhar." }
+    ]
+  },
+  {
+    id: "t3_growth_03", tier: 3, sector: "Growth Hacking (CAC)", title: "O Ralo do Tráfego Pago",
+    theory: "Marketing não é despesa, é investimento. Mas investimento exige métrica. Se você não sabe o seu Custo de Aquisição de Cliente (CAC) e o Retorno sobre Investimento (ROI), você não está fazendo marketing, está apostando num cassino.",
+    context: "Você colocou R$ 3.000 em campanhas de Ads no último mês. Entraram muitos 'curtidas', dezenas de mensagens de curiosos no WhatsApp, mas apenas 4 vendas pequenas que geraram R$ 800 de lucro total. O cartão de crédito da empresa vence amanhã.",
+    character: "A Fatura do Zuckerberg",
+    consultoriaHint: "Pause as campanhas agora. Tráfego pago potencializa o que já funciona. Se o seu processo de vendas (funil e atendimento) é ruim, pagar por anúncios só acelera o seu prejuízo.",
+    options: [
+      { id: "A", text: "Pausar as campanhas imediatamente, auditar o funil de atendimento do WhatsApp e treinar a equipe para converter os curiosos que já entraram antes de colocar mais dinheiro.", xp: 12, isBest: true, impacts: { caixa: 0, receita: 1000, compliance: 5 }, feedback: "EFICIÊNCIA OPERACIONAL. Você estancou a sangria, corrigiu o gargalo interno (conversão) e otimizou o lead que já estava na base." },
+      { id: "B", text: "Manter a verba, mas trocar a agência de marketing ou o gestor de tráfego, culpando eles pelos leads 'desqualificados'.", xp: -5, isBest: false, impacts: { caixa: -3000, receita: 0, compliance: 0 }, feedback: "TERCEIRIZAÇÃO DA CULPA. O problema era o seu processo de fechamento, não os leads. O dinheiro continuou indo pro ralo." },
+      { id: "C", text: "Dobrar o orçamento de anúncios para R$ 6.000, acreditando que 'é só uma questão de volume' para as vendas começarem a sair.", xp: -15, isBest: false, impacts: { caixa: -6000, receita: -500, compliance: -10 }, feedback: "O VÍCIO NA ESCALA QUEBRADA. Escalar um processo ineficiente apenas multiplica a sua velocidade em direção à parede." }
+    ]
+  },
+  {
+    id: "t3_retencao_04", tier: 3, sector: "Retenção (LTV)", title: "A Mina de Ouro Esquecida",
+    theory: "Custa 5 a 7 vezes mais caro atrair um cliente novo (CAC) do que vender novamente para quem já confia na sua marca. O Lifetime Value (LTV) — quanto o cliente gasta com você ao longo dos anos — é a verdadeira métrica de enriquecimento do CNPJ.",
+    context: "Você precisa aumentar o faturamento deste mês em R$ 15.000, mas o seu orçamento de marketing acabou. Analisando o sistema, você percebe que tem 800 clientes que compraram no ano passado e nunca mais receberam um 'bom dia' da sua empresa.",
+    character: "A Lista Empoeirada",
+    consultoriaHint: "O dinheiro mais barato do mundo está na sua base inativa. Crie um 'Clube VIP' ou uma condição de atualização de produto, pegue o telefone e ligue. Sem intermediários.",
+    options: [
+      { id: "A", text: "Criar uma oferta especial de renovação ou 'Clube VIP' e colocar a equipe para ligar (ou mandar áudio) um a um para os melhores clientes dessa lista.", xp: 15, isBest: true, impacts: { caixa: 8000, receita: 5000, compliance: 10 }, feedback: "MINERAÇÃO DE ATIVOS. A taxa de conversão de clientes antigos é altíssima. Você gerou receita líquida pesada com R$ 0,00 de investimento em anúncios." },
+      { id: "B", text: "Disparar uma automação de e-mail em massa e genérica com um cupom de 5% de desconto para todos da base.", xp: 5, isBest: false, impacts: { caixa: 500, receita: 500, compliance: 0 }, feedback: "O FRIO E DISTANTE. Quase ninguém abriu o e-mail genérico e a conversão foi pífia. Faltou relacionamento e exclusividade." },
+      { id: "C", text: "Ignorar a lista antiga por achar que eles 'já compraram o que precisavam' e pegar um microcrédito no banco para voltar a fazer anúncios.", xp: -10, isBest: false, impacts: { caixa: -2000, receita: -1000, compliance: -5 }, feedback: "A CEGUEIRA DO CUSTO. Assumiu dívida para buscar desconhecidos, enquanto o ouro estava dormindo na gaveta do seu escritório." }
+    ]
+  },
+  {
+    id: "t4_escala_05", tier: 4, sector: "Vendas e Outbound", title: "A Esperança Não É Estratégia",
+    theory: "O 'boca a boca' é maravilhoso como bônus, mas letal como única estratégia de aquisição. Uma empresa madura não pode terceirizar seu crescimento para a vontade dos outros. Sem um processo ativo de prospecção (Outbound), a receita fica refém da sorte.",
+    context: "Quando perguntam qual a sua estratégia de captação, você enche o peito e diz: 'Meu serviço é tão bom que vem tudo por indicação'. Porém, a economia do país esfriou, as indicações pararam há 3 semanas, e a receita despencou.",
+    character: "O Telefone Mudo",
+    consultoriaHint: "Esperança não bate meta. Levante dessa cadeira. Mapeie 50 clientes ideais no LinkedIn ou no Google, estruture um pitch comercial agressivo focado na dor deles e vá caçar a sua receita.",
+    options: [
+      { id: "A", text: "Assumir a falha processual. Estruturar imediatamente uma rotina diária de prospecção ativa (Outbound/Cold Calling), definindo metas de ligações para a equipe de vendas e para você.", xp: 15, isBest: true, impacts: { caixa: 0, receita: 4000, compliance: 10 }, feedback: "PROTAGONISMO COMERCIAL. Você tomou as rédeas do crescimento. A prospecção ativa é dura, mas é previsível e escalável. O CNPJ acordou." },
+      { id: "B", text: "Mandar mensagens no WhatsApp pedindo pelo amor de Deus para os clientes antigos indicarem novos amigos em troca de brindes.", xp: 5, isBest: false, impacts: { caixa: 0, receita: 500, compliance: 0 }, feedback: "MENDICÂNCIA COMERCIAL. Entraram alguns pingados, mas sua marca perdeu força ao transparecer desespero." },
+      { id: "C", text: "Cruzar os braços, culpar a crise do governo e dizer para a equipe: 'Vamos manter a qualidade que uma hora o mercado reconhece e volta a comprar'.", xp: -15, isBest: false, impacts: { caixa: -4000, receita: -3000, compliance: -10 }, feedback: "A PASSIVIDADE FATAL. O mercado não tem obrigação de te reconhecer. A inércia corroeu o caixa até o osso enquanto você esperava um milagre." }
+    ]
+  } // --- COLE O LOTE 8 AQUI ABAIXO DESTA LINHA ----- COLE O LOTE 7 AQUI ABAIXO DESTA LINHA ---// --- COLE O LOTE 6 AQUI ABAIXO DESTA LINHA ------ COLE O LOTE 5 AQUI ABAIXO DESTA LINHA ---OLE O LOTE 4 AQUI ABAIXO DESTA LINHA ---
 ];
