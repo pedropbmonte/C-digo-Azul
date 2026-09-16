@@ -299,8 +299,320 @@ export const questionBank = [
       { id: "B", text: "Aceitar o contrato para 'fazer nome no mercado' e colocar a logomarca da construtora no seu site, apostando no longo prazo.", xp: -30, isBest: false, impacts: { caixa: -6000, margem: -5.0, compliance: -10 }, feedback: "ILUSÃO DO PORTFÓLIO. O volume entrou, os custos operacionais explodiram e o lucro sumiu.", reward: "", lesson: "Ter logomarca de cliente famoso no site não paga a folha na sexta-feira." },
       { id: "C", text: "Aceitar e, como o volume é gigante, pegar um empréstimo para comprar mais máquinas para dar conta do pedido no prazo.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -8.0, compliance: -20 }, feedback: "A TEMPESTADE PERFEITA. Margem de 2% não paga nem os juros da máquina que você financiou.", reward: "", lesson: "Você apostou a empresa inteira em um cliente que não te dá lucro." }
     ]
+  },
+  // --- COLE O LOTE 3 AQUI ABAIXO DESTA LINHA ---
+// --- LOTE 3: AS ARMADILHAS OCULTAS (CÓDIGO AZUL) ---
+    {
+    id: "t1_caixa_06", tier: 1, sector: "Caixa e Adiantamentos", title: "A Ilusão do Pix Antecipado",
+    theory: "Dinheiro na conta antes do serviço entregue não é receita, é PASSIVO. O cliente te deu um adiantamento, mas você ainda 'deve' a execução a ele. Torrar esse dinheiro no mês 1 significa trabalhar de graça nos meses 2 e 3.",
+    context: "Você fechou um ótimo contrato de R$ 12.000 para uma entrega dividida em 3 meses. O cliente pagou 100% antecipado via PIX. Você vê o saldo gordo e sente a tentação de trocar os computadores da equipe.",
+    character: "O Passivo Disfarçado",
+    consultoriaHint: "Trave o ego. Provisione. O dinheiro só é seu depois que o custo da execução é pago. Divida esse saldo mentalmente por 3 e libere apenas a fatia do mês para a operação.",
+    options: [
+      { id: "A", text: "Travar R$ 8.000 numa conta rendimento e liberar apenas R$ 4.000 para o fluxo de caixa deste mês, garantindo o custo operacional dos próximos 60 dias.", xp: 35, isBest: true, impacts: { caixa: 4000, margem: 1.5, compliance: 15 }, feedback: "MATURIDADE DE CAIXA. Você blindou o fluxo futuro. A entrega está garantida sem sufoco.", reward: "🏆 Receita Diferida: Dinheiro do futuro não paga conta do passado.", lesson: "" },
+      { id: "B", text: "Gastar os R$ 12.000 em melhorias para o escritório agora, afinal o dinheiro já entrou e vai motivar a equipe a entregar o projeto.", xp: -20, isBest: false, impacts: { caixa: -12000, margem: -2.0, compliance: -10 }, feedback: "A MIRAGEM. Nos meses 2 e 3 você terá custos com o projeto, mas não terá receita nova. O caixa vai negativar.", reward: "", lesson: "Gastar adiantamento é escravizar o seu 'eu' do futuro." },
+      { id: "C", text: "Pegar os R$ 12.000 e distribuir como lucro/prêmio imediato entre os sócios para comemorar a grande venda.", xp: -45, isBest: false, impacts: { caixa: -12000, margem: -5.0, compliance: -25 }, feedback: "SAQUE CRIMINOSO. A empresa assumiu o risco do serviço, mas os sócios levaram o dinheiro. A ruína é iminente.", reward: "", lesson: "Lucro só existe após o Custo da Mercadoria/Serviço Vendido ser pago." }
+    ]
+  },
+  {
+    id: "t2_vendas_03", tier: 2, sector: "Vendas e Promoções", title: "A Roleta da Black Friday",
+    theory: "PME não brinca de Black Friday dando 50% de desconto linear igual gigante do varejo. O gigante ganha no volume absurdo e tem poder de barganha com a fábrica. O pequeno empresário que corta a própria margem pela metade só acelera a falência trabalhando em dobro.",
+    context: "Novembro chegou. Seu concorrente maior anunciou 'Tudo com 40% OFF'. Sua margem líquida normal é de 20%. A equipe de vendas está em pânico exigindo que você cubra a oferta.",
+    character: "A Guerra de Preços",
+    consultoriaHint: "Fuja da briga de foice. PME ganha Black Friday agregando valor, não destruindo preço. Crie combos, ofereça bônus de serviço ou queime APENAS o estoque parado (Curva C).",
+    options: [
+      { id: "A", text: "Manter o preço dos produtos 'Curva A' (os que mais vendem), criar um combo agregando produtos parados e focar no atendimento consultivo.", xp: 40, isBest: true, impacts: { caixa: 3500, margem: 2.0, compliance: 10 }, feedback: "POSICIONAMENTO DE VALOR. Você não entrou no leilão de centavos e limpou o estoque morto com lucro.", reward: "🏆 Lucro Oculto: Agregar valor é mais barato que dar desconto.", lesson: "" },
+      { id: "B", text: "Ceder à pressão da equipe e dar 30% de desconto na loja toda para 'não ficar para trás e perder os clientes'.", xp: -25, isBest: false, impacts: { caixa: -1000, margem: -4.0, compliance: -5 }, feedback: "O EFEITO BOOMERANGUE. Vendeu o dobro, mas a margem ficou negativa. Você pagou para os clientes levarem seus produtos.", reward: "", lesson: "Vender com prejuízo cansa a equipe e destrói a DRE." },
+      { id: "C", text: "Dar os mesmos 40% do concorrente, mas reduzir a qualidade da entrega/embalagem para tentar compensar o buraco financeiro.", xp: -50, isBest: false, impacts: { caixa: -4000, margem: -6.0, compliance: -20 }, feedback: "QUEIMA DE MARCA. Você atraiu o cliente pelo preço e o decepcionou pela qualidade. Ele nunca mais volta.", reward: "", lesson: "O cliente esquece o desconto rápido, mas lembra da entrega ruim para sempre." }
+    ]
+  },
+  {
+    id: "t3_rh_06", tier: 3, sector: "Gestão de Pessoas", title: "O Vendedor Promovido",
+    theory: "O maior erro de RH em vendas é pegar o melhor vendedor da empresa e promovê-lo a Gerente Comercial só para 'dar um plano de carreira'. Vender exige lobo solitário; gerenciar exige empatia e processo. Você perde seu melhor atacante e ganha um técnico ruim.",
+    context: "O João é uma máquina, traz 40% das vendas da empresa. Você o promoveu a Gerente Comercial para liderar os outros 3 vendedores. Em dois meses, as vendas caíram 30% e a equipe ameaça pedir as contas porque o João é grosseiro e centralizador.",
+    character: "O Prêmio Invertido",
+    consultoriaHint: "Bata de frente e desfaça o erro rápido. Remunere os tops de vendas com comissões maiores, bônus e títulos (Ex: Key Account), mas não os coloque para gerir pessoas se eles não têm o perfil de liderança.",
+    options: [
+      { id: "A", text: "Chamar o João, admitir o erro de gestão. Voltar ele para vendas como 'Executivo Sênior', criar um bônus por produtividade só dele, e contratar um gestor de verdade.", xp: 40, isBest: true, impacts: { caixa: 3000, margem: 1.5, compliance: 15 }, feedback: "A CORREÇÃO CIRÚRGICA. O ego do João doeu, mas o bolso dele (e o seu) vão agradecer. A equipe respirou.", reward: "🏆 Liderança Real: Cargo não é prêmio de consolação.", lesson: "" },
+      { id: "B", text: "Deixar como está. Pagar um curso de 'Liderança' online para o João e torcer para ele aprender a lidar com pessoas nos próximos 6 meses.", xp: -20, isBest: false, impacts: { caixa: -3500, margem: -2.0, compliance: -10 }, feedback: "OMISSÃO TÁTICA. Em 6 meses a equipe vai toda embora e o João vai desanimar pelas metas não batidas.", reward: "", lesson: "Esperança não conserta erro de alocação de talentos." },
+      { id: "C", text: "Demitir os vendedores que estão reclamando, afinal o João é a estrela e quem não se adaptar ao estilo 'agressivo' dele tem que sair.", xp: -45, isBest: false, impacts: { caixa: -8000, margem: -4.0, compliance: -25 }, feedback: "O TIRO DE CANHÃO. Você endossou a toxicidade. O João parou de vender (porque é gerente) e você expulsou quem vendia.", reward: "", lesson: "Proteger um líder tóxico é declarar guerra ao próprio caixa." }
+    ]
+  },
+  {
+    id: "t4_tributos_02", tier: 4, sector: "Riscos e Tributos", title: "O Fornecedor Fantasma",
+    theory: "Comprar 'Sem Nota' (meia nota) é roleta russa com o Leão. Pode dar margem hoje, mas cria um passivo criminal impagável. A inteligência do Fisco é digital. Se você passa cartão/PIX sem emitir nota, o sistema cruza os dados e a autuação vem em bloco (retroativa a 5 anos).",
+    context: "Um novo fornecedor oferece um lote de mercadorias que você vende muito por R$ 30.000. Se for 'Sem Nota', sai por R$ 22.000. Você está precisando de margem urgentemente para cobrir o buraco de uma má gestão anterior.",
+    character: "O Canto da Sonegação",
+    consultoriaHint: "O barato sai com multa de 150%. Jogue o jogo dos adultos. Compre com Nota Fiscal, aproveite o crédito do imposto (se for o caso) e melhore sua gestão interna para não depender de crime para ter lucro.",
+    options: [
+      { id: "A", text: "Recusar a proposta criminosa. Comprar com Nota Fiscal pelos R$ 30.000 e ajustar a operação para que a empresa dê lucro dentro da legalidade absoluta.", xp: 40, isBest: true, impacts: { caixa: -1000, margem: 1.0, compliance: 30 }, feedback: "SONO TRANQUILO. A margem apertou, mas o CNPJ está blindado. Você escolheu a dificuldade do estrategista.", reward: "🏆 Compliance Ativado: Sua empresa vale mais quando não tem esqueletos no armário.", lesson: "" },
+      { id: "B", text: "Comprar metade com Nota e metade 'Sem Nota' para diluir o risco e tentar melhorar a margem de fininho.", xp: -25, isBest: false, impacts: { caixa: 4000, margem: -1.0, compliance: -30 }, feedback: "O MEIO CRIME. Você assumiu o risco da autuação e bagunçou totalmente seu controle de estoque.", reward: "", lesson: "Não existe meia sonegação para a Receita Federal." },
+      { id: "C", text: "Comprar 100% 'Sem Nota' e vender no Pix sem emitir nota para o cliente final, gerando um lucro 'limpo e invisível'.", xp: -50, isBest: false, impacts: { caixa: 8000, margem: -5.0, compliance: -60 }, feedback: "O ASSASSINATO DO CNPJ. A fiscalização cruzou a movimentação bancária. A multa veio no CPF dos sócios.", reward: "", lesson: "O 'jeitinho' é a forma mais rápida de perder a empresa e o patrimônio pessoal." }
+    ]
+  },
+  {
+    id: "t2_operacao_04", tier: 2, sector: "Processos e Clientes", title: "A Dependência do 'Vip'",
+    theory: "Ter 60% do seu faturamento concentrado em um único cliente (O 'Gorila') não é sinal de força comercial, é sinal de risco máximo. Se ele atrasa, você atrasa a folha. Se ele cancela, você quebra.",
+    context: "Sua empresa fatura 50k. Destes, a Empresa Ômega compra sozinha R$ 30.000/mês. Hoje eles ligaram pedindo uma redução de 15% na tabela de preços deles 'ou vão fechar com a concorrência na segunda-feira'.",
+    character: "A Concentração Kamikaze",
+    consultoriaHint: "O risco de concentração explodiu na sua cara. Você não pode perder R$ 30k hoje, mas não pode ceder a margem e virar escravo amanhã. Negocie prazo e invista agressivamente para diluir essa carteira nos próximos 90 dias.",
+    options: [
+      { id: "A", text: "Conceder temporariamente 8% mediante assinatura de contrato de fidelidade de 6 meses. No mesmo dia, dobrar os esforços em prospecção para atrair 10 clientes de 3k.", xp: 35, isBest: true, impacts: { caixa: -1500, margem: 1.0, compliance: 15 }, feedback: "MANOBRA DE SOBREVIVÊNCIA. Você conteve a perda imediata, ganhou tempo e começou a diluição da carteira.", reward: "🏆 Pulverização Ativada: O comercial acordou para o risco do cliente gorila.", lesson: "" },
+      { id: "B", text: "Aceitar a redução de 15% sem exigir nada em troca pelo medo de quebrar na próxima semana.", xp: -20, isBest: false, impacts: { caixa: -4500, margem: -3.5, compliance: -5 }, feedback: "A RENDIÇÃO. Eles descobriram que mandam na sua empresa. Mês que vem o pedido será de mais desconto.", reward: "", lesson: "Quem tem apenas um grande cliente, não é empresário, é funcionário terceirizado." },
+      { id: "C", text: "Recusar a proposta agressivamente. 'Não dou desconto para ninguém'. Perder o cliente e tentar repor os 30k com urgência no mês seguinte.", xp: -45, isBest: false, impacts: { caixa: -30000, margem: -6.0, compliance: -10 }, feedback: "O CHOQUE DE REALIDADE. O ego falou, o caixa sangrou. A folha de pagamento estourou no dia 05.", reward: "", lesson: "Ter princípios comerciais é excelente, mas não ter caixa de transição é fatal." }
+    ]
+  },  
+  // --- C// --- LOTE 4: OS CUSTOS INVISÍVEIS E O COMPORTAMENTO (CÓDIGO AZUL) ---
+  
+  {
+    id: "t2_preco_06", tier: 2, sector: "Precificação e Posicionamento", title: "O Leilão do Desespero",
+    theory: "Preço é posicionamento. Quando você entra em um leilão de centavos com o cliente, desvaloriza seu serviço e educa o mercado de que sua margem original era um roubo. Desconto dado sem contrapartida é dinheiro tirado direto do seu lucro líquido.",
+    context: "Um cliente grande coloca a sua proposta na mesa junto com a de um concorrente de baixíssima qualidade e diz: 'Ele faz por 30% a menos. Se você cobrir, fechamos agora.'",
+    character: "O Cliente Leiloeiro",
+    consultoriaHint: "Quem vem por preço, por preço vai embora. Se você cobre orçamento de empresa ruim, você nivela o seu serviço por baixo e paga para trabalhar. Peça uma contrapartida (ex: volume, pagamento à vista) ou levante da mesa.",
+    options: [
+      { id: "A", text: "Recusar o desconto linear. Oferecer manter o preço, mas agregar um serviço de baixo custo para você e alto valor para ele, ou retirar itens da proposta para justificar a queda de preço.", xp: 35, isBest: true, impacts: { caixa: 0, margem: 1.5, compliance: 15 }, feedback: "NEGOCIAÇÃO ASSIMÉTRICA. Você defendeu sua margem e mostrou que seu serviço tem valor inegociável.", reward: "🏆 Posicionamento Blindado: Você não é a opção mais barata, é a melhor.", lesson: "" },
+      { id: "B", text: "Dar os 30% de desconto para 'não perder o cliente' e tentar tirar a diferença cobrando mais caro nos próximos negócios que ele fechar com você.", xp: -20, isBest: false, impacts: { caixa: -3000, margem: -3.5, compliance: -5 }, feedback: "A CORRIDA PARA O FUNDO DO POÇO. O cliente percebeu seu desespero e nunca mais vai aceitar pagar seu preço cheio.", reward: "", lesson: "Desconto sem justificativa técnica é confissão de margem abusiva." },
+      { id: "C", text: "Dar 35% de desconto só para 'quebrar o concorrente' e roubar o cliente, assumindo o prejuízo como investimento em marketing.", xp: -45, isBest: false, impacts: { caixa: -5000, margem: -5.0, compliance: -10 }, feedback: "SUICÍDIO COMERCIAL. Você pagou para tirar um cliente ruim do seu concorrente. O concorrente agradece.", reward: "", lesson: "Roubar prejuízo dos outros não enriquece sua empresa." }
+    ]
+  },
+  {
+    id: "t3_cultura_01", tier: 3, sector: "Cultura Organizacional", title: "A Estrela Tóxica",
+    theory: "Cultura não é o que está escrito na parede, é o comportamento que você tolera. Manter um funcionário que bate metas, mas destrói o clima e desrespeita as regras, ensina aos outros que o caráter é secundário ao resultado financeiro.",
+    context: "Sua melhor vendedora bateu a meta do trimestre sozinha, mas humilhou o estoquista na frente de todos e se recusa a preencher o CRM, dizendo na frente da equipe que 'quem vende não precisa de burocracia'.",
+    character: "A Insubordinação Lucrativa",
+    consultoriaHint: "A estrela tóxica destrói a produtividade de todo o resto da base. Ninguém é insubstituível num sistema de vendas bem construído. Dê o choque de realidade em particular; se ela não alinhar, corte na carne.",
+    options: [
+      { id: "A", text: "Chamá-la para uma reunião fechada. Aplicar advertência formal pela insubordinação e deixar claro que metas não compram o direito de destruir o clima. Preparar um substituto.", xp: 40, isBest: true, impacts: { caixa: 0, margem: 1.0, compliance: 25 }, feedback: "LIDERANÇA INABALÁVEL. A equipe viu que as regras valem para todos. A moral do time subiu e a vendedora entendeu seu lugar.", reward: "🏆 A Lei de Ferro: O CNPJ é maior que a vaidade de qualquer CPF.", lesson: "" },
+      { id: "B", text: "Fingir que não viu a humilhação para não correr o risco de ela pedir as contas e você perder o faturamento que ela traz.", xp: -25, isBest: false, impacts: { caixa: -1000, margem: -2.0, compliance: -20 }, feedback: "A FALÊNCIA DO LÍDER. Você perdeu o respeito do resto da equipe. O estoquista pediu demissão e o CRM foi abandonado por todos.", reward: "", lesson: "O resultado financeiro não cobre o custo de um ambiente apodrecido." },
+      { id: "C", text: "Dar razão a ela na frente de todos, demitir o estoquista por ter 'atrapalhado a vendedora estrela' e liberar ela de usar o CRM.", xp: -50, isBest: false, impacts: { caixa: -4000, margem: -3.0, compliance: -40 }, feedback: "O CAOS INSTALADO. Você virou refém. Ela agora é a verdadeira dona da sua empresa e vai ditar as regras até te falir.", reward: "", lesson: "O líder que escolhe a estrela tóxica, destrói a constelação inteira." }
+    ]
+  },
+  {
+    id: "t3_fin_05", tier: 3, sector: "Decisões Financeiras", title: "A Falácia do Custo Afundado",
+    theory: "O Custo Afundado é o dinheiro que já foi gasto e não pode ser recuperado. Donos de PME quebram empresas inteiras tentando 'fazer dar certo' um projeto falido apenas porque já investiram muito nele. Aceitar o erro rápido preserva o caixa futuro.",
+    context: "Você gastou R$ 15.000 desenvolvendo um novo serviço que o mercado rejeitou completamente. Para consertar os erros e tentar lançar de novo, vai custar mais R$ 10.000. O caixa está no limite de segurança.",
+    character: "O Apego ao Prejuízo",
+    consultoriaHint: "O mercado não tem pena do seu esforço. Se a validação provou que não há demanda, não jogue dinheiro bom em cima de dinheiro ruim. Engula o choro, mate o projeto e volte para o arroz com feijão que paga as contas.",
+    options: [
+      { id: "A", text: "Matar o projeto hoje. Assumir a perda dos R$ 15.000 como custo de aprendizado, focar na operação que já dá lucro e preservar os R$ 10.000 no caixa.", xp: 40, isBest: true, impacts: { caixa: 0, margem: 1.5, compliance: 15 }, feedback: "RACIONALIDADE FRIA. Você cortou a perna para salvar o paciente. A empresa manteve liquidez para operar o núcleo.", reward: "🏆 Desapego Estratégico: O erro custou caro, mas a teimosia teria custado a empresa.", lesson: "" },
+      { id: "B", text: "Gastar os últimos R$ 10.000 do caixa de segurança para tentar relançar o serviço, alegando que 'não pode jogar R$ 15 mil no lixo'.", xp: -30, isBest: false, impacts: { caixa: -10000, margem: -3.0, compliance: -10 }, feedback: "O JOGADOR VICIADO. O serviço falhou de novo. Agora você tem um produto inútil e não tem caixa para pagar a folha.", reward: "", lesson: "Tentar recuperar dinheiro perdido te faz perder o que sobrou." },
+      { id: "C", text: "Pegar um empréstimo bancário de R$ 30.000 para forçar o marketing desse produto rejeitado 'guela abaixo' do cliente.", xp: -50, isBest: false, impacts: { caixa: -30000, margem: -6.0, compliance: -20 }, feedback: "A ALAVANCAGEM MORTAL. O cliente não quer o produto. Você agora tem dívida bancária, juros e um estoque de frustração.", reward: "", lesson: "O marketing não salva um produto que não resolve um problema." }
+    ]
+  },
+  {
+    id: "t2_parceria_01", tier: 2, sector: "Parcerias Comerciais", title: "A Permuta Venenosa",
+    theory: "Permuta só faz sentido se o serviço recebido substitui uma despesa vital que sairia do seu fluxo de caixa. Trocar o seu produto (que tem custo de mercadoria vendida, ICMS, embalagem) por algo que a empresa não precisa é o mesmo que jogar dinheiro no esgoto.",
+    context: "Um 'influenciador' com 100 mil seguidores pede R$ 3.000 em serviços/produtos da sua empresa em troca de 3 stories no Instagram. O público dele é adolescente, e você vende consultoria e software para empresas (B2B).",
+    character: "O Ego Digital",
+    consultoriaHint: "Audiência que não tem dinheiro para comprar o seu produto não é lead, é enfeite. Diga não para métricas de vaidade. Troque permuta apenas por serviços essenciais: contador, sistema de gestão ou marketing focado.",
+    options: [
+      { id: "A", text: "Recusar a permuta educadamente, explicando que a verba de marketing do semestre está direcionada para canais B2B (empresariais).", xp: 35, isBest: true, impacts: { caixa: 0, margem: 1.0, compliance: 10 }, feedback: "MIRA LASER. Você preservou R$ 3.000 de CMV (Custo de Mercadoria Vendida) que seriam torrados para aparecer para quem não compra.", reward: "🏆 Filtro de Vaidade: Likes não pagam boletos.", lesson: "" },
+      { id: "B", text: "Aceitar a permuta porque a equipe achou 'uma vitrine super legal para a marca ficar famosa na cidade'.", xp: -20, isBest: false, impacts: { caixa: -3000, margem: -2.0, compliance: -5 }, feedback: "O INVESTIMENTO CEGO. Foram milhares de curtidas no post, mas NENHUMA venda realizada. O público não tinha poder aquisitivo.", reward: "", lesson: "Visibilidade burra é o marketing mais caro que existe." },
+      { id: "C", text: "Além de dar os produtos, pagar um cachê de R$ 2.000 'por fora' para garantir que ele fale bem da empresa no feed.", xp: -45, isBest: false, impacts: { caixa: -5000, margem: -4.0, compliance: -20 }, feedback: "A SANGRAMENTO DUPLO. Descapitalizou, fraudou o caixa (sem nota) e não obteve retorno em vendas.", reward: "", lesson: "Ajoelhar no milho por audiência desalinhada é desespero." }
+    ]
+  },
+  {
+    id: "t4_escala_02", tier: 4, sector: "Operações e Escala", title: "O Gargalo do Marketing Viral",
+    theory: "Vender mais do que se pode entregar não é sucesso corporativo, é fraude culposa. O gargalo da sua empresa dita o ritmo do seu fluxo de caixa. Tracionar o marketing sem antes alinhar e blindar a capacidade operacional gera cancelamentos, processos e queima de marca.",
+    context: "Uma campanha de marketing sua estourou! Entraram 150 pedidos pagos à vista num fim de semana. Mas o seu 'Raio-X' operacional mostra que a equipe consegue produzir e entregar no máximo 50 por semana. Clientes começaram a ligar irritados.",
+    character: "O Colapso do Crescimento",
+    consultoriaHint: "Desligue a torneira antes de consertar o ralo. Pause os anúncios agora. Alugue capacidade excedente, faça turnos extras, peça desculpas com transparência absoluta e não prometa o que não tem na mão.",
+    options: [
+      { id: "A", text: "Pausar o marketing imediatamente. Enviar um comunicado transparente de 'Sucesso Absoluto de Vendas', pedir extensão de prazo aos 100 excedentes e contratar freelancers urgentes para turno extra.", xp: 40, isBest: true, impacts: { caixa: -1500, margem: -1.0, compliance: 20 }, feedback: "GESTÃO DE CRISE. Você gastou caixa com freelancers, mas salvou os contratos, estancou a raiva dos clientes e protegeu a marca.", reward: "🏆 Tração Controlada: A operação dita a velocidade do marketing.", lesson: "" },
+      { id: "B", text: "Deixar a campanha rodando 'aproveitando o hype', colocar o dinheiro no bolso e instruir a equipe a dar respostas vagas dizendo que 'já está nos correios'.", xp: -35, isBest: false, impacts: { caixa: 5000, margem: -3.0, compliance: -30 }, feedback: "O ESTELIONATO CULPOSO. Mentir para o cliente gera Chargeback (estorno). O dinheiro entrou na sexta e o banco bloqueou na terça.", reward: "", lesson: "Nunca subestime a capacidade de um cliente furioso destruir sua reputação online." },
+      { id: "C", text: "Se desesperar e cancelar / devolver o dinheiro dos 100 pedidos excedentes no mesmo dia, sem tentar expandir a produção ou renegociar prazos.", xp: -25, isBest: false, impacts: { caixa: -10000, margem: -2.0, compliance: -5 }, feedback: "O MEDO DA ESCALA. Você evitou o caos, mas demonstrou que sua empresa não está pronta para o próximo nível.", reward: "", lesson: "Devolver dinheiro por incompetência operacional é financiar o concorrente." }
+    ]
+  },
+
+  // // --- LOTE 5: GOVERNANÇA, FRAUDES E M&A (CÓDIGO AZUL) ---
+  
+  {
+    id: "t3_fraude_01", tier: 3, sector: "Controladoria e Fraude", title: "O Funcionario 'De Confiança'",
+    theory: "Onde não há Segregação de Funções (SoD), a fraude não é uma possibilidade, é uma questão de tempo. Se a mesma pessoa que aprova o fornecedor é a que emite o pagamento no banco e concilia o extrato, você criou a tempestade perfeita para o desvio de caixa.",
+    context: "Sua gerente financeira está com você há 8 anos. É 'da família'. Numa auditoria rápida, você percebe três transferências atípicas (R$ 8.500 no total) para um CNPJ desconhecido. Ela diz que foi 'um erro do sistema bancário' e que vai estornar amanhã.",
+    character: "O Rombo Silencioso",
+    consultoriaHint: "Confiança não é controle. Quem frauda uma vez, frauda mil. Isole os acessos bancários imediatamente, não faça escândalo sem provas robustas e inicie uma auditoria forense nos últimos 24 meses.",
+    options: [
+      { id: "A", text: "Retirar os tokens e senhas bancárias dela no mesmo dia sob o pretexto de 'atualização de rotina', afastar com licença remunerada e contratar uma auditoria externa imediata.", xp: 40, isBest: true, impacts: { caixa: -2000, margem: 1.0, compliance: 30 }, feedback: "SANGUE FRIO EXECUTIVO. Você agiu com governança. Blindou o caixa, evitou passivo por assédio moral e vai descobrir o tamanho real do rombo.", reward: "🏆 Compliance Implacável: Na sua empresa, processo vale mais que amizade.", lesson: "" },
+      { id: "B", text: "Acreditar na desculpa do 'erro de sistema' porque ela é de extrema confiança e esperar ela resolver o estorno na próxima semana.", xp: -30, isBest: false, impacts: { caixa: -8500, margem: -2.0, compliance: -30 }, feedback: "A CEGUEIRA DELIBERADA. Ela não vai estornar. Ela usou a semana para apagar rastros e limpar o caixa antes de sumir.", reward: "", lesson: "O maior roubo sempre vem da pessoa que você menos desconfia." },
+      { id: "C", text: "Gritar com ela no meio do escritório, acusá-la de roubo na frente da equipe e demiti-la por justa causa na mesma hora sem juntar documentos.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -3.0, compliance: -50 }, feedback: "O JUSTICEIRO PROCESSADO. Faltou prova, sobrou testemunha. Ela reverteu a justa causa e ganhou uma bolada por danos morais.", reward: "", lesson: "A raiva custa os honorários do advogado dela." }
+    ]
+  },
+  {
+    id: "t3_sucessao_02", tier: 3, sector: "Sucessão Familiar", title: "O Herdeiro Incompetente",
+    theory: "A transição da 1ª para a 2ª geração quebra 70% das empresas familiares. O motivo? Confundir herança de patrimônio com herança de cargo. O filho tem direito aos lucros das cotas, mas a cadeira de Diretor precisa ser conquistada com competência técnica.",
+    context: "Seu filho recém-formado exige ser o novo Diretor Comercial da empresa, substituindo o executivo atual que entrega resultados constantes, mas com quem ele 'não se dá bem'. A equipe já demonstra desconforto com a arrogância do garoto.",
+    character: "O Colapso Familiar",
+    consultoriaHint: "O CNPJ é o hospedeiro que alimenta toda a família. Se você colocar um parasita no coração da empresa, todos morrem de fome. Herdeiro precisa começar de baixo ou atuar apenas no Conselho.",
+    options: [
+      { id: "A", text: "Negar a diretoria. Oferecer a ele uma vaga de analista júnior ou pagar para ele ser trainee em OUTRA empresa do setor para ganhar maturidade antes de voltar.", xp: 40, isBest: true, impacts: { caixa: 0, margem: 2.0, compliance: 20 }, feedback: "O GUARDIÃO DA EMPRESA. Houve choro no domingo em família, mas a empresa amanheceu forte na segunda-feira.", reward: "🏆 Meritocracia Blindada: O sobrenome não substitui o currículo.", lesson: "" },
+      { id: "B", text: "Criar uma diretoria 'paralela' (Diretoria de Inovação) só para abrigar o filho com um salário alto, sem mexer no Diretor Comercial atual.", xp: -25, isBest: false, impacts: { caixa: -8000, margem: -3.0, compliance: -10 }, feedback: "A VÁLVULA DE EGO. Você criou um custo fixo inútil e uma disputa de poder nos bastidores. O clima azedou.", reward: "", lesson: "Criar cargos fantasmas para a família é o primeiro passo da falência." },
+      { id: "C", text: "Ceder à chantagem emocional, demitir o Diretor Comercial experiente e entregar as chaves das vendas na mão do filho sem experiência.", xp: -50, isBest: false, impacts: { caixa: -25000, margem: -6.0, compliance: -30 }, feedback: "O FIM DE UMA ERA. O mercado não respeitou o garoto. Os melhores clientes seguiram o antigo diretor para a concorrência.", reward: "", lesson: "O afeto do pai acabou de quebrar a obra da sua vida." }
+    ]
+  },
+  {
+    id: "t4_ma_01", tier: 4, sector: "Fusões e Aquisições (M&A)", title: "O Canto da Sereia Bilionária",
+    theory: "Em M&A, o diabo mora nas entrelinhas. Uma proposta de compra milionária atrelada a cláusulas de 'Earn-out' (pagamento futuro baseado em metas impossíveis) é um truque para assumir o controle da sua empresa de graça e te escravizar no seu próprio negócio.",
+    context: "Um fundo de investimento quer comprar sua empresa por absurdos R$ 10 Milhões. Mas a estrutura é: 1 Milhão à vista, você continua como CEO por 3 anos, e os 9 Milhões serão pagos se você triplicar o faturamento nesse período.",
+    character: "O Cheque de Borracha",
+    consultoriaHint: "Earn-out agressivo é ilusão. O fundo assume o controle agora, muda a diretoria, trava seus investimentos e você nunca atinge a meta. Negocie a maior parte em dinheiro vivo (Cash-out) ou levante da mesa.",
+    options: [
+      { id: "A", text: "Recusar a estrutura de Earn-out agressiva. Fazer uma contraproposta exigindo 7 Milhões em Cash-out imediato e 3 Milhões baseados na retenção da carteira atual, não em crescimento irreal.", xp: 40, isBest: true, impacts: { caixa: 0, margem: 1.0, compliance: 25 }, feedback: "VALUATION REALISTA. Você não caiu no truque da Faria Lima. O fundo respeitou sua inteligência executiva e aceitou renegociar.", reward: "🏆 Equity Defendido: Papel não vale dinheiro, só caixa livre.", lesson: "" },
+      { id: "B", text: "Aceitar a proposta cego pelos '10 Milhões' nominais do contrato, acreditando que você 'dá um jeito' de bater as metas impossíveis.", xp: -35, isBest: false, impacts: { caixa: 1000000, margem: -3.0, compliance: -20 }, feedback: "A GAIOLA DE OURO. O fundo assumiu o conselho, vetou suas estratégias de venda e você perdeu o direito aos 9 milhões.", reward: "", lesson: "Você virou um funcionário frustrado da empresa que você fundou." },
+      { id: "C", text: "Aceitar a proposta e já comprometer os 10 milhões comprando imóveis na Pessoa Física através de financiamento, confiando no contrato futuro.", xp: -50, isBest: false, impacts: { caixa: -1000000, margem: -5.0, compliance: -40 }, feedback: "A RUÍNA PESSOAL. O Earn-out falhou. A empresa é do fundo e as dívidas milionárias da Pessoa Física impagáveis são suas.", reward: "", lesson: "Nunca comprometa patrimônio pessoal contando com o bônus futuro do M&A." }
+    ]
+  },
+  {
+    id: "t4_duediligence_02", tier: 4, sector: "Auditoria e Due Diligence", title: "Os Esqueletos no Armário",
+    theory: "O Valuation (valor da empresa) derrete na Due Diligence (auditoria de compra) se houver passivo oculto. Para cada R$ 1 de sonegação ou risco trabalhista encontrado pelos auditores do comprador, R$ 5 são cortados do preço da sua empresa.",
+    context: "Sua empresa está sendo vendida. Os auditores do comprador encontram um histórico de 3 anos de horas extras não pagas e algumas mercadorias vendidas 'sem nota' que somam R$ 100 mil de impostos sonegados.",
+    character: "O Pente Fino",
+    consultoriaHint: "Nunca minta para um auditor de Big 4. A mentira quebra o 'Deal'. Abra o jogo, ofereça reter uma parte do pagamento em uma conta Escrow (garantia) e absorva o passivo de cabeça erguida.",
+    options: [
+      { id: "A", text: "Agir com transparência radical. Assumir o erro do passado, retificar as declarações, parcelar o imposto devido e aceitar o desconto do passivo no valor final da venda.", xp: 40, isBest: true, impacts: { caixa: -15000, margem: 1.0, compliance: 40 }, feedback: "A HONRA DO DEAL. Houve desgaste e dor no bolso, mas a transparência salvou a venda milionária.", reward: "🏆 Transparência Tática: A verdade sai mais barata que a quebra de confiança.", lesson: "" },
+      { id: "B", text: "Esconder a documentação complementar e tentar 'convencer' o contador interno a mentir para os auditores dizendo que não existem mais passivos.", xp: -30, isBest: false, impacts: { caixa: 0, margem: -2.0, compliance: -30 }, feedback: "A DESTRUIÇÃO DO ACORDO. Eles descobriram a ocultação. O comprador abandonou a mesa alegando má-fé sistêmica.", reward: "", lesson: "Auditoria descobre tudo. A omissão é um crime pior que o erro." },
+      { id: "C", text: "Oferecer um 'por fora' (suborno) ao auditor júnior que descobriu os furos para ele tirar essas páginas do relatório final.", xp: -50, isBest: false, impacts: { caixa: -10000, margem: -5.0, compliance: -60 }, feedback: "CRIME DE CORRUPÇÃO. O auditor denunciou. A venda foi cancelada e a Polícia Federal foi acionada.", reward: "", lesson: "O suborno é o atestado de óbito moral e legal de um empresário." }
+    ]
+  },
+  {
+    id: "t4_escala_03", tier: 4, sector: "Estratégia Corporativa", title: "A Âncora Operacional (Spin-off)",
+    theory: "O 'Spin-off' ou corte de segmento é vital quando uma empresa carrega dois negócios: um que é o futuro (margem alta, pouca equipe) e outro que é uma âncora (legado, receita alta mas lucro negativo). O ego de olhar pro faturamento bruto impede o dono de amputar o membro doente.",
+    context: "Sua empresa fatura 200k. 150k vêm do varejo físico tradicional (que dá R$ 5k de prejuízo ao mês). 50k vêm do seu novo software/serviço online (que dá R$ 25k de lucro limpo ao mês). A operação online está estagnada porque toda sua energia vai para resolver os incêndios da loja física.",
+    character: "O Peso do Passado",
+    consultoriaHint: "Pare de subsidiar o fracasso com o dinheiro do sucesso. A loja física cumpriu seu papel na sua história, mas hoje é uma âncora. Venda o ponto ou feche, e escale o que realmente gera valor e lucro.",
+    options: [
+      { id: "A", text: "Iniciar o desinvestimento imediato da loja física. Vender o ponto/estoque para concorrentes, liquidar passivos e injetar o caixa 100% na escala do produto online.", xp: 40, isBest: true, impacts: { caixa: 50000, margem: 5.0, compliance: 10 }, feedback: "VISÃO DE FUTURO CORTANTE. O faturamento despencou, mas o LUCRO disparou. A empresa ficou enxuta, bilionária em margem e leve.", reward: "🏆 Foco em Margem: Cortar faturamento burro é a melhor forma de enriquecer.", lesson: "" },
+      { id: "B", text: "Pegar os R$ 25k de lucro do setor online todos os meses para investir na loja física na esperança de 'reerguer' a operação tradicional.", xp: -25, isBest: false, impacts: { caixa: -20000, margem: -4.0, compliance: -5 }, feedback: "O RALIZAMENTO DO LUCRO. O setor online perdeu tração e a loja física engoliu seu único gerador de caixa livre.", reward: "", lesson: "Nunca penalize sua melhor operação para salvar um paciente terminal." },
+      { id: "C", text: "Pegar um empréstimo gigantesco para abrir mais 3 lojas físicas iguais, achando que o problema era 'falta de volume' no varejo.", xp: -50, isBest: false, impacts: { caixa: -60000, margem: -6.0, compliance: -20 }, feedback: "A MULTIPLICAÇÃO DO PREJUÍZO. Você escalou uma operação deficitária. O colapso agora é inevitável.", reward: "", lesson: "Se a unidade de negócio dá prejuízo, abrir mais unidades acelera a falência." }
+    ]
+  },
+
+  // --- LOTE 6: CISNES NEGROS E CRISES EXTREMAS (CÓDIGO AZUL) ---
+  
+  {
+    id: "t2_logistica_01", tier: 2, sector: "Logística e Contingência", title: "A Greve dos Caminhoneiros",
+    theory: "O modelo 'Just-in-Time' (trabalhar sem estoque) é lindo na planilha, mas suicida em um país com infraestrutura volátil. Não ter um Plano de Contingência (Redundância de Fornecedores Locais) paralisa a sua empresa no primeiro choque externo.",
+    context: "Uma greve geral paralisou as rodovias. Seu insumo principal, comprado mais barato em outro estado, está travado num bloqueio a 500km. A sua produção zera em 24h e seu principal cliente exige a entrega na sexta-feira.",
+    character: "A Cadeia Quebrada",
+    consultoriaHint: "Na crise aguda, você não briga por lucro, você briga pela vida e pela marca. Pague mais caro para acionar o plano B local. Engula o prejuízo unitário, mas entregue a carga para não perder o contrato do ano.",
+    options: [
+      { id: "A", text: "Acionar um fornecedor local (30% mais caro) para garantir o mínimo vital da operação. Ligar para o cliente com transparência e garantir a entrega de forma fracionada no prazo.", xp: 40, isBest: true, impacts: { caixa: -3000, margem: -2.0, compliance: 15 }, feedback: "CONTROLE DE DANOS. A margem dessa remessa foi pro buraco, mas você salvou o contrato e a reputação da empresa.", reward: "🏆 Redundância Validada: A confiança do seu cliente no seu CNPJ dobrou.", lesson: "" },
+      { id: "B", text: "Enviar um e-mail padrão avisando o cliente que 'devido à greve, a culpa não é nossa' e cruzar os braços esperando a rodovia liberar.", xp: -25, isBest: false, impacts: { caixa: -5000, margem: 0, compliance: -15 }, feedback: "SÍNDROME DE VÍTIMA. Você até pode ter razão na justiça, mas na prática o cliente foi para o concorrente que tinha estoque local.", reward: "", lesson: "O cliente paga pelo seu produto, não pelas suas desculpas logísticas." },
+      { id: "C", text: "Pagar o triplo num frete aéreo 'clandestino' adiantado no desespero para tentar fazer a carga original chegar amanhã.", xp: -50, isBest: false, impacts: { caixa: -12000, margem: -6.0, compliance: -20 }, feedback: "O DELÍRIO. Você caiu num golpe logístico e descapitalizou de forma letal. A carga nunca chegou.", reward: "", lesson: "O desespero financeiro é o melhor cliente do golpista." }
+    ]
+  },
+  {
+    id: "t3_risco_02", tier: 3, sector: "Risco de Crédito", title: "A Queda do Gigante",
+    theory: "O Risco de Concentração: Se um cliente representa mais de 30% do seu faturamento, ele não é seu cliente, é o seu verdadeiro dono. O Efeito Dominó ocorre quando o 'gigante' quebra e arrasta toda a rede de pequenos fornecedores para o buraco.",
+    context: "Notícia no jornal: A maior rede de varejo do país (que compra 40% da sua produção) entrou em Recuperação Judicial (RJ). Eles te devem R$ 150 mil por mercadorias já entregues, com os boletos vencendo amanhã. O pagamento foi congelado pelo juiz.",
+    character: "O Efeito Dominó",
+    consultoriaHint: "Esqueça esse dinheiro no curto prazo. Ele evaporou. Lance como Perda Esperada (PDD). Corte custos cirurgicamente hoje para o seu caixa não sangrar amanhã, e jogue a equipe inteira na rua para pulverizar a carteira.",
+    options: [
+      { id: "A", text: "Lançar os 150k como perda (PDD). Iniciar cortes cirúrgicos de custo fixo na mesma tarde e pivotar a equipe comercial 100% para captar novos clientes médios e diluir o rombo.", xp: 40, isBest: true, impacts: { caixa: 0, margem: -5.0, compliance: 20 }, feedback: "RESILIÊNCIA EXECUTIVA. Você aceitou o golpe, estancou as despesas rapidamente e focou na pulverização urgente. A empresa balançou, mas não caiu.", reward: "🏆 Sobrevivência Brutal: Você desarmou a bomba atômica antes que ela implodisse o CNPJ.", lesson: "" },
+      { id: "B", text: "Pegar R$ 150k de empréstimo no banco para 'cobrir o buraco' apostando que a rede de varejo vai pagar você nos próximos meses pelo plano da RJ.", xp: -35, isBest: false, impacts: { caixa: -5000, margem: -3.0, compliance: -10 }, feedback: "A ARMADILHA DA NEGAÇÃO. Na RJ, fornecedor é o último da fila. Você assumiu uma dívida bancária com juros para cobrir um dinheiro que só verá em 5 anos.", reward: "", lesson: "Tentar cobrir inadimplência insolvente com dívida bancária é morte dupla." },
+      { id: "C", text: "Parar toda a sua empresa e ir com seus funcionários para a porta da sede do cliente protestar e exigir o pagamento imediato do boleto.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -4.0, compliance: -25 }, feedback: "O ATAQUE DE FÚRIA. O juiz já travou as contas deles. Seu barraco parou a sua própria operação, queimou sua marca e gerou demissões.", reward: "", lesson: "Leis de Recuperação Judicial não se importam com o tamanho do seu barraco." }
+    ]
+  },
+  {
+    id: "t3_crise_03", tier: 3, sector: "Gestão de Liquidez", title: "O Decreto (Lockdown)",
+    theory: "Em cenários de Calamidade ou Fechamento Extremo, a métrica que importa não é o Lucro, é o 'Runway' (sua pista de decolagem): quantos meses o seu caixa paga a folha com a receita em zero. Aqui, a Preservação de Caixa é lei marcial.",
+    context: "O Governo decretou Lockdown ou há uma catástrofe natural na sua cidade. Seu comércio/fábrica foi fechado por tempo indeterminado. A folha de pagamento cai na semana que vem. O fluxo de vendas da rua zerou de uma hora para a outra.",
+    character: "O Zero Absoluto",
+    consultoriaHint: "Hora de aplicar o torniquete. Acione o Governo (MP para folha), pare aluguéis amigavelmente (diferimento) e migre para o delivery/online o que puder na mesma noite.",
+    options: [
+      { id: "A", text: "Acionar medidas de governo (suspensão/redução de jornada), negociar o diferimento do aluguel (jogar parcelas para o ano que vem) e pivotar o estoque imediato para o digital/delivery.", xp: 40, isBest: true, impacts: { caixa: 8000, margem: -1.0, compliance: 15 }, feedback: "COMANDO DE GUERRA. Você protegeu as pessoas usando os mecanismos legais, esticou seu 'Runway' (oxigênio) e não paralisou a mente comercial.", reward: "🏆 Cash Preservation: O mestre do caixa prova seu valor na calamidade.", lesson: "" },
+      { id: "B", text: "Gastar todo o caixa de segurança para pagar aluguel e equipe 100% integral para 'ser um bom patrão', achando que o fechamento só vai durar 15 dias.", xp: -30, isBest: false, impacts: { caixa: -25000, margem: -2.0, compliance: 0 }, feedback: "O HERÓI INCONSEQUENTE. A restrição durou 3 meses. No mês 2 você faliu e todo mundo foi pra rua de qualquer jeito, sem receber a rescisão.", reward: "", lesson: "Bondade com o dinheiro da empresa em crise aguda gera falência." },
+      { id: "C", text: "Desligar os telefones, demitir todos pelo WhatsApp sem pagar as verbas rescisórias justificando 'força maior' e tentar fugir com o estoque.", xp: -50, isBest: false, impacts: { caixa: -10000, margem: -5.0, compliance: -60 }, feedback: "O VILÃO DO COLAPSO. A Justiça do Trabalho congelou todos os seus bens pessoais e da sua família. A covardia custou a sua vida financeira.", reward: "", lesson: "Catástrofes não anulam a responsabilidade do CPF do dono." }
+    ]
+  },
+  {
+    id: "t4_ciber_04", tier: 4, sector: "Cibersegurança e Dados", title: "O Sequestro do ERP (Ransomware)",
+    theory: "O Ransomware paralisa a veia jugular de uma empresa (o faturamento) e expõe dados vitais à LGPD. Pagar o resgate financia o crime e não garante a chave. A proteção real está num plano de continuidade de negócios (BCP) e backup off-grid.",
+    context: "Um estagiário clicou em um anexo falso. Todo o seu ERP, sistema financeiro e os dados de clientes foram bloqueados com criptografia pesada. A tela preta dos hackers exige 1.5 Bitcoins (R$ 500k) de resgate. Os caminhões de entrega pararam.",
+    character: "O Blecaute Digital",
+    consultoriaHint: "Não pague os terroristas. O Ministério Público pune a empresa. Isole a rede corrompida, rode operação manual (papel, nota fiscal de contingência) e restaure do último backup com a TI.",
+    options: [
+      { id: "A", text: "Não negociar com hackers. Desligar a rede interna, acionar notas manuais (contingência fiscal), notificar o vazamento à ANPD com transparência e restaurar o backup em nuvem isolado (D-1).", xp: 40, isBest: true, impacts: { caixa: -5000, margem: -1.0, compliance: 35 }, feedback: "PROTOCOLO DE INCIDENTES (BCP). O dia foi caótico, mas a empresa seguiu as regras da LGPD e a operação voltou à vida 24h depois.", reward: "🏆 Contingência Validada: Backup testado na fogueira salva o CNPJ.", lesson: "" },
+      { id: "B", text: "Ocultar o sequestro. Tentar mentir para a equipe e pros clientes dizendo que é uma 'atualização de rotina que travou o sistema', até a TI achar uma saída.", xp: -35, isBest: false, impacts: { caixa: -12000, margem: -3.0, compliance: -40 }, feedback: "CRIME DE OMISSÃO (LGPD). Os clientes vazados descobriram pela Dark Web. Multas federais brutais e quebra violenta de confiança.", reward: "", lesson: "A mentira num incidente de dados é o acelerador de falência reputacional." },
+      { id: "C", text: "Correr numa corretora, comprar os Bitcoins e pagar o resgate imediatamente para 'resolver a dor de cabeça hoje' e voltar a faturar.", xp: -50, isBest: false, impacts: { caixa: -50000, margem: -5.0, compliance: -30 }, feedback: "FINANCIAMENTO DO CRIME. Você pagou a bolada, eles mandaram uma chave falsa e pediram o dobro. Você quebrou a empresa de vez.", reward: "", lesson: "Hackers veem empresas que pagam resgate como caixas eletrônicos recorrentes." }
+    ]
+  },
+  {
+    id: "t4_macro_05", tier: 4, sector: "Hedge e Macroeconomia", title: "O Dólar Explodiu",
+    theory: "Importar insumos sem proteção cambial (Trava/Hedge) não é empreender, é fazer apostas arriscadas (day-trade) com o fluxo de caixa da empresa. Choques macroeconômicos e geopolíticos globais destroem margens em poucas horas.",
+    context: "Sua matéria-prima principal vem importada. Uma guerra estourou de madrugada do outro lado do mundo. O dólar abriu com alta de 15%. Você tem 2 contêineres chegando no porto semana que vem, com faturas atreladas ao dólar do dia.",
+    character: "O Choque Cambial",
+    consultoriaHint: "A conta chegou. Aceite a dor. Pague, repasse imediatamente o que der pro preço final sem quebrar a demanda, e daqui pra frente feche NDFs (Termos de Moeda) para cravar o custo do seu CMV no momento da compra.",
+    options: [
+      { id: "A", text: "Assumir a pancada dos 15% agora. Pagar o frete, repassar parte do custo pra tabela nova e chamar a tesouraria para instituir, de hoje em diante, proteção cambial (Hedge/NDF) obrigatória para o CNPJ.", xp: 40, isBest: true, impacts: { caixa: -15000, margem: -2.0, compliance: 20 }, feedback: "RESILIÊNCIA E APRENDIZAGEM. Você tomou a facada, mas a empresa evoluiu. A partir de hoje, vocês não apostam mais na roleta do câmbio.", reward: "🏆 Controle Macro: O lucro agora é protegido de sustos da política mundial.", lesson: "" },
+      { id: "B", text: "Postergar o pagamento no porto e deixar a carga lá parada pagando estadia, 'esperando o dólar dar uma recuada na semana que vem'.", xp: -35, isBest: false, impacts: { caixa: -10000, margem: -3.0, compliance: -10 }, feedback: "O APOSTADOR. O dólar subiu mais 5%. O porto cobrou taxas milionárias de armazenagem. O custo da mercadoria triplicou.", reward: "", lesson: "Esperar a moeda cair é jogar no cassino. Custos de porto devoram o balanço." },
+      { id: "C", text: "Romper o contrato com o fornecedor asiático, abandonar a carga atracada no porto para não ter que pagar os 15% a mais e tentar usar similares de baixa qualidade locais.", xp: -50, isBest: false, impacts: { caixa: -35000, margem: -6.0, compliance: -40 }, feedback: "QUEBRA DE CONTRATOS E PROCESSOS. Seu CNPJ foi barrado em compras internacionais, a Receita multou pelo abandono e o produto local era horrível.", reward: "", lesson: "Fugir das regras de importação condena a empresa ao ostracismo comercial." }
+    ]
+  },
+
+  // -// --- LOTE 7: IMPACTOS REGULATÓRIOS E COMPLIANCE TRABALHISTA (CÓDIGO AZUL) ---
+  
+  {
+    id: "t3_pjtizacao_01", tier: 3, sector: "Compliance Trabalhista", title: "A Falsa Economia da Pejotização",
+    theory: "Contratar via MEI para burlar a CLT exigindo horário fixo, subordinação e não-eventualidade é fraude trabalhista. A 'economia' de 40% em encargos hoje é a semente de um processo milionário que quebra a empresa em 3 anos.",
+    context: "Sua empresa está tracionando e você precisa de 5 novos vendedores internos. Para não pagar impostos trabalhistas, seu contador antigo sugere mandar todos abrirem um MEI (CNPJ) para emitirem nota, mas eles terão horário fixo, computador da empresa e metas cobradas diariamente por você.",
+    character: "A Bomba Relógio Trabalhista",
+    consultoriaHint: "Subordinação e horário definem vínculo. Se a empresa não tem caixa para contratar via CLT, ela não tem caixa para expandir. Fraudar a lei para crescer gera um Passivo Oculto que destrói o Valuation (valor) do seu negócio no futuro.",
+    options: [
+      { id: "A", text: "Assumir a realidade financeira. Contratar apenas 3 vendedores via CLT com comissionamento agressivo, diluindo as metas, para crescer dentro da lei e proteger o CNPJ.", xp: 40, isBest: true, impacts: { caixa: -1500, margem: 1.0, compliance: 35 }, feedback: "CRESCIMENTO BLINDADO. O avanço foi um pouco mais lento, mas você dorme sem medo da Justiça do Trabalho. O Valuation da empresa se mantém limpo.", reward: "🏆 Risco Zero Trabalhista: A fundação de cimento que a concorrência não tem.", lesson: "" },
+      { id: "B", text: "Aceitar a ideia do contador, contratar os 5 como MEI e tentar ser 'amigo' deles para que não processem a empresa quando saírem.", xp: -35, isBest: false, impacts: { caixa: 4000, margem: -2.0, compliance: -40 }, feedback: "A ECONOMIA BURRA. A 'amizade' acabou na demissão. Dois deles entraram na justiça, comprovaram o vínculo e a multa engoliu todo o lucro do ano.", reward: "", lesson: "Na Justiça do Trabalho, aperto de mão e acordo verbal não anulam fraude." },
+      { id: "C", text: "Para evitar o problema do MEI, contratar todo mundo 'sem carteira assinada', pagando em dinheiro vivo para não deixar rastros.", xp: -50, isBest: false, impacts: { caixa: 5000, margem: -4.0, compliance: -60 }, feedback: "O SUICÍDIO INSTITUCIONAL. Você cometeu infrações criminais, tributárias e trabalhistas. A fiscalização do Ministério do Trabalho bloqueou as contas da empresa.", reward: "", lesson: "Quem vive na clandestinidade nunca atinge escala profissional." }
+    ]
+  },
+  {
+    id: "t4_fap_02", tier: 4, sector: "Custo Regulatório (INSS)", title: "O Boleto do Acidente de Trabalho",
+    theory: "O Fator Acidentário de Prevenção (FAP) multiplica o seu imposto sobre a folha. Um funcionário machucado não custa só o atestado; ele dobra o encargo previdenciário de TODOS os seus funcionários pelos próximos anos. Segurança do trabalho é gestão financeira.",
+    context: "Um funcionário da expedição lesionou as costas levantando caixas além do peso limite, pois você adiou a compra de uma empilhadeira manual (R$ 4.000). Ele foi afastado pelo INSS. Se a Comunicação de Acidente de Trabalho (CAT) for emitida, seu FAP vai subir.",
+    character: "O Encargo Multiplicado",
+    consultoriaHint: "Omitir acidente é infração pesada. O custo oculto da falta de EPI e ergonomia sempre se manifesta em impostos punitivos e processos. Regularize a situação, pague a multa e compre o equipamento hoje.",
+    options: [
+      { id: "A", text: "Emitir a CAT imediatamente, prestar assistência ao funcionário, assumir o aumento do imposto (FAP) e comprar a empilhadeira hoje para travar futuros acidentes.", xp: 40, isBest: true, impacts: { caixa: -6000, margem: 1.0, compliance: 30 }, feedback: "CHOQUE DE COMPLIANCE. A ineficiência antiga custou caro, mas você corrigiu a raiz do problema. A sua expedição ficou mais rápida e segura.", reward: "🏆 Governança Operacional: Segurança do trabalho não é custo, é escudo.", lesson: "" },
+      { id: "B", text: "Não emitir a CAT para 'não sujar o indicador no INSS' e pagar o salário dele por fora enquanto ele se recupera em casa sem registro oficial.", xp: -40, isBest: false, impacts: { caixa: -8000, margem: -2.0, compliance: -40 }, feedback: "A OBTENÇÃO DE PASSIVO. Ele não melhorou, a família denunciou ao sindicato e o Ministério Público do Trabalho autuou a empresa por ocultação de acidente.", reward: "", lesson: "Omitir acidente do Estado é transformar um problema operacional num inquérito." },
+      { id: "C", text: "Demitir o funcionário no mesmo dia alegando 'baixo rendimento' para que ele vá procurar tratamento fora da responsabilidade da empresa.", xp: -50, isBest: false, impacts: { caixa: -15000, margem: -5.0, compliance: -50 }, feedback: "A DEMISSÃO ILEGAL. Funcionário acidentado tem estabilidade. O juiz determinou a reintegração com pagamento de multa moral altíssima e dobrou o FAP.", reward: "", lesson: "A lei protege a parte mais fraca. A arrogância pune a empresa." }
+    ]
+  },
+  {
+    id: "t4_prev_03", tier: 4, sector: "Planejamento Patrimonial", title: "O CEO Sem Aposentadoria",
+    theory: "O dono que tira Pró-Labore de apenas 'um salário mínimo' (para não pagar os 11% de INSS e o IRRF) e retira 100% do resto como Lucro Isento se acha esperto. Mas o Déficit Atuarial não perdoa. Sem recolhimento justo e sem previdência privada, se você sofrer um AVC, a sua família ganha 1 salário mínimo de benefício.",
+    context: "Você tem 45 anos. A empresa está muito rentável. O contador pergunta se você não quer revisar seu Pró-Labore, que hoje é de 1 salário mínimo (R$ 1.412). Todo seu padrão de vida (R$ 15.000/mês) vem da Distribuição de Lucros. Você não tem seguro de vida.",
+    character: "A Fragilidade do Dono",
+    consultoriaHint: "O CNPJ não pode ser o único fundo de emergência do CPF. Adeque seu Pró-labore para o teto do INSS (proteção por invalidez/pensão) e comece a diversificar o lucro em investimentos fora da empresa. Proteja a si mesmo para proteger o negócio.",
+    options: [
+      { id: "A", text: "Aceitar a dor do imposto. Elevar o Pró-Labore para o teto do INSS, garantir o benefício máximo de risco, e começar a alocar parte dos lucros em uma previdência privada robusta e seguro de vida.", xp: 40, isBest: true, impacts: { caixa: -2500, margem: 1.5, compliance: 25 }, feedback: "BLINDAGEM DO SÓCIO. Você parou de contar com a sorte e organizou a estrutura sucessória e protetiva da sua família. Você é um executivo.", reward: "🏆 Hedge Patrimonial: A sua vida agora independe das oscilações do CNPJ.", lesson: "" },
+      { id: "B", text: "Manter o Pró-Labore num salário mínimo para fugir do IRRF, e apostar que 'a empresa é a minha aposentadoria, quando eu ficar velho eu a vendo'.", xp: -30, isBest: false, impacts: { caixa: 1500, margem: -1.0, compliance: -15 }, feedback: "A ROLETA RUSSA. Você adoeceu, não pôde trabalhar, e o lucro da empresa despencou. O INSS te pagou R$ 1.412 por mês. Sua família faliu.", reward: "", lesson: "A empresa vale muito hoje. Amanhã, o mercado pode engoli-la. Diversifique." },
+      { id: "C", text: "Tirar 100% da sua renda por fora 'em caixa 2', não pagar sequer 1 centavo de INSS e usar o dinheiro para financiar uma casa de praia de luxo.", xp: -50, isBest: false, impacts: { caixa: 5000, margem: -4.0, compliance: -50 }, feedback: "A SONARIDADE LETAL. O cruzamento da Receita Federal (e-Financeira x IRPF) identificou evolução patrimonial sem lastro e autuou o CPF.", reward: "", lesson: "A ostentação na Pessoa Física baseada em fraude PJ é o caminho mais rápido para a cadeia." }
+    ]
+  },
+  {
+    id: "t3_alvara_04", tier: 3, sector: "Risco Regulatório e Alvarás", title: "O Lacre de Fogo",
+    theory: "Economizar no projeto de incêndio (AVCB) ou em licenças operacionais pode paralisar a produção da noite para o dia. A fiscalização não liga para suas metas de faturamento. Lacre fiscal significa Receita Zero e Custos Fixos Correndo.",
+    context: "Sua nova filial/galpão foi inaugurada com pressa. Para economizar R$ 18.000, você não instalou o sistema anti-incêndio exigido. O fiscal dos bombeiros bateu hoje, lacrou o local e ameaçou cassar o alvará. Amanhã há 40 entregas agendadas.",
+    character: "O Atalho que Custa a Pista",
+    consultoriaHint: "Assuma a culpa. Paralisar por conta própria e corrigir com urgência custa o preço da obra. Tentar driblar o lacre é arriscar um incêndio com vítimas, onde o dono responde criminalmente (homicídio culposo).",
+    options: [
+      { id: "A", text: "Assinar o Termo de Ajustamento (TAC). Paralisar a operação por 3 dias, direcionar as entregas para a matriz, pagar a multa e executar a obra anti-incêndio em caráter de urgência.", xp: 40, isBest: true, impacts: { caixa: -25000, margem: -2.0, compliance: 40 }, feedback: "GESTÃO DE CRISE RADICAL. O caixa tomou um tiro de canhão, a logística sofreu, mas o CNPJ evitou a suspensão sumária e riscos de prisão.", reward: "🏆 Compliance Físico: Sem estrutura de segurança legal, não há empresa.", lesson: "" },
+      { id: "B", text: "Procurar um 'despachante influente' que pede R$ 8.000 de propina para 'quebrar um galho' com o fiscal e desinterditar o prédio provisoriamente.", xp: -45, isBest: false, impacts: { caixa: -8000, margem: -4.0, compliance: -50 }, feedback: "O PACTO COM O DIABO. Corrupção ativa. Uma semana depois, ocorreu um princípio de incêndio, o seguro negou o pagamento por falta de AVCB e a empresa foi fechada pelo MP.", reward: "", lesson: "O atalho corrupto sempre cobra o preço em chamas e sangue." },
+      { id: "C", text: "Romper o lacre de madrugada, esconder o maquinário principal e forçar a equipe a trabalhar a portas fechadas 'só até entregar os pedidos do dia'.", xp: -50, isBest: false, impacts: { caixa: -5000, margem: -6.0, compliance: -60 }, feedback: "A DESOBEDIÊNCIA CÍVICA E CRIMINAL. A fiscalização voltou no dia seguinte com a polícia. Prisão em flagrante por rompimento de lacre e desobediência.", reward: "", lesson: "O Estado tem o monopólio da força. Não tente blefar com um fiscal ofendido." }
+    ]
+  },
+  {
+    id: "t2_horaextra_05", tier: 2, sector: "Processos de RH", title: "O Banco de Horas Fantasma",
+    theory: "O 'combinado de boca' não existe na Justiça Trabalhista. Fazer a equipe ficar além do horário sem um sistema de ponto rigoroso e um acordo sindical homologado anula a previsibilidade do seu custo de folha. A conta sempre chega na rescisão.",
+    context: "Dezembro. O pico de vendas fez a equipe inteira trabalhar 40 horas a mais no mês. Você não tem relógio de ponto formal e propôs de boca dar um 'bônus por fora' e umas folgas em janeiro. Uma semana depois, o melhor funcionário pede as contas e exige o pagamento legal das horas extras (com 50% de acréscimo).",
+    character: "A Informalidade Desgastante",
+    consultoriaHint: "As horas foram trabalhadas. Pague a rescisão com todos os adicionais previstos na lei para blindar o CPF dele no momento do distrato. No dia seguinte, profissionalize o sistema e só permita hora extra com aprovação prévia do gerente.",
+    options: [
+      { id: "A", text: "Pagar as 40 horas rigorosamente com 50% de acréscimo na rescisão. Aproveitar o choque para contratar um relógio de ponto online para todos e redigir regras rígidas de hora extra.", xp: 35, isBest: true, impacts: { caixa: -2500, margem: 1.0, compliance: 25 }, feedback: "AJUSTE FINO. Você pagou caro pela desorganização passada, mas comprou a paz jurídica e blindou o caixa contra horas abusivas no futuro.", reward: "🏆 Régua Trabalhista: Controle de ponto virou cultura na empresa.", lesson: "" },
+      { id: "B", text: "Negar o pagamento legal, dizendo que ele 'concordou verbalmente com as folgas' e mandar ele procurar os direitos se não estiver satisfeito.", xp: -35, isBest: false, impacts: { caixa: 0, margem: -2.0, compliance: -30 }, feedback: "A ARROGÂNCIA PROCESSUAL. Ele procurou um advogado. Sem controle de ponto (ônus da empresa), o juiz deferiu não apenas as 40h, mas tudo o que ele pediu retroativo a 2 anos.", reward: "", lesson: "Quem não tem prova documental das horas (ponto), perde a presunção na Justiça." },
+      { id: "C", text: "Negociar e pagar as horas extras em dinheiro vivo direto no bolso dele para não incidir FGTS, INSS e férias no cálculo rescisório.", xp: -45, isBest: false, impacts: { caixa: -1800, margem: -3.0, compliance: -40 }, feedback: "A MAQUILAGEM PERIGOSA. Ele pegou o dinheiro por fora e depois processou a empresa dizendo que o pagamento foi comissões não declaradas. Você pagará duas vezes.", reward: "", lesson: "Recibo em guardanapo ou Pix oculto não têm validade para o Tribunal." }
+    ]
   }
 
-  // --- COLE O LOTE 3 AQUI ABAIXO DESTA LINHA ---
-
+  // --- COLE O LOTE 8 AQUI ABAIXO DESTA LINHA ----- COLE O LOTE 7 AQUI ABAIXO DESTA LINHA ---// --- COLE O LOTE 6 AQUI ABAIXO DESTA LINHA ------ COLE O LOTE 5 AQUI ABAIXO DESTA LINHA ---OLE O LOTE 4 AQUI ABAIXO DESTA LINHA ---
 ];
